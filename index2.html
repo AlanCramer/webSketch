@@ -1,9 +1,21 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<script src="jquery-2.1.0.min.js"></script>
 <script src="drawCanvas.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    drawCanvas();
+  });
+});
+</script>
+
 </head>
-<body onload="drawCanvas();">
+
+<body>
+<button>Click me</button>
    <canvas id="mycanvas" 
         width="500" height="500"
         style="border:1px solid #000000;">
