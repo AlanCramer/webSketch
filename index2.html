@@ -11,18 +11,7 @@ function drawCanvas(){
  
     // use getContext to use the canvas for drawing
     var ctx = canvas.getContext('2d');
-    
-    var canvasSize = 500;
- 
-    // Filled triangle
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.lineTo(0,canvasSize);
-    ctx.lineTo(canvasSize,canvasSize);
-    ctx.lineTo(canvasSize,0);
-    ctx.closePath();
-    ctx.stroke();
-    
+        
     // Stroked triangle
     ctx.beginPath();
     ctx.moveTo(125,125);
@@ -38,6 +27,9 @@ function drawCanvas(){
 </script>
 </head>
 <body onload="drawCanvas();">
-   <canvas id="mycanvas" width="500" height="500"></canvas>
+   <canvas id="mycanvas" 
+        width="500" height="500"
+        style="border:1px solid #000000;">
+   </canvas>
 </body>
 </html>
