@@ -1,30 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<script type="text/javascript">
-function drawCanvas(){
-  // get the canvas element using the DOM
-  var canvas = document.getElementById('mycanvas');
- 
-  // Make sure we don't execute when canvas isn't supported
-  if (canvas.getContext){
- 
-    // use getContext to use the canvas for drawing
-    var ctx = canvas.getContext('2d');
-        
-    // Stroked triangle
-    ctx.beginPath();
-    ctx.moveTo(125,125);
-    ctx.lineTo(125,45);
-    ctx.lineTo(45,125);
-    ctx.closePath();
-    ctx.stroke();
- 
-  } else {
-    alert('You need Safari or Firefox 1.5+ to see this demo.');
-  }
-}
-</script>
+<script src="drawCanvas.js" type="text/javascript"></script>
 </head>
 <body onload="drawCanvas();">
    <canvas id="mycanvas" 
