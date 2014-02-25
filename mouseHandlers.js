@@ -32,8 +32,8 @@ function onMouseMove(canvas, evt) {
     
     if (canvas.IsMouseDown === true && sceneInfo.preSelected.length >0) {
         var point = sceneInfo.getFirstPreSelectedPoint();
-        point.X = mousePos.x;
-        point.Y = mousePos.y;
+        point.x = mousePos.x;
+        point.y = mousePos.y;
     }
 }
 
@@ -46,7 +46,7 @@ function onMouseUp(canvas, evt) {
 
 function onMouseDown(canvas, evt) {
     var mousePos = getMousePos(canvas, evt);
-    var point = {X: mousePos.x, Y: mousePos.y};
+    var point = {x: mousePos.x, y: mousePos.y};
     var sceneInfo = canvas.sceneInfo;
     
     canvas.IsMouseDown = true;

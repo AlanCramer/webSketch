@@ -54,10 +54,20 @@ function drawScene(canvas, sceneInfo) {
         }
         
         ctx.beginPath();
-        ctx.moveTo(point.X, point.Y);
-        ctx.arc(point.X, point.Y, 10, 0,Math.PI*2);
+        ctx.moveTo(point.x, point.y);
+        ctx.arc(point.x, point.y, 10, 0,Math.PI*2);
         ctx.closePath();
         ctx.fill();
+ 
+        var lastIdx = index - 1;
+        lastIdx = (index === 0) ? points.length-1 : index -1; 
+        lastPoint = points[lastIdx];
+  
+        ctx.beginPath();
+        ctx.moveTo(lastPoint.x, lastPoint.y);
+        ctx.lineTo(point.x, point.y);
+        ctx.closePath();
+        ctx.stroke();
     }
 
 }
