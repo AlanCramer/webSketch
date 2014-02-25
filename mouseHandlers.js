@@ -4,24 +4,8 @@ function writeMessage(canvas, message) {
 
     var sb = document.getElementById("statusbar");
     sb.textContent = message;
-/*
-    var context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.font = '18pt Calibri';
-    context.fillStyle = 'black';
-    context.fillText(message, 10, 25);
-*/
-}
 
-/*
-function writeMessageRed(canvas, message) {
-    var context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.font = '18pt Calibri';
-    context.fillStyle = 'red';
-    context.fillText(message, 10, 25);
 }
-*/
 
 function getMousePos(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
@@ -31,15 +15,43 @@ function getMousePos(canvas, evt) {
     };
 }
 
+function onMouseMove(canvas, evt) {
+    var mousePos = getMousePos(canvas, evt);
+    var sceneInfo = canvas.sceneInfo;
+    
+    if (canvas.IsMouseDown === false) {
+        var preSelIdx = sceneInfo.nearPointIdx(mousePos);
+     
+        if (preSelIdx != -1) {
+            sceneInfo.preSelected.push(preSelIdx);
+        }
+        else {
+            sceneInfo.preSelected.length = 0;
+        }
+    }
+    
+    if (canvas.IsMouseDown === true && sceneInfo.preSelected.length >0) {
+        var point = sceneInfo.getFirstPreSelectedPoint();
+        point.X = mousePos.x;
+        point.Y = mousePos.y;
+    }
+}
+
+function onMouseUp(canvas, evt) {
+    var mousePos = getMousePos(canvas, evt);
+    var point = {X: mousePos.x, Y: mousePos.y};
+    
+    canvas.IsMouseDown = false;
+}
 
 function onMouseDown(canvas, evt) {
     var mousePos = getMousePos(canvas, evt);
-    var context = canvas.getContext('2d');
+    var point = {X: mousePos.x, Y: mousePos.y};
+    var sceneInfo = canvas.sceneInfo;
     
-    context.fillStyle = "rgba(255, 165, 0, .5)";
-
+    canvas.IsMouseDown = true;
     
-    context.moveTo(mousePos.x, mousePos.y);
-    context.arc(mousePos.x, mousePos.y, 25, 0,Math.PI*2);
-    context.fill();
+    if (sceneInfo.preSelected.length === 0) {
+        sceneInfo.points.push(point);
+    }
 }

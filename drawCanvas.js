@@ -1,4 +1,4 @@
-function drawCanvas(){
+function clearCanvas(){
   // get the canvas element using the DOM
   var canvas = document.getElementById('mycanvas');
  
@@ -8,13 +8,56 @@ function drawCanvas(){
     }   
     // use getContext to use the canvas for drawing
     var ctx = canvas.getContext('2d');
-        
-    // Stroked triangle
-    ctx.beginPath();
-    ctx.moveTo(125,125);
-    ctx.lineTo(125,45);
-    ctx.lineTo(45,125);
-    ctx.closePath();
-    ctx.stroke();
+      
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.sceneInfo.points.length=0;
+    
+    /*  
+        // Stroked triangle
+        ctx.beginPath();
+        ctx.moveTo(125,125);
+        ctx.lineTo(125,45);
+        ctx.lineTo(45,125);
+        ctx.closePath();
+        ctx.stroke();
+    */
+}
+
+function drawMe() {
+
+    var canvas = document.getElementById('mycanvas');
+    var sceneInfo = canvas.sceneInfo;
+    
+    drawScene(canvas, sceneInfo);
+    
+}
+
+function drawScene(canvas, sceneInfo) {
  
+    // Make sure we don't execute when canvas isn't supported
+    if (!canvas.getContext){
+        alert('drawScene: Canvas does not have a context.');
+    }   
+    // use getContext to use the canvas for drawing
+    var ctx = canvas.getContext('2d');
+      
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+   
+    var points = sceneInfo.points;
+    for (index = 0; index < points.length; ++index) {
+
+        var point = points[index];
+        ctx.fillStyle = "rgba(255, 165, 0, .5)";
+
+        if (sceneInfo.preSelected.indexOf(index) > -1) {
+            ctx.fillStyle = "rgba(100, 40, 100, 1)"; 
+        }
+        
+        ctx.beginPath();
+        ctx.moveTo(point.X, point.Y);
+        ctx.arc(point.X, point.Y, 10, 0,Math.PI*2);
+        ctx.closePath();
+        ctx.fill();
+    }
+
 }

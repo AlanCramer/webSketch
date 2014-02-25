@@ -5,33 +5,19 @@
 <script src="jquery-2.1.0.min.js"></script>
 <script src="drawCanvas.js" type="text/javascript"></script>
 <script src="mouseHandlers.js" type="text/javascript"></script>
+<script src="initCanvas.js" type="text/javascript"></script>
+<script src="sceneInfo.js" type="text/javascript"></script>
 
 <script>
 $(document).ready(function(){
 
-var canvas = document.getElementById('mycanvas');
-var context = canvas.getContext('2d');
-
-canvas.addEventListener('mousemove', function(evt) {
-    var mousePos = getMousePos(canvas, evt);
-    var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
-    writeMessage(canvas, message);
-}, false);
-
-
-canvas.addEventListener('mousedown', function(evt) {
-    var mousePos = getMousePos(canvas, evt);
-    var message = 'Mouse Down position: ' + mousePos.x + ',' + mousePos.y;
-    writeMessage(canvas, message);
+    var canvas = document.getElementById('mycanvas');
+    initCanvas(canvas);
     
-    onMouseDown(canvas, evt);
-    
-}, false);
-
-
-  $("button").click(function(){
-    drawCanvas();
-  });
+    $("button").click(function(){
+        clearCanvas();
+    });
+  
 });
 </script>
 
