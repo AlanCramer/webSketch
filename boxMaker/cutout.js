@@ -29,8 +29,8 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
         var fling = this.fingerLength;
         var antiFling = this.fingerSpacing;
         var totalFingDist = (fling+antiFling);
-        var fingCt = Math.floor((posSlots ? this.width : this.length) / totalFingDist);
-
+        var fingCt = (posSlots ? this.width - this.fingerLength : this.length) / totalFingDist;
+        
         for (var iSlot = 0; iSlot < fingCt; ++iSlot)
         {
             if (this.posSlots === true)
