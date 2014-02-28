@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+<script src="../jquery-2.1.0.min.js"></script>
+<script src="cutout.js"></script>
+	<style>
+		body {
+			font: 80% arial, helvetica, sans-serif;
+			margin:0;
+		}
+
+		
+        .boxDim {
+            width:50px;
+        }
+        
+        #mycanvas {
+            border:2px solid#000;
+        }
+        
+		#navigation {
+			position: absolute;
+			width: 10em;
+		}
+
+
+		
+	</style>
+<script>
+
+var drawCutouts = function(canvas, cutouts, layout) {
+     
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width, canvas.height);
+    
+    // annoyingly redundant
+    cutouts.bottom.draw(canvas, layout.bottom.x, layout.bottom.y);
+    cutouts.front.draw(canvas, layout.front.x, layout.front.y);
+    cutouts.back.draw(canvas, layout.back.x, layout.back.y);
+    cutouts.left.draw(canvas, layout.left.x, layout.left.y);
+    cutouts.right.draw(canvas, layout.right.x, layout.right.y);        
+}
+
+var buildCutouts = function(cutouts, boxDims, fingerLength, fingerSpacing, toolbitDiam) {
+    cutouts.bottom = new Cutout(boxDims.length, boxDims.width, boxDims.matThick, null, fingerLength, fingerSpacing, toolbitDiam);
+    cutouts.front = new Cutout(boxDims.length, boxDims.height, boxDims.matThick, true, fingerLength, fingerSpacing, toolbitDiam);
+    cutouts.back = new Cutout(boxDims.length, boxDims.height, boxDims.matThick, true, fingerLength, fingerSpacing, toolbitDiam);
+    cutouts.left = new Cutout(boxDims.height, boxDims.width, boxDims.matThick, false, fingerLength, fingerSpacing, toolbitDiam);
+    cutouts.right = new Cutout(boxDims.height, boxDims.width, boxDims.matThick, false, fingerLength, fingerSpacing, toolbitDiam);
+}
+
+var buildLayout = function(layout, boxDims, toolbitDiam) {
+
+    var spacing = toolbitDiam*3;
+
+    layout.bottom = {};
+    layout.bottom.x = (boxDims.height-0)+3*spacing;
+    layout.bottom.y = (boxDims.height-0)+3*spacing;
+    
+    layout.front = {};
+    layout.front.x = spacing;
+    layout.front.y = (boxDims.height-0)+3*spacing;
+    
+    layout.back = {};
+    layout.back.x = (boxDims.height-0) + (boxDims.width-0) + 5*spacing;
+    layout.back.y = (boxDims.height-0) + 3*spacing;
+
+    layout.left = {};
+    layout.left.x = (boxDims.height-0) + 3*spacing;
+    layout.left.y = spacing;
+
+    layout.right = {};
+    layout.right.x = (boxDims.height-0) + 3*spacing;
+    layout.right.y = (boxDims.height-0) + (boxDims.length-0) + 5*spacing;
+    
+}
+
+$(document).ready(function() {
+    $(".boxDim").change(function() {
+                
+        var boxDims = {};
+        boxDims.height = $("#heightbox").val()-0;
+        boxDims.length = $("#lengthbox").val()-0;
+        boxDims.width = $("#widthbox").val()-0;    
+        boxDims.matThick = $("#matthkbox").val()-0;
+        
+        var fingerLength = $("#fingerLength").val()-0;
+        var fingerSpacing = $("#fingerSpacing").val()-0;
+        var toolbitDiam = $("#toolbitDiam").val()-0;
+                        
+        var cutouts = {};
+        buildCutouts(cutouts, boxDims, fingerLength, fingerSpacing, toolbitDiam);
+
+        var layout = {};
+        buildLayout(layout, boxDims, toolbitDiam);
+        
+        var canvas = document.getElementById('mycanvas');
+        drawCutouts(canvas, cutouts, layout);
+    });
+});    
+</script>
+</head>
+
+<body>
+
+<div id="header" style="background-color:#9999CC;">
+<h1 style="margin-bottom:0;">Box Maker</h1>
+</div>
+
+<div id="Inputs" >
+<table style="width:100px;float:left" >
+<tr>
+  <td>Height</td>
+  <td><input class="boxDim" id="heightbox" type="number" value="50" ></td>
+</tr>
+<tr>
+  <td>Length</td>
+  <td><input class="boxDim" id="lengthbox" type="number" value="100" ></td>
+</tr>
+<tr>
+  <td>Width</td>
+  <td><input class="boxDim" id="widthbox" type="number" value="50" ></td>
+</tr>
+<tr>
+  <td>Material Thickness</td>
+  <td><input class="boxDim" id="matthkbox" type="number" value="5" ></td>
+</tr>
+<tr>
+  <td>Finger Length</td>
+  <td><input class="boxDim" id="fingerLength" type="number" value="10" ></td>
+</tr>
+<tr>
+  <td>Finger Spacing</td>
+  <td><input class="boxDim" id="fingerSpacing" type="number" value="10" ></td>
+</tr>
+<tr>
+  <td>Toolbit Diam</td>
+  <td><input class="boxDim" id="toolbitDiam" type="number" value="5" ></td>
+</tr>
+
+</table>
+
+</div>
+
+<div id="content" >
+    <canvas id="mycanvas" width="500px" height="400px" >
+    </canvas>
+</div>
+
+
+<div id="statusbar" style="background-color:#99CCCC;clear:both;text-align:center;">
+    Status Bar
+</div>
+
+
+</body>
+</html>

@@ -14,10 +14,36 @@ $(document).ready(function(){
     var canvas = document.getElementById('mycanvas');
     initCanvas(canvas);
     
-    $("button").click(function(){
+    $("#deleteAll").click(function(){
         clearCanvas();
     });
+    
+    $("#exportHello").click(function(){
+         var blob = new Blob(["Hello World"], {type : 'text/plain'});
+         var a = document.createElement('a');
+
+         a.href = window.URL.createObjectURL(blob);
+         a.download = "hello-world.txt";
+         a.textContent = "Download Hello World";
+         
+         var es = document.getElementById('extrastuff');
+         es.appendChild(a);
+    });
   
+    $("#exportPNG").click(function(){
+         var a = document.createElement('a');
+
+         var img    = canvas.toDataURL("image/png");
+         var blob = new Blob([img], {type : 'text/plain'});
+         
+         a.href = window.URL.createObjectURL(blob);
+         a.download = "hello.png";
+         a.textContent = "Download Hello Png";
+         
+         var es = document.getElementById('extrastuff');
+         es.appendChild(a);
+    });
+
 });
 </script>
 
@@ -34,7 +60,10 @@ $(document).ready(function(){
 HTML<br>
 CSS<br>
 JavaScript
-<button>Click me</button>
+<button id="deleteAll" >Delete All</button>
+<button id="exportHello" >Export Hello</button>
+<button id="exportPNG" >Export PNG</button>
+
 </div>
 
 <div id="content" style="background-color:#EEEEEE;height:500px;width:700px;float:left;">
@@ -43,6 +72,8 @@ JavaScript
         style="border:1px solid #000000;">
     </canvas>
 </div>
+
+<div id="extrastuff"></div>
 
 <div id="statusbar" style="background-color:#99CCCC;clear:both;text-align:center;">
 Status Bar</div>
