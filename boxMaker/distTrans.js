@@ -18,7 +18,7 @@ function EDT_f(G, y, x, i)
 //void DistTransUtil::ComputeDistTrans(const AcImage &in, AcImage &dt)
 function computeDistTrans(inGreyImg, dt, gcanvas)
 {
-    var g = new AcGrey8Image(inGreyImg.width, inGreyImg.height);
+    var g = new AcGrey16Image(inGreyImg.width, inGreyImg.height);
 //    g = $.extend(g, (JSON.parse(JSON.stringify(inGreyImg)))); // copies the buffer
 
     var m = inGreyImg.width;

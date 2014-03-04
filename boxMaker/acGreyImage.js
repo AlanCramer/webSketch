@@ -14,11 +14,11 @@ function AcGrey16Image(width, height) {
 
     AcGreyImage.call(this, width, height);
 
-    this.databuffer = new ArrayBuffer(width*height);
+    this.databuffer = new ArrayBuffer(width*height*2);
     this.data = new Uint16Array(this.databuffer);
 }
-AcGrey8Image.prototype = Object.create(AcGreyImage.prototype);
-AcGrey8Image.prototype.constructor = AcGreyImage;
+AcGrey16Image.prototype = Object.create(AcGreyImage.prototype);
+AcGrey16Image.prototype.constructor = AcGreyImage;
 
 
 // abstract base class - todo, how to enforce?
@@ -130,7 +130,7 @@ AcGreyImage.prototype.draw = function(canvas, xPos, yPos) {
     // height is 0 to 255, littleEndian is a bool
     // todo - this is pure virtual (must be overridden)
     // depending on the bit depth
-AcGreyImage.prototype.encodeHeight = function(value, littleEndian) {
+AcGrey8Image.prototype.encodeHeight = function(value, littleEndian) {
     if (littleEndian) {
         return  (255   << 24) |    // alpha
                 (value << 16) |    // blue
@@ -144,3 +144,22 @@ AcGreyImage.prototype.encodeHeight = function(value, littleEndian) {
                  255;              // alpha
     }
 }    
+
+// value 
+AcGrey16Image.prototype.encodeHeight = function(value, littleEndian) {
+    if (littleEndian) {
+        if (value >  2550) 
+            value = 2550;
+            
+        return  (255   << 24) |    // alpha
+                (value/10 << 16) |    // blue
+                (value/10 <<  8) |    // green
+                value/10;            // red
+    } 
+    else {
+        return  (value/255 << 24) |    // red
+                (value/255 << 16) |    // green
+                (value/255 <<  8) |    // blue
+                 255;              // alpha
+    }
+}
