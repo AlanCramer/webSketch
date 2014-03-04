@@ -7,18 +7,24 @@ var drawCutouts = function(canvas, cutouts, layout) {
     ctx.fillRect(0,0,canvas.width, canvas.height);
     ctx.restore();
    
+/*  A quick test
     ctx.save();
     ctx.fillStyle = "black";
     ctx.fillRect(5, 5, 5, 5);
     ctx.restore();
-/*     
+    */
+    
+    ctx.save();
+    ctx.fillStyle = "#000000";
     // annoyingly redundant
     cutouts.bottom.draw(canvas, layout.bottom.x, layout.bottom.y);
     cutouts.front.draw(canvas, layout.front.x, layout.front.y);
     cutouts.back.draw(canvas, layout.back.x, layout.back.y);
     cutouts.left.draw(canvas, layout.left.x, layout.left.y);
-    cutouts.right.draw(canvas, layout.right.x, layout.right.y);     
-*/    
+    cutouts.right.draw(canvas, layout.right.x, layout.right.y); 
+
+    ctx.restore();
+   
 }
 
 var buildCutouts = function(cutouts, boxDims, fingerLength, fingerSpacing, toolbitDiam) {

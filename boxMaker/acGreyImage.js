@@ -10,6 +10,16 @@ function AcGrey8Image(width, height) {
 AcGrey8Image.prototype = Object.create(AcGreyImage.prototype);
 AcGrey8Image.prototype.constructor = AcGreyImage;
 
+function AcGrey16Image(width, height) {
+
+    AcGreyImage.call(this, width, height);
+
+    this.databuffer = new ArrayBuffer(width*height);
+    this.data = new Uint16Array(this.databuffer);
+}
+AcGrey8Image.prototype = Object.create(AcGreyImage.prototype);
+AcGrey8Image.prototype.constructor = AcGreyImage;
+
 
 // abstract base class - todo, how to enforce?
 function AcGreyImage(width, height) {
