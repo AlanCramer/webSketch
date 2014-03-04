@@ -5,7 +5,7 @@
 //  int Sep(const AcImage& G, unsigned int y, int i, int u)
 function Sep(G, y, i, u)
 {
-    return (u*u - i*i + G.getAt(u,y)*G.getAt(u,y) - G.getAt(i, y)*G.getAt(i, y)) / (2*(u-i));
+    return Math.floor((u*u - i*i + G.getAt(u,y)*G.getAt(u,y) - G.getAt(i, y)*G.getAt(i, y)) / (2*(u-i)));
 }
 
 // f using EDT is: f(x, i) = (x-i)^2 + g(i)^2
@@ -16,12 +16,13 @@ function EDT_f(G, y, x, i)
 }
 
 //void DistTransUtil::ComputeDistTrans(const AcImage &in, AcImage &dt)
-function computeDistTrans(inGreyImg, g)
+function computeDistTrans(inGreyImg, dt, gcanvas)
 {
-    // var g = $.extend(true, {}, inGreyImg); // deep copy
+    var g = new AcGrey8Image(inGreyImg.width, inGreyImg.height);
+//    g = $.extend(g, (JSON.parse(JSON.stringify(inGreyImg)))); // copies the buffer
 
-    m = inGreyImg.width;
-    n = inGreyImg.height;
+    var m = inGreyImg.width;
+    var n = inGreyImg.height;
 
     var maxGVal = m + n;
 
@@ -34,7 +35,7 @@ function computeDistTrans(inGreyImg, g)
     {
         // todo why is this a ref error (invalid lhs) ? g.getAt(i, 0) = ...
         //g.data[i] = (inGreyImg.getAt(i, 0) === 0) ? 0 : maxGVal;
-        g.data[i] = 128;
+        g.data[i] = (inGreyImg.getAt(i, 0) === 0) ? 0 : maxGVal;
         
         for (var j = 1; j < n; ++j)
         {
@@ -50,21 +51,22 @@ function computeDistTrans(inGreyImg, g)
         }
     }
     
-    
-}
-/*
-    // Phase 2
+    g.draw(gcanvas);
+    g.debugPrint();
+       // Phase 2
     // need f and Sep (defined above)
 
     // todo, this loop could be parallelized
-    for (unsigned int j = 0; j < n; ++j)
+    for (var j = 0; j < n; ++j)
     {
-        int q = 0;
-        int s[m];
-        int t[m];
-        s[0] = t[0] = 0;
+        var q = 0;
+        var s = [];
+        var t = [];
 
-        for (unsigned int u = 1; u < m; ++u)
+        s[0] = 0;
+        t[0] = 0;
+
+        for (var u = 1; u < m; ++u)
         {
             while (q >=0 && EDT_f(g, j, t[q], s[q]) > EDT_f(g, j, t[q], u))
             {
@@ -78,8 +80,8 @@ function computeDistTrans(inGreyImg, g)
             }
             else
             {
-                int w = 1 + Sep(g, j, s[q], u);
-                if (w < 0 || (unsigned) w < m) // is w <0 possible?
+                var w = 1 + Sep(g, j, s[q], u);
+                if (w < m) 
                 {
                     ++q;
                     s[q] = u;
@@ -88,14 +90,17 @@ function computeDistTrans(inGreyImg, g)
             }
         }
 
-        for (int u = m; u >=0; --u)
+        for (var u = m; u >=0; --u)
         {
-            dt(u, j) = EDT_f(g, j, u, s[q]);
-            if (u == t[q])
+            //dt(u, j) = ...
+            // todo - how to encapsulate  the lhs?
+            dt.data[j*dt.width + u] = EDT_f(g, j, u, s[q]);
+            if (u === t[q])
             {
                 --q;
             }
         }
     }
 }
-*/
+    
+
