@@ -12,28 +12,52 @@
 <script src="Path.js"></script>
 
 <style>
+
+    #header {
+        background-color: #EFD969;
+        font-family:"Georgia";
+        margin:5px;
+
+    }
+
     body {
         font: 80% arial, helvetica, sans-serif;
         margin:0;
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #EFE7A0));
+
     }
 
     .boxDim {
         width:50px;
     }
     
+    td {
+        font-family:"Georgia";
+    }
+    
+    canvas {
+        background-color:#F7FADC;
+    }
+    
     #mycanvas {
         border:2px solid#000;
     }
-    #outcanvas {
+    #debugcanvas {
         border:2px solid#ff00ff;
     }
-    #gcanvas {
-        border:2px solid#00ffff;
+    #pathcanvas {
+        border:2px solid#000;
+    }
+    #statusbar {
+        background-color:#AB9A56;
+        clear:both;
+        margin:5px;
     }
     
-    #navigation {
-        position: absolute;
-        width: 10em;
+    #Inputs {
+        margin: 5px;
+        width: 15em;
+        float: left;
     }
     
 </style>
@@ -121,13 +145,12 @@ $(document).ready(function() {
 </head>
 
 <body>
-
-<div id="header" style="background-color:#9999CC;">
-<h1 style="margin-bottom:0;">Box Maker</h1>
+<div id="header" >
+<h1>&nbsp;Box Maker</h1>
 </div>
 
 <div id="Inputs" >
-<table style="width:100px;float:left" >
+<table>
 <tr>
   <td>Height</td>
   <td><input class="boxDim" id="heightbox" type="number" value="50" ></td>
@@ -168,8 +191,8 @@ $(document).ready(function() {
 </div>
 
 
-<div id="statusbar" style="background-color:#99CCCC;clear:both;text-align:center;">
-    Status Bar
+<div id="statusbar" >
+&nbsp;&nbsp;Status Bar
 </div>
 
 
