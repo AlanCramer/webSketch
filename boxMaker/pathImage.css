@@ -3,7 +3,7 @@
         background-color: #EFD969;
         font-family:"Georgia";
         margin:5px;
-
+        border-radius:8px;
     }
 
     body {
@@ -15,6 +15,8 @@
 
     .boxDim {
         width:50px;
+        text-align:right;
+        border-radius:5px;
     }
     
     td {
@@ -38,11 +40,13 @@
         background-color:#AB9A56;
         clear:both;
         margin:5px;
+        border-radius:5px;
     }
     
     #Inputs {
         margin: 5px;
         width: 15em;
         float: left;
+        
     }
     
