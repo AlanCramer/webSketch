@@ -1,5 +1,13 @@
 
 
+// quick note that may become useful:
+// how to copy an ArrayBuffer
+// function copy(src)  {
+    // var dst = new ArrayBuffer(src.byteLength);
+    // new Uint8Array(dst).set(new Uint8Array(src));
+    // return dst;
+// }
+
 function AcGrey8Image(width, height) {
 
     AcGreyImage.call(this, width, height);
@@ -9,6 +17,11 @@ function AcGrey8Image(width, height) {
 }
 AcGrey8Image.prototype = Object.create(AcGreyImage.prototype);
 AcGrey8Image.prototype.constructor = AcGreyImage;
+AcGrey8Image.prototype.copy = function () {
+    var dst = new AcGrey8Image(this.width, this.height);
+    dst.data.set(this.data);
+    return dst;
+}
 
 function AcGrey16Image(width, height) {
 
@@ -19,7 +32,11 @@ function AcGrey16Image(width, height) {
 }
 AcGrey16Image.prototype = Object.create(AcGreyImage.prototype);
 AcGrey16Image.prototype.constructor = AcGreyImage;
-
+AcGrey16Image.prototype.copy = function () {
+    var dst = new AcGrey16Image(this.width, this.height);
+    dst.data.set(this.data);
+    return dst;
+}
 
 // abstract base class - todo, how to enforce?
 function AcGreyImage(width, height) {
@@ -35,6 +52,50 @@ function AcGreyImage(width, height) {
 // public:    
 AcGreyImage.prototype.getAt = function(x,y) {
     return this.data[this.width*y + x];
+}
+
+// this should be protected - is this adequate enforcement?
+AcGreyImage.prototype.copy = function(dst) {
+
+    throw(new Error("not implemented - needs to be overridden in subclass"));         
+}
+
+AcGreyImage.prototype.getNbrhd = function(x,y) {
+    var ret = {};
+    if (x > 0 && y > 0 && x < (this.width -1) && y < (this.height-1))
+    {
+        ret.nw = this.getAt(x-1, y-1);
+        ret.nn = this.getAt(x  , y-1);
+        ret.ne = this.getAt(x+1, y-1);
+        ret.ww = this.getAt(x-1, y  );
+        ret.cc = this.getAt(x  , y  );
+        ret.ee = this.getAt(x+1, y  );
+        ret.sw = this.getAt(x-1, y+1);
+        ret.ss = this.getAt(x  , y+1);
+        ret.se = this.getAt(x+1, y+1);
+    }
+    return ret;
+}
+
+AcGreyImage.prototype.getEncodedNbrhd = function(x,y) {
+
+    var ret = this.getNbrhd(x,y);
+    return DirectionMap.encodeNbrhd(ret.nw, ret.nn, ret.ne, 
+                                    ret.ww, ret.cc, ret.ee, 
+                                    ret.sw, ret.ss, ret.se);
+}
+
+AcGreyImage.prototype.thresholdImage  = function(value) {
+
+    var i, j;
+    for (i = 0; i < this.width; ++i)
+    {
+        for (j = 0; j < this.height; ++j)
+        {
+            // todo, arg!, encapsulate lhs
+            this.data[this.width*j + i] =(this.getAt(i,j) <= value)? 1 : 0;
+        }
+    }
 }
     
 AcGreyImage.prototype.debugPrint = function() {
@@ -148,6 +209,10 @@ AcGrey8Image.prototype.encodeHeight = function(value, littleEndian) {
 // value 
 AcGrey16Image.prototype.encodeHeight = function(value, littleEndian) {
     if (littleEndian) {
+    
+    // todo this is a weird hack - dividing by 10
+    // values can be to 256*256 = 65535
+    // dividing by 256 makes many pics black - maybe divide by largest element(and then *256)?
         if (value >  2550) 
             value = 2550;
             

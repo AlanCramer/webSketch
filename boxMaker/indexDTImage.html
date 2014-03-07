@@ -5,8 +5,11 @@
 <script src="../jquery-2.1.0.min.js"></script>
 <script src="cutout.js"></script>
 <script src="layoutCutoutUtil.js"></script>
+<script src="DirectionMap.js"></script>
 <script src="acGreyImage.js"></script>
 <script src="distTrans.js"></script>
+<script src="Vectorize.js"></script>
+<script src="Path.js"></script>
 
 <style>
     body {
@@ -37,22 +40,37 @@
     
 <script>
 
-var buildToolpaths3 = function(toolpaths, incanvas, gcanvas, canvas){
+var buildToolpaths3 = function(toolpaths, incanvas, debugcanvas, pathcanvas){
 
     var inCanvasImage = new AcGrey8Image(incanvas.width,incanvas.height);
     inCanvasImage.initFromCanvas(incanvas); // todo, decide about js ctors
-    inCanvasImage.debugPrint();
+
+    var dt = new AcGrey16Image(incanvas.width, incanvas.height);
+
+    computeDistTrans(inCanvasImage, dt);
+//   dt.debugPrint();
+//   dt.draw(debugcanvas);
+
+    var ctx = pathcanvas.getContext('2d');
+    ctx.clearRect(0, 0, pathcanvas.width, pathcanvas.height);
     
-//    toolpaths = $.extend(true, {}, inCanvasImage); // deep copy
-    //toolpaths = (JSON.parse(JSON.stringify(inCanvasImage)));
+    var path = new Path();
+    vectorizeDistanceTrf(dt, 1, path);
+
+    var path2 = new Path();
+    vectorizeDistanceTrf(dt, 100, path2);
     
-    toolpaths = new AcGrey16Image(incanvas.width, incanvas.height);
-    //toolpaths = $.extend(toolpaths, (JSON.parse(JSON.stringify(inCanvasImage)))); // copies the buffer
-//    toolpaths.initFromCanvas(inCanva
-  
-    computeDistTrans(inCanvasImage, toolpaths, gcanvas);
-    toolpaths.debugPrint();
-    toolpaths.draw(canvas);
+    var path3 = new Path();
+    vectorizeDistanceTrf(dt, 400, path3);
+    
+    var path4 = new Path();
+    vectorizeDistanceTrf(dt, 900, path4);
+    
+    path.draw(pathcanvas);
+    path2.draw(pathcanvas);
+    path3.draw(pathcanvas);
+    path4.draw(pathcanvas);
+
 }
 
 
@@ -63,70 +81,6 @@ var buildToolpaths2 = function(toolpaths, incanvas, canvas){
     
     inCanvasImage.draw(canvas);
 }
-
-var buildToolpaths = function(toolpaths, incanvas, canvas){
-
-    var canvasWidth  = canvas.width;
-    var canvasHeight = canvas.height;
-    var ctx = canvas.getContext('2d');
-    var imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-    
-    var inCtx = incanvas.getContext('2d');
-    var inImageData = inCtx.getImageData(0,0,incanvas.width, incanvas.height);
-        
-    var buf = new ArrayBuffer(imageData.data.length);
-    var buf8 = new Uint8ClampedArray(buf);
-    var data = new Uint32Array(buf);
-        
-    // Determine whether Uint32 is little- or big-endian.
-    data[1] = 0x0a0b0c0d;
-        
-    // height is 0 to 255, littleEndian is a bool
-    var encodeHeight = function(height, littleEndian) {
-        if (littleEndian) {
-        return  (255   << 24) |    // alpha
-                (value << 16) |    // blue
-                (value <<  8) |    // green
-                value;            // red
-        } 
-        else {
-        return  (value << 24) |    // red
-                (value << 16) |    // green
-                (value <<  8) |    // blue
-                 255;              // alpha
-        }
-    }
-        
-    var isLittleEndian = true;
-    if (buf[4] === 0x0a && buf[5] === 0x0b && buf[6] === 0x0c &&
-        buf[7] === 0x0d) {
-        isLittleEndian = false;
-    }
-
-    for (var y = 0; y < canvasHeight; ++y) {
-        for (var x = 0; x < canvasWidth; ++x) {
-            
-            var i = (y*incanvas.width +x)*4;
-            var red = inImageData.data[i];
-            var green = inImageData.data[i + 1];
-            var blue = inImageData.data[i + 2];
-            var alpha = inImageData.data[i + 3];
-            
-            var value = x*y&0xff;
-            var enVal = encodeHeight(value, isLittleEndian);
-            data[y * canvasWidth + x] = 
-                (255   << 24) |    // alpha
-                (blue << 16) |    // blue
-                (green <<  8) |    // green
-                red;        
-        }
-    }
-
-    imageData.data.set(buf8);
-    ctx.putImageData(imageData, 0, 0);
-
-}
-
 </script>
     
     
@@ -156,9 +110,11 @@ $(document).ready(function() {
         
         var toolpaths = {}; // todo temp - 
 
-        var outcanvas = document.getElementById('outcanvas');
-        var gcanvas = document.getElementById('gcanvas');
-        buildToolpaths3(toolpaths, canvas, gcanvas, outcanvas);
+        //var outcanvas = document.getElementById('outcanvas');
+        var pathcanvas = document.getElementById('pathcanvas');
+        	
+        buildToolpaths3(toolpaths, canvas, null, pathcanvas);      
+
     });
 });    
 </script>
@@ -207,8 +163,8 @@ $(document).ready(function() {
 
 <div id="content" >
     <canvas id="mycanvas" width="300px" height="300px" ></canvas>
-    <canvas id="gcanvas" width="300px" height="300px" ></canvas>
-    <canvas id="outcanvas" width="300px" height="300px" ></canvas>
+<!--     <canvas id="outcanvas" width="300px" height="300px" ></canvas> -->
+    <canvas id="pathcanvas" width="300px" height="300px" ></canvas>
 </div>
 
 
