@@ -33,19 +33,11 @@ var buildToolpaths3 = function(toolpaths, incanvas, debugcanvas, pathcanvas){
     var path = new Path();
     vectorizeDistanceTrf(dt, 1, path);
 
-    var path2 = new Path();
-    vectorizeDistanceTrf(dt, 100, path2);
+//    var path2 = new Path();
+//    vectorizeDistanceTrf(dt, 100, path2);
     
-    var path3 = new Path();
-    vectorizeDistanceTrf(dt, 400, path3);
-    
-    var path4 = new Path();
-    vectorizeDistanceTrf(dt, 900, path4);
-    
-    path.draw(pathcanvas);
-    path2.draw(pathcanvas);
-    path3.draw(pathcanvas);
-    path4.draw(pathcanvas);
+    path.drawSegments(pathcanvas);
+//    path.draw(pathcanvas);	
 
 }
 
@@ -62,7 +54,41 @@ var buildToolpaths2 = function(toolpaths, incanvas, canvas){
     
 <script>
 
+
+
 $(document).ready(function() {
+
+/*  Need a draw function that accepts the ctx and redraws the scene to enable pan and zoom.
+
+
+    function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+      x: evt.clientX - rect.left,
+      y: evt.clientY - rect.top
+    };
+    }
+    var canvas = document.getElementById('mycanvas');
+    //var context = canvas.getContext('2d');
+
+    canvas.addEventListener('mousewheel', function(evt) {
+        var ctx = canvas.getContext('2d');
+        var delta = evt.wheelDelta ? evt.wheelDelta/480 : 0;
+        if (delta)
+            ctx.scale(1.1, 1.1);
+        
+                
+    }, false);
+      
+      
+    canvas.addEventListener('mousemove', function(evt) {
+    var mousePos = getMousePos(canvas, evt);
+    var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+
+    var statbar = document.getElementById('statusbar');
+        statbar.textContent = message;
+    }, false);
+*/
     $(".boxDim").change(function() {
                 
         var boxDims = {};
@@ -98,18 +124,18 @@ $(document).ready(function() {
 
 <body>
 <div id="header" >
-<h1>&nbsp;Box Maker</h1>
+<h1>&nbsp;CNC Box Maker</h1>
 </div>
 
 <div id="Inputs" >
 <table>
 <tr>
   <td>Height</td>
-  <td><input class="boxDim" id="heightbox" type="number" value="50" ></td>
+  <td><input class="boxDim" id="heightbox" type="number" value="80" ></td>
 </tr>
 <tr>
   <td>Length</td>
-  <td><input class="boxDim" id="lengthbox" type="number" value="100" ></td>
+  <td><input class="boxDim" id="lengthbox" type="number" value="80" ></td>
 </tr>
 <tr>
   <td>Width</td>
@@ -117,19 +143,19 @@ $(document).ready(function() {
 </tr>
 <tr>
   <td>Material Thickness</td>
-  <td><input class="boxDim" id="matthkbox" type="number" value="5" ></td>
+  <td><input class="boxDim" id="matthkbox" type="number" value="8" ></td>
 </tr>
 <tr>
   <td>Finger Length</td>
-  <td><input class="boxDim" id="fingerLength" type="number" value="10" ></td>
+  <td><input class="boxDim" id="fingerLength" type="number" value="20" ></td>
 </tr>
 <tr>
   <td>Finger Spacing</td>
-  <td><input class="boxDim" id="fingerSpacing" type="number" value="10" ></td>
+  <td><input class="boxDim" id="fingerSpacing" type="number" value="20" ></td>
 </tr>
 <tr>
   <td>Toolbit Diam</td>
-  <td><input class="boxDim" id="toolbitDiam" type="number" value="5" ></td>
+  <td><input class="boxDim" id="toolbitDiam" type="number" value="7" ></td>
 </tr>
 
 </table>

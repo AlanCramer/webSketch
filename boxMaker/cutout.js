@@ -35,13 +35,60 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
         {
             if (this.posSlots === true)
             {
-                ctx.rect(x+iSlot*totalFingDist+antiFling, y, fling, this.matThick);
-                ctx.rect(x+iSlot*totalFingDist+antiFling, y+(this.length-0)-(this.matThick-0), fling, this.matThick);
+                var upperX = x+iSlot*totalFingDist+antiFling;
+                // upper
+                ctx.rect(upperX, y, fling, this.matThick);
+                // lower
+                ctx.rect(upperX, y+(this.length-0)-(this.matThick-0), fling, this.matThick);
+                ctx.fill();
+                
+                ctx.save();
+                ctx.beginPath();
+                ctx.fillStyle = 'grey';
+                
+                // upper left
+                ctx.arc(upperX + this.toolbitDiam/2, y + this.matThick, this.toolbitDiam/2, 0, 2*Math.PI, true);
+                // upper right
+                ctx.arc(upperX + fling - this.toolbitDiam/2, y + this.matThick, this.toolbitDiam/2, 0, 2*Math.PI, true);
+                ctx.fill();
+                     
+                ctx.beginPath();
+                // lower left
+                ctx.arc(upperX + this.toolbitDiam/2, y+(this.length-0)-(this.matThick-0), this.toolbitDiam/2, 0, 2*Math.PI, true);   
+                
+                // lower right
+                ctx.arc(upperX + fling - this.toolbitDiam/2, y+(this.length-0)-(this.matThick-0), this.toolbitDiam/2, 0, 2*Math.PI, true); 
+                
+                ctx.fill();
+                ctx.restore();
             }
             else
             {
+                // left 
                 ctx.rect(x, y+iSlot*totalFingDist, this.matThick, antiFling);
+                // right
                 ctx.rect(x +(this.width-0)-(this.matThick-0), y+iSlot*totalFingDist, this.matThick, antiFling);
+                ctx.fill();
+                
+                ctx.save();
+                ctx.beginPath();
+                ctx.fillStyle = 'grey';
+                
+                // left upper
+                ctx.arc(x + this.matThick, y+iSlot*totalFingDist + this.toolbitDiam/2, this.toolbitDiam/2, 0, 2*Math.PI, true);
+                // left lower
+                ctx.arc(x + this.matThick, y+iSlot*totalFingDist - this.toolbitDiam/2 + this.fingerSpacing, this.toolbitDiam/2, 0, 2*Math.PI, true);
+                ctx.fill();
+                     
+                ctx.beginPath();
+                // right upper
+                ctx.arc(x +(this.width-0)-(this.matThick-0), y+iSlot*totalFingDist + this.toolbitDiam/2,  this.toolbitDiam/2, 0, 2*Math.PI, true);   
+                
+                // right lower
+                ctx.arc(x +(this.width-0)-(this.matThick-0), y+iSlot*totalFingDist - this.toolbitDiam/2 + this.fingerSpacing,  this.toolbitDiam/2, 0, 2*Math.PI, true); 
+                
+                ctx.fill();
+                ctx.restore();
             }
         }        
             
