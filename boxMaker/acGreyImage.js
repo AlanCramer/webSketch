@@ -53,7 +53,9 @@ function AcGreyImage(width, height) {
 AcGreyImage.prototype.getAt = function(x,y) {
     return this.data[this.width*y + x];
 }
-
+AcGreyImage.prototype.setAt = function(x,y, val) {
+    this.data[this.width*y + x] = val;
+}
 // this should be protected - is this adequate enforcement?
 AcGreyImage.prototype.copy = function(dst) {
 
@@ -92,8 +94,7 @@ AcGreyImage.prototype.thresholdImage  = function(value) {
     {
         for (j = 0; j < this.height; ++j)
         {
-            // todo, arg!, encapsulate lhs
-            this.data[this.width*j + i] =(this.getAt(i,j) <= value)? 1 : 0;
+            this.setAt(i,j, (this.getAt(i,j) <= value)? 1 : 0) ;
         }
     }
 }

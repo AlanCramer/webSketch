@@ -16,7 +16,13 @@
     
 <script>
 
-var buildToolpaths3 = function(toolpaths, incanvas, debugcanvas, pathcanvas){
+
+var onGenGCode = function() {
+   MyApp.path.generateGCode();	
+}
+
+
+var buildToolpaths3 = function(toolpaths, toolbitDiam, incanvas, debugcanvas, pathcanvas){
 
     var inCanvasImage = new AcGrey8Image(incanvas.width,incanvas.height);
     inCanvasImage.initFromCanvas(incanvas); // todo, decide about js ctors
@@ -28,16 +34,21 @@ var buildToolpaths3 = function(toolpaths, incanvas, debugcanvas, pathcanvas){
 //   dt.draw(debugcanvas);
 
     var ctx = pathcanvas.getContext('2d');
-    ctx.clearRect(0, 0, pathcanvas.width, pathcanvas.height);
+    //ctx.clearRect(0, 0, pathcanvas.width, pathcanvas.height);
     
     var path = new Path();
-    vectorizeDistanceTrf(dt, 1, path);
+    vectorizeDistanceTrf(dt, toolbitDiam, path);
 
 //    var path2 = new Path();
 //    vectorizeDistanceTrf(dt, 100, path2);
     
-    path.drawSegments(pathcanvas);
-//    path.draw(pathcanvas);	
+    path.drawSegments(incanvas);
+//    path.draw(incanvas);
+    
+    MyApp = {};
+    MyApp.path = path;
+    //path.generateGCode();
+	
 
 }
 
@@ -57,6 +68,22 @@ var buildToolpaths2 = function(toolpaths, incanvas, canvas){
 
 
 $(document).ready(function() {
+
+    // record previous unit type and respond to unit change
+    var sel = $("#unittype");
+    sel.data("prev",sel.val());
+
+    // update all boxDims by changing by ratio
+    sel.change(function(data){
+        var jqThis = $(this);
+        var unitRatio = jqThis.data("prev") / jqThis.val();        
+        jqThis.data("prev",jqThis.val());
+        
+        var selset = $(".boxDim");
+        selset.each(function() { 
+            $(this).val($(this).val()*unitRatio)
+        });
+    });
 
 /*  Need a draw function that accepts the ctx and redraws the scene to enable pan and zoom.
 
@@ -115,7 +142,7 @@ $(document).ready(function() {
         //var outcanvas = document.getElementById('outcanvas');
         var pathcanvas = document.getElementById('pathcanvas');
         	
-        buildToolpaths3(toolpaths, canvas, null, pathcanvas);      
+        buildToolpaths3(toolpaths, toolbitDiam, canvas, null, canvas);      
 
     });
 });    
@@ -129,6 +156,24 @@ $(document).ready(function() {
 
 <div id="Inputs" >
 <table>
+<tr>
+  <td>Units</td>
+  <td>
+    <select id="unittype">
+        <option value=1 selected="selected">mm</option>
+        <option value=10>cm</option>
+        <option value=25.4>in</option>
+    <select>
+<!--     <input class="boxDim" type="text" list="unittype" >
+    <datalist id="unittype" >
+        <option value='mm' selected>mm</option>
+        <option value='cm'>cm</option>
+        <option value='in'>in</option>
+    </datalist> -->
+  </td>
+</tr>
+
+
 <tr>
   <td>Height</td>
   <td><input class="boxDim" id="heightbox" type="number" value="80" ></td>
@@ -160,12 +205,14 @@ $(document).ready(function() {
 
 </table>
 
+<button onclick=onGenGCode() >Generate G-Code</button>
+
 </div>
 
 <div id="content" >
     <canvas id="mycanvas" width="300px" height="300px" ></canvas>
-<!--     <canvas id="outcanvas" width="300px" height="300px" ></canvas> -->
-    <canvas id="pathcanvas" width="300px" height="300px" ></canvas>
+<!--     <canvas id="debugcanvas" width="300px" height="300px" ></canvas> -->
+    <!-- <canvas id="pathcanvas" width="200px" height="200px" ></canvas> -->
 </div>
 
 

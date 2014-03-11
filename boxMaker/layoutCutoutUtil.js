@@ -37,7 +37,7 @@ var buildCutouts = function(cutouts, boxDims, fingerLength, fingerSpacing, toolb
 
 var buildLayout = function(layout, boxDims, toolbitDiam) {
 
-    var spacing = toolbitDiam*3;
+    var spacing = toolbitDiam*1.1;
 
     layout.bottom = {};
     layout.bottom.x = (boxDims.height-0)+3*spacing;

@@ -1,6 +1,6 @@
 
     #header {
-        background-color: #EFD969;
+        background-color: #A5ACCE;
         font-family:"Georgia";
         margin:5px;
         border-radius:8px;
@@ -9,7 +9,7 @@
     body {
         font: arial, helvetica, sans-serif;
         margin:0;
-        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #EFE7A0));
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #A0C0EF));
 
     }
 
@@ -37,7 +37,7 @@
         border:2px solid#000;
     }
     #statusbar {
-        background-color:#AB9A56;
+        background-color:#969CAD;
         clear:both;
         margin:5px;
         border-radius:5px;

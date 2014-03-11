@@ -30,6 +30,7 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
         var antiFling = this.fingerSpacing;
         var totalFingDist = (fling+antiFling);
         var fingCt = (posSlots ? this.width - this.fingerLength : this.length) / totalFingDist;
+        var dogBoneDiam = this.toolbitDiam;
         
         for (var iSlot = 0; iSlot < fingCt; ++iSlot)
         {
@@ -47,17 +48,17 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
                 ctx.fillStyle = 'grey';
                 
                 // upper left
-                ctx.arc(upperX + this.toolbitDiam/2, y + this.matThick, this.toolbitDiam/2, 0, 2*Math.PI, true);
+                ctx.arc(upperX + dogBoneDiam, y + this.matThick, dogBoneDiam, 0, 2*Math.PI, true);
                 // upper right
-                ctx.arc(upperX + fling - this.toolbitDiam/2, y + this.matThick, this.toolbitDiam/2, 0, 2*Math.PI, true);
+                ctx.arc(upperX + fling - dogBoneDiam, y + this.matThick, dogBoneDiam, 0, 2*Math.PI, true);
                 ctx.fill();
                      
                 ctx.beginPath();
                 // lower left
-                ctx.arc(upperX + this.toolbitDiam/2, y+(this.length-0)-(this.matThick-0), this.toolbitDiam/2, 0, 2*Math.PI, true);   
+                ctx.arc(upperX + dogBoneDiam, y+(this.length-0)-(this.matThick-0), dogBoneDiam, 0, 2*Math.PI, true);   
                 
                 // lower right
-                ctx.arc(upperX + fling - this.toolbitDiam/2, y+(this.length-0)-(this.matThick-0), this.toolbitDiam/2, 0, 2*Math.PI, true); 
+                ctx.arc(upperX + fling - dogBoneDiam, y+(this.length-0)-(this.matThick-0), dogBoneDiam, 0, 2*Math.PI, true); 
                 
                 ctx.fill();
                 ctx.restore();
@@ -75,17 +76,17 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
                 ctx.fillStyle = 'grey';
                 
                 // left upper
-                ctx.arc(x + this.matThick, y+iSlot*totalFingDist + this.toolbitDiam/2, this.toolbitDiam/2, 0, 2*Math.PI, true);
+                ctx.arc(x + this.matThick, y+iSlot*totalFingDist + dogBoneDiam, dogBoneDiam, 0, 2*Math.PI, true);
                 // left lower
-                ctx.arc(x + this.matThick, y+iSlot*totalFingDist - this.toolbitDiam/2 + this.fingerSpacing, this.toolbitDiam/2, 0, 2*Math.PI, true);
+                ctx.arc(x + this.matThick, y+iSlot*totalFingDist - dogBoneDiam + this.fingerSpacing, dogBoneDiam, 0, 2*Math.PI, true);
                 ctx.fill();
                      
                 ctx.beginPath();
                 // right upper
-                ctx.arc(x +(this.width-0)-(this.matThick-0), y+iSlot*totalFingDist + this.toolbitDiam/2,  this.toolbitDiam/2, 0, 2*Math.PI, true);   
+                ctx.arc(x +(this.width-0)-(this.matThick-0), y+iSlot*totalFingDist + dogBoneDiam,  dogBoneDiam, 0, 2*Math.PI, true);   
                 
                 // right lower
-                ctx.arc(x +(this.width-0)-(this.matThick-0), y+iSlot*totalFingDist - this.toolbitDiam/2 + this.fingerSpacing,  this.toolbitDiam/2, 0, 2*Math.PI, true); 
+                ctx.arc(x +(this.width-0)-(this.matThick-0), y+iSlot*totalFingDist - dogBoneDiam + this.fingerSpacing,  dogBoneDiam, 0, 2*Math.PI, true); 
                 
                 ctx.fill();
                 ctx.restore();
