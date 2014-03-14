@@ -31,20 +31,20 @@ var followDirection = function (thresh, dirMap, pt) {
 // each time a point is added to the segment, clear it from the thresh image
 var followPath = function(ptOnPath, outpath, thresh, dirMap) {
 
-    var pathSeg = new Path();
+    var pathSeg = new Array(); // of ptdirs
     outpath.pathSegments.push(pathSeg);
     
     var pt = ptOnPath;
     var pathStart = {x:pt.x, y:pt.y};
     
-    pathSeg.ptdirs.push(pt);
+    pathSeg.push(pt);
     var next = followDirection(thresh, dirMap, pt);
     pt = next;
     
     while (pt.dir != DirectionEnum.Stop && 
         (pt.x != pathStart.x || pt.y != pathStart.y)) // we got back to the start
     {
-        pathSeg.ptdirs.push(pt);
+        pathSeg.push(pt);
         var next = followDirection(thresh, dirMap, pt);
         pt = next;
     }
@@ -52,36 +52,36 @@ var followPath = function(ptOnPath, outpath, thresh, dirMap) {
 
 // iterate through the thresh image looking for a non zero
 // return that x, y 
-var findPointInThresh = function (thresh, dirMap)  {
+// var findPointInThresh = function (thresh, dirMap)  {
 
-    var i, j, nbrhd;
+    // var i, j, nbrhd;
     
-    for (i = 1; i < thresh.width-1; ++i)
-    {
-        for (j = 1; j < thresh.height-1; ++j)
-        {
-            if (thresh.getAt(i, j) > 0)
-            {
-                nbrhd = thresh.getEncodedNbrhd(i, j);
-                dir = dirMap.nbrhdToDir(nbrhd);
+    // for (i = 1; i < thresh.width-1; ++i)
+    // {
+        // for (j = 1; j < thresh.height-1; ++j)
+        // {
+            // if (thresh.getAt(i, j) > 0)
+            // {
+                // nbrhd = thresh.getEncodedNbrhd(i, j);
+                // dir = dirMap.nbrhdToDir(nbrhd);
                 
-                if (dir)
-                    return { x:i, y:j, dir:dir };
-            }
-        }
-    }
-}
+                // if (dir)
+                    // return { x:i, y:j, dir:dir };
+            // }
+        // }
+    // }
+// }
 
 
-var clearPathSegmentFromThresh = function(pathSeg, thresh) {
+// var clearPathSegmentFromThresh = function(pathSeg, thresh) {
     
-    var i;
-    for (i = 0; i < pathSeg.ptdirs.length; i++)
-    {
-        pt = pathSeg.ptdirs[i];
-        thresh.setAt(pt.x, pt.y, 0);
-    }
-}
+    // var i;
+    // for (i = 0; i < pathSeg.ptdirs.length; i++)
+    // {
+        // pt = pathSeg.ptdirs[i];
+        // thresh.setAt(pt.x, pt.y, 0);
+    // }
+// }
 
 // todo, there must be a better way!
 var findFirstPointNotInPathSegs = function(outpath) {
@@ -95,9 +95,9 @@ var findFirstPointNotInPathSegs = function(outpath) {
         for (iSeg = 0; iSeg < outpath.pathSegments.length && !found; ++iSeg)
         {
             curSeg = outpath.pathSegments[iSeg];
-            for (jPt = 0; jPt < curSeg.ptdirs.length && !found; ++jPt)
+            for (jPt = 0; jPt < curSeg.length && !found; ++jPt)
             {
-                curSegPt = curSeg.ptdirs[jPt];
+                curSegPt = curSeg[jPt];
                 if (curSegPt.x === curPt.x && curSegPt.y === curPt.y)
                 {
                     found = true;
@@ -142,14 +142,13 @@ var vectorizeDistanceTrf = function(dt, dist, outpath)
     
     //  now lets try following the directions (ha!)
     
-    var pt = findPointInThresh(thresh, dirMap);
+    var pt = outpath.ptdirs[0];
     
     while (pt) {
         followPath(pt, outpath, thresh, dirMap);
         // clear that path from the thresh
         // potential issue - lots of short paths when we should have tracked the other way
         // todo: track backward and forward to make sure we get "full" paths
-        //clearPathSegmentFromThresh(outpath.pathSegments[outpath.pathSegments.length -1], thresh);
         pt = findFirstPointNotInPathSegs(outpath);
         
         //pt = findPointInThresh(thresh, dirMap);

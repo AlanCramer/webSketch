@@ -3,6 +3,20 @@ function Path() {
 
     this.ptdirs = []; // array of positions and dir, x,y,dir
     this.pathSegments = []; // subarrays (by refs) of the above, collected in order 
+    this.pathSimpleSegs = []; // reduced pathSegments
+    
+    this.buildSimpleSegs = function(err) {
+        
+        var i;
+        var simpSeg;
+        
+        for (i=0; i < this.pathSegments.length; ++i) {
+//            simpSeg = new Array();
+            simpSeg = RamerDouglasPeucker(this.pathSegments[i], err);
+            
+            this.pathSimpleSegs.push(simpSeg);
+        }
+    } 
     
     var getGCodeMoveTo = function(pt, zVal) {
             
@@ -30,40 +44,73 @@ function Path() {
         gCode += "(ToDo, add information about what, how, when, and who made this file)\n\n";
         
         // initialization
-        gCode += "G17 (set XY Plane)\nG20 (inches)\nG90(absolute programming)\nG94 (feedrate per minute)\n";
+        gCode += "G17 (set XY Plane)\n";
+        gCode += "G20 (inches)\n";
+        gCode += "G40 (Tool Radius Compensation: off)\n";
+        gCode += "G49 (Tool Length Offset Compensation: off)\n";
+        gCode += "G54 (Work Coordinate System)\n";
+        gCode += "G80 (Cancel Canned Cycle)\n";
+        gCode += "G90(absolute programming)\n";
+        gCode += "G94 (feedrate per minute)\n";
         gCode += "G0 Z1.0(seek to z = 1)\n"; 
+        gCode += "F120.0 (feedrate in inches per minute)\n";
         
         var dataStr, jogSt;
-        var cutHeight = .1;
+        var cutHeight = -0.1;
         var jogHeight = .9;
         
-        this.pathSegments.forEach(function(pathSeg, iSeg) {
+        this.pathSimpleSegs.forEach(function(pathSeg, iSeg) {
             
             gCode += "G0 Z" + jogHeight.toString() + "\n"; // pull up to ceiling
-            jogSt = pathSeg.ptdirs[0];
+            jogSt = pathSeg[0];
             dataStr = getGCodeMoveTo(jogSt, jogHeight);
             gCode += dataStr + "\n";
             
-            pathSeg.ptdirs.forEach(function(ptDir, iPtDir) {
+            pathSeg.forEach(function(ptDir, iPtDir) {
             
                 dataStr = getGCodeMoveTo(ptDir, cutHeight);
                 gCode += dataStr + "\n";
             });
         });
+        
+        // todo, move this to application (main controller)
         var encodedUri = encodeURI(gCode);
         var link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "pathFile.gcode");
+        link.setAttribute("download", "partGCode.nc");
         
         link.click();
     }
     
     this.drawSegments = function(canvas) {
         
+        var ctx = canvas.getContext('2d');
         var i;
         for (i=0; i < this.pathSegments.length; ++i) {
-            this.pathSegments[i].draw(canvas);
+            drawPtDirs(ctx, this.pathSegments[i]);
         }
+    }
+    
+    this.drawSimpleSegments = function(canvas) {
+        
+        var ctx = canvas.getContext('2d');
+        var i;
+        for (i=0; i < this.pathSimpleSegs.length; ++i) {
+            drawPtDirs(ctx, this.pathSegments[i]);
+        }
+    }
+    
+    var drawPtDirs = function(ctx, ptdirs) {
+            
+        ctx.beginPath(); // todo, what's this do again? only for stroke?
+        
+        for (i=0; i < ptdirs.length; ++i) {
+            
+            iPtDir = ptdirs[i];
+            ctx.rect(iPtDir.x, iPtDir.y, 1, 1);            
+        }
+        
+        ctx.fill();
     }
     
     this.draw = function(canvas) {
@@ -71,15 +118,6 @@ function Path() {
         var i, iPtDir;
         var ctx = canvas.getContext('2d');
         
-        ctx.beginPath(); // todo, what's this do again? only for stroke?
-        
-        for (i=0; i < this.ptdirs.length; ++i) {
-            
-            iPtDir = this.ptdirs[i];
-            ctx.rect(iPtDir.x, iPtDir.y, 1, 1);            
-        }
-        
-        ctx.fill();
-        
+        drawPtDirs(ctx, this.ptdirs);        
     }
 }

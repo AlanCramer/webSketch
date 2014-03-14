@@ -11,6 +11,7 @@
 <script src="distTrans.js"></script>
 <script src="Vectorize.js"></script>
 <script src="Path.js"></script>
+<script src="mathUtil.js"></script>
 
 <link rel="stylesheet" href="pathImage.css">
     
@@ -30,19 +31,17 @@ var buildToolpaths3 = function(toolpaths, toolbitDiam, incanvas, debugcanvas, pa
     var dt = new AcGrey16Image(incanvas.width, incanvas.height);
 
     computeDistTrans(inCanvasImage, dt);
-//   dt.debugPrint();
-//   dt.draw(debugcanvas);
 
     var ctx = pathcanvas.getContext('2d');
-    //ctx.clearRect(0, 0, pathcanvas.width, pathcanvas.height);
     
     var path = new Path();
     vectorizeDistanceTrf(dt, toolbitDiam, path);
-
-//    var path2 = new Path();
-//    vectorizeDistanceTrf(dt, 100, path2);
     
-    path.drawSegments(incanvas);
+        //var newPath = RamerDouglasPeucker(path.pathSegments[0],2);
+    path.buildSimpleSegs(5);
+    
+    path.drawSimpleSegments(incanvas);    
+//    path.drawSegments(incanvas);
 //    path.draw(incanvas);
     
     MyApp = {};
@@ -59,6 +58,36 @@ var buildToolpaths2 = function(toolpaths, incanvas, canvas){
     inCanvasImage.initFromCanvas(incanvas); // todo, decide about js ctors
     
     inCanvasImage.draw(canvas);
+}
+
+var onBoxDimChange = function() {
+        var boxDims = {};
+        boxDims.height = $("#heightbox").val()-0;
+        boxDims.length = $("#lengthbox").val()-0;
+        boxDims.width = $("#widthbox").val()-0;    
+        boxDims.matThick = $("#matthkbox").val()-0;
+        
+        var fingerLength = $("#fingerLength").val()-0;
+        var fingerSpacing = $("#fingerSpacing").val()-0;
+        var toolbitDiam = $("#toolbitDiam").val()-0;
+                        
+        var pixelsPerMm = $("#pixelsPerMm").val()-0;
+                        
+        var cutouts = {};
+        buildCutouts(cutouts, boxDims, fingerLength, fingerSpacing, toolbitDiam, pixelsPerMm);
+
+        var layout = {};
+        buildLayout(layout, boxDims, toolbitDiam, pixelsPerMm);
+        
+        var canvas = document.getElementById('mycanvas');
+        drawCutouts(canvas, cutouts, layout);
+        
+        var toolpaths = {}; // todo temp - 
+
+        //var outcanvas = document.getElementById('outcanvas');
+        var pathcanvas = document.getElementById('pathcanvas');
+        	
+        buildToolpaths3(toolpaths, toolbitDiam, canvas, null, canvas);  
 }
 </script>
     
@@ -84,7 +113,13 @@ $(document).ready(function() {
             $(this).val($(this).val()*unitRatio)
         });
     });
-
+    
+    $(".boxDim").change(function() {
+        onBoxDimChange();
+    });
+    
+    onBoxDimChange();
+    
 /*  Need a draw function that accepts the ctx and redraws the scene to enable pan and zoom.
 
 
@@ -116,35 +151,7 @@ $(document).ready(function() {
         statbar.textContent = message;
     }, false);
 */
-    $(".boxDim").change(function() {
-                
-        var boxDims = {};
-        boxDims.height = $("#heightbox").val()-0;
-        boxDims.length = $("#lengthbox").val()-0;
-        boxDims.width = $("#widthbox").val()-0;    
-        boxDims.matThick = $("#matthkbox").val()-0;
-        
-        var fingerLength = $("#fingerLength").val()-0;
-        var fingerSpacing = $("#fingerSpacing").val()-0;
-        var toolbitDiam = $("#toolbitDiam").val()-0;
-                        
-        var cutouts = {};
-        buildCutouts(cutouts, boxDims, fingerLength, fingerSpacing, toolbitDiam);
 
-        var layout = {};
-        buildLayout(layout, boxDims, toolbitDiam);
-        
-        var canvas = document.getElementById('mycanvas');
-        drawCutouts(canvas, cutouts, layout);
-        
-        var toolpaths = {}; // todo temp - 
-
-        //var outcanvas = document.getElementById('outcanvas');
-        var pathcanvas = document.getElementById('pathcanvas');
-        	
-        buildToolpaths3(toolpaths, toolbitDiam, canvas, null, canvas);      
-
-    });
 });    
 </script>
 </head>
@@ -176,19 +183,19 @@ $(document).ready(function() {
 
 <tr>
   <td>Height</td>
-  <td><input class="boxDim" id="heightbox" type="number" value="80" ></td>
+  <td><input class="boxDim" id="heightbox" type="number" value="120" ></td>
 </tr>
 <tr>
   <td>Length</td>
-  <td><input class="boxDim" id="lengthbox" type="number" value="80" ></td>
+  <td><input class="boxDim" id="lengthbox" type="number" value="160" ></td>
 </tr>
 <tr>
   <td>Width</td>
-  <td><input class="boxDim" id="widthbox" type="number" value="50" ></td>
+  <td><input class="boxDim" id="widthbox" type="number" value="160" ></td>
 </tr>
 <tr>
   <td>Material Thickness</td>
-  <td><input class="boxDim" id="matthkbox" type="number" value="8" ></td>
+  <td><input class="boxDim" id="matthkbox" type="number" value="5" ></td>
 </tr>
 <tr>
   <td>Finger Length</td>
@@ -200,7 +207,11 @@ $(document).ready(function() {
 </tr>
 <tr>
   <td>Toolbit Diam</td>
-  <td><input class="boxDim" id="toolbitDiam" type="number" value="7" ></td>
+  <td><input class="boxDim" id="toolbitDiam" type="number" value="3.175" ></td>
+</tr>
+<tr>
+  <td>Pixels per mm</td>
+  <td><input class="boxDim" id="pixelsPerMm" type="number" value="1" ></td>
 </tr>
 
 </table>
@@ -210,7 +221,7 @@ $(document).ready(function() {
 </div>
 
 <div id="content" >
-    <canvas id="mycanvas" width="300px" height="300px" ></canvas>
+    <canvas id="mycanvas" width="700px" height="700px" ></canvas>
 <!--     <canvas id="debugcanvas" width="300px" height="300px" ></canvas> -->
     <!-- <canvas id="pathcanvas" width="200px" height="200px" ></canvas> -->
 </div>

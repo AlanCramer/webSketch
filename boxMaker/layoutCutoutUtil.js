@@ -27,36 +27,39 @@ var drawCutouts = function(canvas, cutouts, layout) {
    
 }
 
-var buildCutouts = function(cutouts, boxDims, fingerLength, fingerSpacing, toolbitDiam) {
-    cutouts.bottom = new Cutout(boxDims.length, boxDims.width, boxDims.matThick, null, fingerLength, fingerSpacing, toolbitDiam);
-    cutouts.front = new Cutout(boxDims.length, boxDims.height, boxDims.matThick, true, fingerLength, fingerSpacing, toolbitDiam);
-    cutouts.back = new Cutout(boxDims.length, boxDims.height, boxDims.matThick, true, fingerLength, fingerSpacing, toolbitDiam);
-    cutouts.left = new Cutout(boxDims.height, boxDims.width, boxDims.matThick, false, fingerLength, fingerSpacing, toolbitDiam);
-    cutouts.right = new Cutout(boxDims.height, boxDims.width, boxDims.matThick, false, fingerLength, fingerSpacing, toolbitDiam);
+var buildCutouts = function(cutouts, boxDims, fingerLength, fingerSpacing, toolbitDiam, pixPerMm) {
+    cutouts.bottom = new Cutout(boxDims.length, boxDims.width, boxDims.matThick, null, fingerLength, fingerSpacing, toolbitDiam, pixPerMm);
+    cutouts.front = new Cutout(boxDims.length, boxDims.height, boxDims.matThick, true, fingerLength, fingerSpacing, toolbitDiam, pixPerMm);
+    cutouts.back = new Cutout(boxDims.length, boxDims.height, boxDims.matThick, true, fingerLength, fingerSpacing, toolbitDiam, pixPerMm);
+    cutouts.left = new Cutout(boxDims.height, boxDims.width, boxDims.matThick, false, fingerLength, fingerSpacing, toolbitDiam, pixPerMm);
+    cutouts.right = new Cutout(boxDims.height, boxDims.width, boxDims.matThick, false, fingerLength, fingerSpacing, toolbitDiam, pixPerMm);
 }
 
-var buildLayout = function(layout, boxDims, toolbitDiam) {
+var buildLayout = function(layout, boxDims, toolbitDiam, pixelsPerMm) {
 
-    var spacing = toolbitDiam*1.1;
+    var spacing = toolbitDiam*1.1*pixelsPerMm;
+    var height = boxDims.height * pixelsPerMm;
+    var width = boxDims.width * pixelsPerMm;
+    var length = boxDims.length * pixelsPerMm;
 
     layout.bottom = {};
-    layout.bottom.x = (boxDims.height-0)+3*spacing;
-    layout.bottom.y = (boxDims.height-0)+3*spacing;
+    layout.bottom.x = height+3*spacing;
+    layout.bottom.y = height+3*spacing;
     
     layout.front = {};
     layout.front.x = spacing;
-    layout.front.y = (boxDims.height-0)+3*spacing;
+    layout.front.y = height+3*spacing;
     
     layout.back = {};
-    layout.back.x = (boxDims.height-0) + (boxDims.width-0) + 5*spacing;
-    layout.back.y = (boxDims.height-0) + 3*spacing;
+    layout.back.x = height + width + 5*spacing;
+    layout.back.y = height + 3*spacing;
 
     layout.left = {};
-    layout.left.x = (boxDims.height-0) + 3*spacing;
+    layout.left.x = height + 3*spacing;
     layout.left.y = spacing;
 
     layout.right = {};
-    layout.right.x = (boxDims.height-0) + 3*spacing;
-    layout.right.y = (boxDims.height-0) + (boxDims.length-0) + 5*spacing;
+    layout.right.x = height + 3*spacing;
+    layout.right.y = height + length + 5*spacing;
     
 }
