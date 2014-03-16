@@ -36,9 +36,9 @@ var distPointLine = function (pt, line) {
 
 var makeLine = function (pt0, pt1) {
 
-    var a = pt1.x - pt0.x;
-    var b = pt0.y - pt1.y;
-    var c = pt0.x*(pt1.y-pt0.y) - pt0.y*(pt1.x-pt0.x);
+    var a = pt0.y - pt1.y;
+    var b = pt1.x - pt0.x;
+    var c = pt0.x*pt1.y - pt1.x*pt0.y;
     
     return {a:a,b:b,c:c};
 }
@@ -50,8 +50,8 @@ var RamerDouglasPeucker = function(PointList, epsilon) {
     var end = PointList.length - 1;
     var resultList = [];
     
-    for (var i = 0; i < end; ++i) {
-        var d = distPointLineseg(PointList[i], {p0:PointList[0], p1:PointList[end-1]}); 
+    for (var i = 0; i <= end; ++i) {
+        var d = distPointLineseg(PointList[i], {p0:PointList[0], p1:PointList[end]}); 
         if ( d > dmax ) {
             index = i
             dmax = d

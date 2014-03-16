@@ -49,6 +49,7 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
             if (this.posSlots === true)
             {
                 var upperX = x+iSlot*totalFingDist+antiFling;
+
                 // upper
                 ctx.rect(upperX, y, pixFinLen, pixMatThick);
                 // lower

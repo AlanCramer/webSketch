@@ -19,7 +19,9 @@
 
 
 var onGenGCode = function() {
-   MyApp.path.generateGCode();	
+
+    var pixelsPerMm = $("#pixelsPerMm").val()-0;
+    MyApp.path.generateGCode(pixelsPerMm);	
 }
 
 
@@ -38,7 +40,7 @@ var buildToolpaths3 = function(toolpaths, toolbitDiam, incanvas, debugcanvas, pa
     vectorizeDistanceTrf(dt, toolbitDiam, path);
     
         //var newPath = RamerDouglasPeucker(path.pathSegments[0],2);
-    path.buildSimpleSegs(5);
+    path.buildSimpleSegs(2);
     
     path.drawSimpleSegments(incanvas);    
 //    path.drawSegments(incanvas);
@@ -183,19 +185,19 @@ $(document).ready(function() {
 
 <tr>
   <td>Height</td>
-  <td><input class="boxDim" id="heightbox" type="number" value="120" ></td>
+  <td><input class="boxDim" id="heightbox" type="number" value="60" ></td>
 </tr>
 <tr>
   <td>Length</td>
-  <td><input class="boxDim" id="lengthbox" type="number" value="160" ></td>
+  <td><input class="boxDim" id="lengthbox" type="number" value="80" ></td>
 </tr>
 <tr>
   <td>Width</td>
-  <td><input class="boxDim" id="widthbox" type="number" value="160" ></td>
+  <td><input class="boxDim" id="widthbox" type="number" value="80" ></td>
 </tr>
 <tr>
   <td>Material Thickness</td>
-  <td><input class="boxDim" id="matthkbox" type="number" value="5" ></td>
+  <td><input class="boxDim" id="matthkbox" type="number" value="4.7625" ></td>
 </tr>
 <tr>
   <td>Finger Length</td>
@@ -211,7 +213,7 @@ $(document).ready(function() {
 </tr>
 <tr>
   <td>Pixels per mm</td>
-  <td><input class="boxDim" id="pixelsPerMm" type="number" value="1" ></td>
+  <td><input class="boxDim" id="pixelsPerMm" type="number" value="2" ></td>
 </tr>
 
 </table>

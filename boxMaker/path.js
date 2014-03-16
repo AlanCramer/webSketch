@@ -18,12 +18,12 @@ function Path() {
         }
     } 
     
-    var getGCodeMoveTo = function(pt, zVal) {
+    var getGCodeMoveTo = function(pt, zVal, pixelsPerMm) {
             
-        // paths are in mm (or pixels?)
+        // paths are in pixels
         // convert to inches
-        var conX = pt.x/25.4;
-        var conY = pt.y/25.4;
+        var conX = pt.x/(25.4*pixelsPerMm);
+        var conY = pt.y/(25.4*pixelsPerMm);
         
         conX = conX.toFixed(5);
         conY = conY.toFixed(5);
@@ -33,7 +33,7 @@ function Path() {
         return dataStr;
     }
     
-    this.generateGCode = function() {
+    this.generateGCode = function(pixelsPerMm) {
         var gCode = "data:text/csv;charset=utf-8,";
         
         // todo: comment string 
@@ -63,12 +63,12 @@ function Path() {
             
             gCode += "G0 Z" + jogHeight.toString() + "\n"; // pull up to ceiling
             jogSt = pathSeg[0];
-            dataStr = getGCodeMoveTo(jogSt, jogHeight);
+            dataStr = getGCodeMoveTo(jogSt, jogHeight, pixelsPerMm);
             gCode += dataStr + "\n";
             
             pathSeg.forEach(function(ptDir, iPtDir) {
             
-                dataStr = getGCodeMoveTo(ptDir, cutHeight);
+                dataStr = getGCodeMoveTo(ptDir, cutHeight, pixelsPerMm);
                 gCode += dataStr + "\n";
             });
         });
@@ -96,8 +96,24 @@ function Path() {
         var ctx = canvas.getContext('2d');
         var i;
         for (i=0; i < this.pathSimpleSegs.length; ++i) {
-            drawPtDirs(ctx, this.pathSegments[i]);
+            drawPtDirsWithLines(ctx, this.pathSimpleSegs[i]);
         }
+    }
+    
+    // draw a line between each point
+    var drawPtDirsWithLines = function(ctx, ptdirs) {
+            
+        ctx.beginPath(); // todo, what's this do again? only for stroke?
+        
+        ctx.moveTo(ptdirs[0].x, ptdirs[0].y);
+        for (i=1; i < ptdirs.length-1; ++i) {
+            
+            iPtDir = ptdirs[i];
+            ctx.lineTo(iPtDir.x, iPtDir.y);            
+        }
+        ctx.lineTo(ptdirs[0].x, ptdirs[0].y);
+        
+        ctx.stroke();
     }
     
     var drawPtDirs = function(ctx, ptdirs) {

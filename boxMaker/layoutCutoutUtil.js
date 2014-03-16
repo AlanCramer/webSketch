@@ -16,6 +16,7 @@ var drawCutouts = function(canvas, cutouts, layout) {
     
     ctx.save();
     ctx.fillStyle = "#000000";
+
     // annoyingly redundant
     cutouts.bottom.draw(canvas, layout.bottom.x, layout.bottom.y);
     cutouts.front.draw(canvas, layout.front.x, layout.front.y);
