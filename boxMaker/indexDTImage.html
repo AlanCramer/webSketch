@@ -37,14 +37,14 @@ var buildToolpaths3 = function(toolpaths, toolbitDiamInPix, incanvas, debugcanva
     var ctx = pathcanvas.getContext('2d');
     
     var path = new Path();
-    vectorizeDistanceTrf(dt, toolbitDiamInPix, path);
+    vectorizeDistanceTrf(dt, toolbitDiamInPix/2, path);
     
         //var newPath = RamerDouglasPeucker(path.pathSegments[0],2);
     path.buildSimpleSegs(1);
     
-    path.drawSimpleSegments(incanvas);    
+//    path.drawSimpleSegments(incanvas);    
 //    path.drawSegments(incanvas);
-//    path.draw(incanvas);
+    path.draw(incanvas);
     
     MyApp = {};
     MyApp.path = path;

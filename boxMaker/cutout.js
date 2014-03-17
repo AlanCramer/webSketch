@@ -44,7 +44,7 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
         var antiFling = this.fingerSpacing * pixelsPerMm;
         var totalFingDist = (pixFinLen+antiFling);
         var fingCt = (posSlots ? pixWid - pixFinLen : pixLen) / totalFingDist;
-        var dogBoneRadius = pixToolDiam;
+        var dogBoneRadius = pixToolDiam*(.75);
         
         for (var iSlot = 0; iSlot < fingCt; ++iSlot)
         {
