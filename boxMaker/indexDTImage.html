@@ -25,7 +25,7 @@ var onGenGCode = function() {
 }
 
 
-var buildToolpaths3 = function(toolpaths, toolbitDiam, incanvas, debugcanvas, pathcanvas){
+var buildToolpaths3 = function(toolpaths, toolbitDiamInPix, incanvas, debugcanvas, pathcanvas){
 
     var inCanvasImage = new AcGrey8Image(incanvas.width,incanvas.height);
     inCanvasImage.initFromCanvas(incanvas); // todo, decide about js ctors
@@ -37,10 +37,10 @@ var buildToolpaths3 = function(toolpaths, toolbitDiam, incanvas, debugcanvas, pa
     var ctx = pathcanvas.getContext('2d');
     
     var path = new Path();
-    vectorizeDistanceTrf(dt, toolbitDiam, path);
+    vectorizeDistanceTrf(dt, toolbitDiamInPix, path);
     
         //var newPath = RamerDouglasPeucker(path.pathSegments[0],2);
-    path.buildSimpleSegs(2);
+    path.buildSimpleSegs(1);
     
     path.drawSimpleSegments(incanvas);    
 //    path.drawSegments(incanvas);
@@ -89,7 +89,7 @@ var onBoxDimChange = function() {
         //var outcanvas = document.getElementById('outcanvas');
         var pathcanvas = document.getElementById('pathcanvas');
         	
-        buildToolpaths3(toolpaths, toolbitDiam, canvas, null, canvas);  
+        buildToolpaths3(toolpaths, toolbitDiam*pixelsPerMm, canvas, null, canvas);  
 }
 </script>
     

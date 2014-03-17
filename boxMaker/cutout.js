@@ -14,9 +14,11 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
     
     this.draw = function (canvas, x, y) {
         var ctx = canvas.getContext('2d');
-        var pixScale = 1/this.pixelsPerMm;
         
-        //ctx.scale(pixScale, pixScale);
+        ctx.save();
+        
+        // var pixScale = 1/this.pixelsPerMm;
+        // ctx.scale(pixScale, pixScale);
         
         var pixelsPerMm = this.pixelsPerMm;
         
@@ -34,7 +36,7 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
             return;
             
         // draw finger slots - front and back opposite of left and right
-        ctx.save();
+
         ctx.beginPath();
         ctx.fillStyle = "grey";
         
@@ -42,7 +44,7 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
         var antiFling = this.fingerSpacing * pixelsPerMm;
         var totalFingDist = (pixFinLen+antiFling);
         var fingCt = (posSlots ? pixWid - pixFinLen : pixLen) / totalFingDist;
-        var dogBoneDiam = pixToolDiam;
+        var dogBoneRadius = pixToolDiam;
         
         for (var iSlot = 0; iSlot < fingCt; ++iSlot)
         {
@@ -56,25 +58,25 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
                 ctx.rect(upperX, y+(pixLen)-(pixMatThick), pixFinLen, pixMatThick);
                 ctx.fill();
                 
-                ctx.save();
+//                ctx.save();
                 ctx.beginPath();
                 ctx.fillStyle = 'grey';
                 
                 // upper left
-                ctx.arc(upperX + dogBoneDiam, y + pixMatThick, dogBoneDiam, 0, 2*Math.PI, true);
+                ctx.arc(upperX + dogBoneRadius, y + pixMatThick, dogBoneRadius, 0, 2*Math.PI, true);
                 // upper right
-                ctx.arc(upperX + pixFinLen - dogBoneDiam, y + pixMatThick, dogBoneDiam, 0, 2*Math.PI, true);
+                ctx.arc(upperX + pixFinLen - dogBoneRadius, y + pixMatThick, dogBoneRadius, 0, 2*Math.PI, true);
                 ctx.fill();
                      
                 ctx.beginPath();
                 // lower left
-                ctx.arc(upperX + dogBoneDiam, y+ pixLen - pixMatThick, dogBoneDiam, 0, 2*Math.PI, true);   
+                ctx.arc(upperX + dogBoneRadius, y+ pixLen - pixMatThick, dogBoneRadius, 0, 2*Math.PI, true);   
                 
                 // lower right
-                ctx.arc(upperX + pixFinLen - dogBoneDiam, y+pixLen-pixMatThick, dogBoneDiam, 0, 2*Math.PI, true); 
+                ctx.arc(upperX + pixFinLen - dogBoneRadius, y+pixLen-pixMatThick, dogBoneRadius, 0, 2*Math.PI, true); 
                 
                 ctx.fill();
-                ctx.restore();
+//                ctx.restore();
             }
             else // duplicate - todo: tranform a position and scale neutral cutout
             {
@@ -84,25 +86,25 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
                 ctx.rect(x +pixWid-pixMatThick, y+iSlot*totalFingDist, pixMatThick, antiFling);
                 ctx.fill();
                 
-                ctx.save();
+//                ctx.save();
                 ctx.beginPath();
                 ctx.fillStyle = 'grey';
                 
                 // left upper
-                ctx.arc(x + pixMatThick, y+iSlot*totalFingDist + dogBoneDiam, dogBoneDiam, 0, 2*Math.PI, true);
+                ctx.arc(x + pixMatThick, y+iSlot*totalFingDist + dogBoneRadius, dogBoneRadius, 0, 2*Math.PI, true);
                 // left lower
-                ctx.arc(x + pixMatThick, y+iSlot*totalFingDist - dogBoneDiam + pixFinSpacing, dogBoneDiam, 0, 2*Math.PI, true);
+                ctx.arc(x + pixMatThick, y+iSlot*totalFingDist - dogBoneRadius + pixFinSpacing, dogBoneRadius, 0, 2*Math.PI, true);
                 ctx.fill();
                      
                 ctx.beginPath();
                 // right upper
-                ctx.arc(x +pixWid-pixMatThick, y+iSlot*totalFingDist + dogBoneDiam,  dogBoneDiam, 0, 2*Math.PI, true);   
+                ctx.arc(x +pixWid-pixMatThick, y+iSlot*totalFingDist + dogBoneRadius,  dogBoneRadius, 0, 2*Math.PI, true);   
                 
                 // right lower
-                ctx.arc(x +pixWid-pixMatThick, y+iSlot*totalFingDist - dogBoneDiam + pixFinSpacing,  dogBoneDiam, 0, 2*Math.PI, true); 
+                ctx.arc(x +pixWid-pixMatThick, y+iSlot*totalFingDist - dogBoneRadius + pixFinSpacing,  dogBoneRadius, 0, 2*Math.PI, true); 
                 
                 ctx.fill();
-                ctx.restore();
+ //               ctx.restore();
             }
         }        
             
