@@ -13,6 +13,8 @@
 <script src="Path.js"></script>
 <script src="mathUtil.js"></script>
 
+
+
 <link rel="stylesheet" href="pathImage.css">
     
 <script>
@@ -24,6 +26,22 @@ var onGenGCode = function() {
     MyApp.path.generateGCode(pixelsPerMm);	
 }
 
+var onLoadImage = function() {
+
+    var fileElem = $("#openimage");
+    fileElem.click();
+}
+
+var onCalcPath = function() {
+
+    var toolbitDiam = $("#toolbitDiam").val()-0;
+    var pixelsPerMm = $("#pixelsPerMm").val()-0;
+    var canvas = document.getElementById('mycanvas');
+    var pathcanvas = document.getElementById('pathcanvas');
+    var toolpaths = {}; // todo temp - 
+            
+    buildToolpaths3(toolpaths, toolbitDiam*pixelsPerMm, canvas, null, pathcanvas);  
+}
 
 var buildToolpaths3 = function(toolpaths, toolbitDiamInPix, incanvas, debugcanvas, pathcanvas){
 
@@ -34,7 +52,8 @@ var buildToolpaths3 = function(toolpaths, toolbitDiamInPix, incanvas, debugcanva
 
     computeDistTrans(inCanvasImage, dt);
 
-    var ctx = pathcanvas.getContext('2d');
+    var pathctx = pathcanvas.getContext('2d');
+    pathctx.clearRect(0,0,pathcanvas.width, pathcanvas.height);
     
     var path = new Path();
     vectorizeDistanceTrf(dt, toolbitDiamInPix/2, path);
@@ -42,16 +61,18 @@ var buildToolpaths3 = function(toolpaths, toolbitDiamInPix, incanvas, debugcanva
         //var newPath = RamerDouglasPeucker(path.pathSegments[0],2);
     path.buildSimpleSegs(1);
     
-//    path.drawSimpleSegments(incanvas);    
+    path.drawSimpleSegments(pathcanvas);    
 //    path.drawSegments(incanvas);
-    path.draw(incanvas);
+//    path.draw(pathcanvas);
     
     MyApp = {};
     MyApp.path = path;
     //path.generateGCode();
-	
+
 
 }
+
+
 
 
 var buildToolpaths2 = function(toolpaths, incanvas, canvas){
@@ -63,33 +84,30 @@ var buildToolpaths2 = function(toolpaths, incanvas, canvas){
 }
 
 var onBoxDimChange = function() {
-        var boxDims = {};
-        boxDims.height = $("#heightbox").val()-0;
-        boxDims.length = $("#lengthbox").val()-0;
-        boxDims.width = $("#widthbox").val()-0;    
-        boxDims.matThick = $("#matthkbox").val()-0;
-        
-        var fingerLength = $("#fingerLength").val()-0;
-        var fingerSpacing = $("#fingerSpacing").val()-0;
-        var toolbitDiam = $("#toolbitDiam").val()-0;
-                        
-        var pixelsPerMm = $("#pixelsPerMm").val()-0;
-                        
-        var cutouts = {};
-        buildCutouts(cutouts, boxDims, fingerLength, fingerSpacing, toolbitDiam, pixelsPerMm);
 
-        var layout = {};
-        buildLayout(layout, boxDims, toolbitDiam, pixelsPerMm);
-        
-        var canvas = document.getElementById('mycanvas');
-        drawCutouts(canvas, cutouts, layout);
-        
-        var toolpaths = {}; // todo temp - 
+      
 
-        //var outcanvas = document.getElementById('outcanvas');
-        var pathcanvas = document.getElementById('pathcanvas');
-        	
-        buildToolpaths3(toolpaths, toolbitDiam*pixelsPerMm, canvas, null, canvas);  
+    var boxDims = {};
+    boxDims.height = $("#heightbox").val()-0;
+    boxDims.length = $("#lengthbox").val()-0;
+    boxDims.width = $("#widthbox").val()-0;    
+    boxDims.matThick = $("#matthkbox").val()-0;
+    
+    var fingerLength = $("#fingerLength").val()-0;
+    var fingerSpacing = $("#fingerSpacing").val()-0;
+    var toolbitDiam = $("#toolbitDiam").val()-0;
+                    
+    var pixelsPerMm = $("#pixelsPerMm").val()-0;
+                    
+    var cutouts = {};
+    buildCutouts(cutouts, boxDims, fingerLength, fingerSpacing, toolbitDiam, pixelsPerMm);
+
+    var layout = {};
+    buildLayout(layout, boxDims, toolbitDiam, pixelsPerMm);
+    
+    var canvas = document.getElementById('mycanvas');
+    drawCutouts(canvas, cutouts, layout);
+
 }
 </script>
     
@@ -120,6 +138,31 @@ $(document).ready(function() {
         onBoxDimChange();
     });
     
+    function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
+        var file = files[0];
+        
+        var fileReadAsDataUrl = new FileReader();
+        fileReadAsDataUrl.onload = (function(progEvt) {
+            console.log("in data url reader");
+            var imageAsDataUrl = progEvt.target.result;
+            
+            var img = new Image();
+            img.src = progEvt.target.result;
+
+            var canvas = document.getElementById('mycanvas');
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.drawImage(img,0,0);
+            
+        });
+        fileReadAsDataUrl.readAsDataURL(file); 
+        
+    }
+    
+    document.getElementById('openimage').addEventListener('change', handleFileSelect, false);
+    
+    // call it to render everything
     onBoxDimChange();
     
 /*  Need a draw function that accepts the ctx and redraws the scene to enable pan and zoom.
@@ -209,24 +252,36 @@ $(document).ready(function() {
 </tr>
 <tr>
   <td>Toolbit Diam</td>
-  <td><input class="boxDim" id="toolbitDiam" type="number" value="3.175" ></td>
+  <td><input class="toolbit" id="toolbitDiam" type="number" value="3.175" ></td>
 </tr>
 <tr>
   <td>Pixels per mm</td>
-  <td><input class="boxDim" id="pixelsPerMm" type="number" value="2" ></td>
+  <td><input class="resolution" id="pixelsPerMm" type="number" value="2" ></td>
 </tr>
 
 </table>
 
+<button onclick=onCalcPath() >Calculate Tool Path</button>
 <button onclick=onGenGCode() >Generate G-Code</button>
+<button onclick=onLoadImage() >Load Image</button>
+<input type="file" id="openimage" name="imagefile" style="display:none"></input>
+<output id="list"></output>
 
 </div>
 
 <div id="content" >
-    <canvas id="mycanvas" width="700px" height="700px" ></canvas>
+    <div style="position: relative;">
+
+        <canvas id="mycanvas" width="500" height="500" 
+            style="position: absolute; left: 100; top: 0; z-index: 0;"></canvas>
+        <canvas id="pathcanvas" width="500" height="500" 
+            style="position: absolute; left: 100; top: 0; z-index: 1;"></canvas>
+    </div>
 <!--     <canvas id="debugcanvas" width="300px" height="300px" ></canvas> -->
     <!-- <canvas id="pathcanvas" width="200px" height="200px" ></canvas> -->
 </div>
+
+
 
 
 <div id="statusbar" >

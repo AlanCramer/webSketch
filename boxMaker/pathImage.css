@@ -13,7 +13,7 @@
 
     }
 
-    .boxDim {
+    input {
         width:50px;
         text-align:right;
         border-radius:5px;
@@ -23,9 +23,9 @@
         font-family:"Georgia";
     }
     
-    canvas {
+/*     canvas {
         background-color:#F7FADC;
-    }
+    } */
     
     #mycanvas {
         border:2px solid#000;
