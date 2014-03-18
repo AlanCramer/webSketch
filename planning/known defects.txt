@@ -1,0 +1,5 @@
+1. Load image, e.g two shapes, extra line at the bottom for toolpaths
+2. canvas positioning confused
+3. image (toolpaths) go out of bounds, some painful calculation loop
+
+

@@ -14,6 +14,7 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
     
     this.draw = function (canvas, x, y) {
         var ctx = canvas.getContext('2d');
+        var cutawayColor = 'white';
         
         ctx.save();
         
@@ -38,7 +39,7 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
         // draw finger slots - front and back opposite of left and right
 
         ctx.beginPath();
-        ctx.fillStyle = "grey";
+        ctx.fillStyle = cutawayColor;
         
         var pixFinLen = this.fingerLength * pixelsPerMm;
         var antiFling = this.fingerSpacing * pixelsPerMm;
@@ -60,7 +61,7 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
                 
 //                ctx.save();
                 ctx.beginPath();
-                ctx.fillStyle = 'grey';
+                ctx.fillStyle = cutawayColor;
                 
                 // upper left
                 ctx.arc(upperX + dogBoneRadius, y + pixMatThick, dogBoneRadius, 0, 2*Math.PI, true);
@@ -88,7 +89,7 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
                 
 //                ctx.save();
                 ctx.beginPath();
-                ctx.fillStyle = 'grey';
+                ctx.fillStyle = cutawayColor;
                 
                 // left upper
                 ctx.arc(x + pixMatThick, y+iSlot*totalFingDist + dogBoneRadius, dogBoneRadius, 0, 2*Math.PI, true);

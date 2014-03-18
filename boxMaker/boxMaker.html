@@ -1,0 +1,342 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+
+<script src="../jquery-2.1.0.min.js"></script>
+<script src="cutout.js"></script>
+<script src="layoutCutoutUtil.js"></script>
+<script src="DirectionMap.js"></script>
+<script src="acGreyImage.js"></script>
+<script src="distTrans.js"></script>
+<script src="Vectorize.js"></script>
+<script src="Path.js"></script>
+<script src="mathUtil.js"></script>
+
+
+
+<link rel="stylesheet" href="pathImage.css">
+    
+<script>
+
+
+var onGenGCode = function() {
+
+    var pixelsPerMm = $("#pixelsPerMm").val()-0;
+    MyApp.path.generateGCode(pixelsPerMm);	
+}
+
+var onLoadImage = function() {
+
+    var fileElem = $("#openimage");
+    fileElem.click();
+}
+
+var onChangeUnits = function (value) {
+
+    $("#pixelsPerMm").val(value);
+    drawBoundaryCanvas(value);
+}
+
+var drawBoundaryCanvas = function(pixelsPerMm) {
+    
+    var pixelsPerMm = $("#pixelsPerMm").val()-0;
+        
+    var canvas = document.getElementById('boundaryCanvas');
+    var ctx = canvas.getContext("2d");
+    
+    ctx.clearRect(0,0,canvas.width, canvas.height);
+    
+    ctx.font = "10px sans-serif";
+    var pixVal = 100/pixelsPerMm;
+    pixVal = pixVal.toFixed(1);
+    
+    ctx.fillText(pixVal, 93, 8);
+    ctx.fillText("mm", 120, 8);
+
+
+    ctx.beginPath();
+    for (var i = 0; i < canvas.width; i += 10) {
+        var y = (i / 100 == parseInt(i / 100)) ? 0 : 10;
+        ctx.moveTo(i + 15, y);
+        ctx.lineTo(i + 15, 15);
+        var x = (i / 100 == parseInt(i / 100)) ? 0 : 10;
+        ctx.moveTo(x, i + 15);
+        ctx.lineTo(15, i + 15);
+    }
+    ctx.stroke();
+
+}
+var initBoundryCanvas = function() {
+    var pixelsPerMm = $("#pixelsPerMm").val()-0;
+    
+    drawBoundaryCanvas(pixelsPerMm);
+}
+
+
+// to be repurposed
+var onDoubleImage = function() {
+    var canvas = document.getElementById('mycanvas');
+    var pathcanvas = document.getElementById('pathcanvas');
+    var ctx = canvas.getContext('2d');
+
+    var tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    tempCanvas.getContext('2d').drawImage(canvas, 0,0);
+    
+    canvas.width *= 2;
+    canvas.height *=2;
+    pathcanvas.width = canvas.width;
+    pathcanvas.height = canvas.height;
+    
+    canvas.getContext('2d').drawImage(tempCanvas, 0,0,tempCanvas.width, tempCanvas.height, 0,0,canvas.width, canvas.height);
+}
+
+var onInvertImage = function() {
+
+    if (MyApp && MyApp.image)
+    {
+        var img = MyApp.image;
+        var canvas = document.getElementById('mycanvas');
+        var canctx = canvas.getContext('2d');
+      
+        var imageData = canctx.getImageData(0, 0, img.width, img.height);
+        var data = imageData.data;
+        for(var i = 0; i < data.length; i += 4) {
+            data[i] = (data[i] > 200) ? 0 : 255;  //red
+            data[i+1] = (data[i+1] > 200) ? 0 : 255;  //g
+            data[i+2] = (data[i+2] > 200) ? 0 : 255;   //b
+            // data[i+3] = alpha    
+        }
+        
+        canctx.fillStyle = "white";
+        canctx.fillRect(0,0,canvas.width, canvas.height);
+        canctx.putImageData(imageData, 0, 0);
+    }
+}
+
+var onCalcPath = function() {
+
+    var toolbitDiam = $("#toolbitDiam").val()-0;
+    var pixelsPerMm = $("#pixelsPerMm").val()-0;
+    var canvas = document.getElementById('mycanvas');
+    var pathcanvas = document.getElementById('pathcanvas');
+    var toolpaths = {}; // todo temp - 
+            
+    buildToolpaths3(toolpaths, toolbitDiam*pixelsPerMm, canvas, null, pathcanvas);  
+}
+
+var buildToolpaths3 = function(toolpaths, toolbitDiamInPix, incanvas, debugcanvas, pathcanvas){
+
+    var inCanvasImage = new AcGrey8Image(incanvas.width,incanvas.height);
+    inCanvasImage.initFromCanvas(incanvas); // todo, decide about js ctors
+
+    var dt = new AcGrey16Image(incanvas.width, incanvas.height);
+
+    computeDistTrans(inCanvasImage, dt);
+
+    var pathctx = pathcanvas.getContext('2d');
+    pathctx.clearRect(0,0,pathcanvas.width, pathcanvas.height);
+    
+    var path = new Path();
+    vectorizeDistanceTrf(dt, toolbitDiamInPix/2, path);
+    
+    path.buildSimpleSegs(1);
+    
+    path.drawSimpleSegments(pathcanvas);    
+//    path.drawSegments(incanvas);
+//    path.draw(pathcanvas);
+    
+
+    MyApp.path = path;
+
+
+}
+
+
+
+
+var buildToolpaths2 = function(toolpaths, incanvas, canvas){
+
+    var inCanvasImage = new AcGrey8Image(0,0);
+    inCanvasImage.initFromCanvas(incanvas); // todo, decide about js ctors
+    
+    inCanvasImage.draw(canvas);
+}
+
+var onBoxDimChange = function() {
+
+      
+
+    var boxDims = {};
+    boxDims.height = $("#heightbox").val()-0;
+    boxDims.length = $("#lengthbox").val()-0;
+    boxDims.width = $("#widthbox").val()-0;    
+    boxDims.matThick = $("#matthkbox").val()-0;
+    
+    var fingerLength = $("#fingerLength").val()-0;
+    var fingerSpacing = $("#fingerSpacing").val()-0;
+    var toolbitDiam = $("#toolbitDiam").val()-0;
+                    
+    var pixelsPerMm = $("#pixelsPerMm").val()-0;
+                    
+    var cutouts = {};
+    buildCutouts(cutouts, boxDims, fingerLength, fingerSpacing, toolbitDiam, pixelsPerMm);
+
+    var layout = {};
+    buildLayout(layout, boxDims, toolbitDiam, pixelsPerMm);
+    
+    var canvas = document.getElementById('mycanvas');
+    drawCutouts(canvas, cutouts, layout);
+
+}
+</script>
+    
+    
+<script>
+
+
+
+$(document).ready(function() {
+
+    MyApp = {}; // not the right place I bet...
+
+    // record previous unit type and respond to unit change
+    var sel = $("#unittype");
+    sel.data("prev",sel.val());
+
+    // update all boxDims by changing by ratio
+    sel.change(function(data){
+        var jqThis = $(this);
+        var unitRatio = jqThis.data("prev") / jqThis.val();        
+        jqThis.data("prev",jqThis.val());
+        
+        var selset = $(".boxDim");
+        selset.each(function() { 
+            $(this).val($(this).val()*unitRatio)
+        });
+    });
+    
+    $(".boxDim").change(function() {
+        onBoxDimChange();
+    });
+    
+    function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
+        var file = files[0];
+        
+        var fileReadAsDataUrl = new FileReader();
+        fileReadAsDataUrl.onload = (function(progEvt) {
+            console.log("in data url reader");
+            var imageAsDataUrl = progEvt.target.result;
+            
+            var img = new Image();
+            MyApp.image = img;
+            
+            img.src = progEvt.target.result;
+
+            var canvas = document.getElementById('mycanvas');
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = "white";
+            ctx.fillRect(0,0,canvas.width, canvas.height);
+          
+            ctx.drawImage(img,0,0); //,canvas.width, canvas.height);
+            
+        });
+        fileReadAsDataUrl.readAsDataURL(file); 
+        
+    }
+    
+    document.getElementById('openimage').addEventListener('change', handleFileSelect, false);
+    
+    initBoundryCanvas();
+    // call it to render the box
+    onBoxDimChange();
+
+});    
+</script>
+</head>
+
+<body>
+
+<div id="header" >
+    <h1>&nbsp;CNC Box Maker</h1>
+</div>
+
+<div>
+<div id="Inputs" >
+    <table>
+        <tr>
+          <td>Units</td>
+          <td>
+            <select id="unittype">
+                <option value=1 selected="selected">mm</option>
+                <option value=10>cm</option>
+                <option value=25.4>in</option>
+            <select>
+          </td>
+        </tr>
+        <tr>
+          <td>Height</td>
+          <td><input class="boxDim" id="heightbox" type="number" value="60" ></td>
+        </tr>
+        <tr>
+          <td>Length</td>
+          <td><input class="boxDim" id="lengthbox" type="number" value="80" ></td>
+        </tr>
+        <tr>
+          <td>Width</td>
+          <td><input class="boxDim" id="widthbox" type="number" value="80" ></td>
+        </tr>
+        <tr>
+          <td>Material Thickness</td>
+          <td><input class="boxDim" id="matthkbox" type="number" value="4.7625" ></td>
+        </tr>
+        <tr>
+          <td>Finger Length</td>
+          <td><input class="boxDim" id="fingerLength" type="number" value="20" ></td>
+        </tr>
+        <tr>
+          <td>Finger Spacing</td>
+          <td><input class="boxDim" id="fingerSpacing" type="number" value="20" ></td>
+        </tr>
+        <tr>
+          <td>Toolbit Diam</td>
+          <td><input class="toolbit" id="toolbitDiam" type="number" value="3.175" ></td>
+        </tr>
+        <tr>
+          <td>Pixels per mm</td>
+          <td><input class="resolution" id="pixelsPerMm" type="number" value="1" ></td>
+        </tr>
+    </table>
+
+    <button onclick=onCalcPath() >Calculate Tool Path</button>
+    <button onclick=onGenGCode() >Generate G-Code</button>
+    <div> 
+        <button onclick=onLoadImage() >Load Image</button>
+        <input id="invertImage" type="checkbox" onclick=onInvertImage() >Invert Image</button>
+    </div>
+    <input id="unitSlider" type=range min=0 max=10 value=1 step="1" onchange=onChangeUnits(value)>
+
+
+    <input type="file" id="openimage" name="imagefile" style="display:none"/>
+    <output id="list"></output>
+</div> <!-- inputs -->
+
+    <div style="position: relative;" width="465" height="465">
+        <canvas id="boundaryCanvas" width="460" height="460"
+            style="position: absolute; left: 250px; top: 0px; z-index: 0; "></canvas>
+        <canvas id="mycanvas" width="450" height="450" 
+            style="position: absolute; left:265px; top: 15px; z-index: 1; border:1px solid red"></canvas>    
+        <canvas id="pathcanvas" width="450" height="450" 
+            style="position: absolute; left: 110; top: 10; z-index: 2;"></canvas>
+    </div>
+</div>
+<div id="statusbar" >
+&nbsp;&nbsp;Status Bar
+</div>
+
+
+</body>
+</html>
