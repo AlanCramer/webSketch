@@ -9,22 +9,36 @@
     <meta name="author" content="">
 <!--     <link rel="shortcut icon" href="../../assets/ico/favicon.ico"> -->
 
+    <script src="jquery-2.1.0.min.js"></script>
+
     <title>Transforms CAD/CAM</title>
 
     <!-- Bootstrap core CSS -->
     <link href="bootstrap-3.1.1-dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Just for debugging purposes. Don't actually copy this line! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
     <!-- Custom styles for this template -->
     <link href="bootstrap-3.1.1-dist/css/carousel_alan.css" rel="stylesheet">
+
+<script>
+    onSignUp = function(btn) {
+    
+        var rect = btn.getBoundingClientRect();
+//        var div1 = document.getElementById('div1');
+        $("#div1").css({top: rect.top -30, left: rect.right+30, position:'absolute', padding: 10, width: 250});
+        $("#div1").fadeIn();
+        
+        setTimeout(function() {
+            $("#div1").fadeOut();
+        }, 5000); 
+    }
+    
+    onClickInfoItem = function(theDiv) {
+        $("#div1").fadeOut();
+        
+    }
+    
+</script>
+
     
   </head>
 <!-- NAVBAR
@@ -68,7 +82,16 @@
 
       </div>
     </div>
-
+    
+<div id="container" position="relative">    
+<div id="div1" style="width:100;display:none;border: solid #fff 2px;z-index:2; background:#016" >
+Initially, the back-end will track usage models. 
+Soon, users will be able to upload designs.
+Yeah, sure - social media is gotta happen too.
+</div><br>
+<!-- <div id="div2" style="width:80px;height:80px;display:none;background-color:green;"></div><br>
+<div id="div3" style="width:80px;height:80px;display:none;background-color:blue;"></div> -->
+</div>
 
     <!-- Carousel
     ================================================== -->
@@ -87,7 +110,7 @@
             <div class="carousel-caption">
               <h1>We are gunna make some Boxes!</h1>
               <p>Transforms CAD/CAM lets you quickly and easily create toolpaths for your CNC machine. Watch out, this is going to be fun.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Sign up today</a></p>
+              <p><a class="btn btn-lg btn-primary" href="#" role="button" onclick="onSignUp(this)">Sign up today</a></p>
             </div>
           </div>
         </div>
@@ -177,7 +200,7 @@
           <img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
         </div>
         <div class="col-md-7">
-          <h2 class="featurette-heading">Toolpaths in 2D and 3D<span class="text-muted">See for yourself.</span></h2>
+          <h2 class="featurette-heading">Toolpaths in 2D and 3D<span class="text-muted"></span></h2>
           <p class="lead">So I only have 2D at the moment.... Rendering the toolpaths in 3D in a webGL window has been proven to be pretty dang cool. Oh, and generate Shopbot Code or Gcode is working today.</p>
         </div>
       </div>
@@ -227,11 +250,19 @@
             interval: false
         });
         
+        // trying, (failing), to get new image to replace other on hover
         $("#parambox").hover(function(){
-            $(this).find("img").fadeOut();
+
+            var theImg = document.getElementById("paramboximg");
+            theImg.src = "content/boxMaker2.png";
+
             }, function() {
-            $(this).find("img").fadeIn();
+           
+            var theImg = document.getElementById("paramboximg");
+            theImg.src = "content/boxMaker1.png";
         });
+        
+  
     });
 </script>
     

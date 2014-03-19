@@ -22,8 +22,8 @@ function Path() {
             
         // paths are in pixels
         // convert to inches
-        var conX = pt.x/(25.4); //*pixelsPerMm);
-        var conY = pt.y/(25.4); //*pixelsPerMm);
+        var conX = pt.x/(25.4*pixelsPerMm);
+        var conY = pt.y/(25.4*pixelsPerMm);
         
         conX = conX.toFixed(5);
         conY = conY.toFixed(5);
@@ -72,6 +72,8 @@ function Path() {
                 gCode += dataStr + "\n";
             });
         });
+        
+        gCode += "G0 Z" + jogHeight.toString() + "\n"; // pull up to ceiling
         
         // todo, move this to application (main controller)
         var encodedUri = encodeURI(gCode);
