@@ -32,6 +32,30 @@
         }, 5000); 
     }
     
+    onLearnMore = function(btn) {
+    
+        var rect = btn.getBoundingClientRect();
+//        var div1 = document.getElementById('div1');
+        $("#div2").css({top: rect.top -30, left: rect.right+30, position:'absolute', padding: 10, width: 250});
+        $("#div2").fadeIn();
+        
+        setTimeout(function() {
+            $("#div2").fadeOut();
+        }, 5000); 
+    }
+    
+    onBrowseGallery = function(btn) {
+    
+        var rect = btn.getBoundingClientRect();
+//        var div1 = document.getElementById('div1');
+        $("#div3").css({top: rect.top -30, left: rect.right+30, position:'absolute', padding: 10, width: 250});
+        $("#div3").fadeIn();
+        
+        setTimeout(function() {
+            $("#div3").fadeOut();
+        }, 5000); 
+    }
+    
     onClickInfoItem = function(theDiv) {
         $("#div1").fadeOut();
         
@@ -84,13 +108,20 @@
     </div>
     
 <div id="container" position="relative">    
-<div id="div1" style="width:100;display:none;border: solid #fff 2px;z-index:2; background:#016" >
+<div id="div1" style="width:100;display:none;border: solid #fff 2px;z-index:2; background:#016; color:#fff" >
 Initially, the back-end will track usage models. 
-Soon, users will be able to upload designs.
+Soon, users will be able to upload designs.<br>
 Yeah, sure - social media is gotta happen too.
-</div><br>
-<!-- <div id="div2" style="width:80px;height:80px;display:none;background-color:green;"></div><br>
-<div id="div3" style="width:80px;height:80px;display:none;background-color:blue;"></div> -->
+</div>
+<div id="div2" style="width:100;display:none;border: solid #fff 2px;z-index:2; background:#016; color:#fff">
+Box Maker (in production)<br>
+Laptop Stand Maker (tbd)<br>
+Chair Designer (tbd)<br>
+</div>
+<div id="div3" style="width:100;display:none;border: solid #fff 2px;z-index:2; background:#016; color:#fff">
+Yeah, well, not yet.<br>
+But when users sign in, they have a natural forum to show off.
+</div> -->
 </div>
 
     <!-- Carousel
@@ -121,7 +152,7 @@ Yeah, sure - social media is gotta happen too.
             <div class="carousel-caption">
               <h1>But it's not just about Boxes</h1>
               <p>Parametric Designs of any CNC object will be easy to create, and trivial to use.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
+              <p><a class="btn btn-lg btn-primary" href="#" role="button" onclick="onLearnMore(this)">Learn more</a></p>
             </div>
           </div>
         </div>
@@ -133,7 +164,7 @@ Yeah, sure - social media is gotta happen too.
               <h1>Modular Infrastructure</h1>
               <p>Designers will have tools that will allow them to create and publish their own parametric designs. 
               There will be multiple layers, an interactive tool set and a scripting language for describing geometry for the hard core.</p>
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Browse gallery</a></p>
+              <p><a class="btn btn-lg btn-primary" href="#" role="button" onclick="onBrowseGallery(this)">Browse gallery</a></p>
             </div>
           </div>
         </div>
