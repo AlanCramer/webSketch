@@ -157,21 +157,21 @@ Yeah, sure - social media is gotta happen too.
           <img src="content/ThreeInchBox.jpg" alt="First slide">
           <h2>Starting Here</h2>
           <p>We'll get a prettier wood, but the idea starts here - making toolpaths for a box that fits together with a variety of joints is going to be so easy.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <p><a class="btn btn-default" href="boxMaker/boxMaker.html" role="button">View details &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
           <!-- <img class="img-circle" data-src="holder.js/140x140" alt="Generic placeholder image"> -->
           <img src="content/withHandles.jpg" alt="First slide">
           <h2>Basic Customization</h2>
           <p>Changing the shape of the sides to include handles or carve a logo will be as simple as loading a scaling a greyscale image.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <p><a class="btn btn-default" href="boxMaker/boxMaker.html" role="button">View details &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
           <!-- <img class="img-circle" data-src="holder.js/140x140" alt="Generic placeholder image"> -->
           <img src="content/BookBox.jpg" >
           <h2>Ok, Down the Road</h2>
           <p>The infrastructure will be there for designers, internal and external to create fancier boxes and other objects. But nobody will have to reinvent the joint!</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <p><a class="btn btn-default" href="boxMaker/boxMaker.html" role="button">View details &raquo;</a></p>
         </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
 
@@ -197,7 +197,7 @@ Yeah, sure - social media is gotta happen too.
 
       <div class="row featurette">
         <div class="col-md-5">
-          <img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
+          <img id = "toolpathsImg" class="featurette-image img-responsive" src="content/manJumping.png" alt="Generic placeholder image">
         </div>
         <div class="col-md-7">
           <h2 class="featurette-heading">Toolpaths in 2D and 3D<span class="text-muted"></span></h2>
@@ -210,10 +210,15 @@ Yeah, sure - social media is gotta happen too.
       <div class="row featurette">
         <div class="col-md-7">
           <h2 class="featurette-heading">Load your own designs.<span class="text-muted">As images.</span></h2>
-          <p class="lead">Grey scale image is a height map. A simplified form for toolbit size, stepover, etc. All working today.</p>
+          <p class="lead">Grey scale image is a height map. A simplified form for toolbit size, stepover, etc. All working today.
+            <br>
+            Ah, but there's the rub. External images of designs with, for example, finger tendons have assumptions about sizes.
+            If the user scales the image, they likely don't want the notches scaled. Or ... if the material changes, only the notches should scale.
+            All good - we just need an interactive parametric sketcher.
+          </p>
         </div>
         <div class="col-md-5">
-          <img class="featurette-image img-responsive" data-src="holder.js/500x500/auto" alt="Generic placeholder image">
+          <img class="featurette-image img-responsive" src="content/stool_all.png" alt="Generic placeholder image">
         </div>
       </div>
 
@@ -250,7 +255,7 @@ Yeah, sure - social media is gotta happen too.
             interval: false
         });
         
-        // trying, (failing), to get new image to replace other on hover
+        // to get new image to replace initial on hover
         $("#parambox").hover(function(){
 
             var theImg = document.getElementById("paramboximg");
@@ -262,6 +267,17 @@ Yeah, sure - social media is gotta happen too.
             theImg.src = "content/boxMaker1.png";
         });
         
+        // too much duplication - how to list before and afters and define the function once?
+        $("#toolpathsImg").hover(function(){
+
+            var theImg = document.getElementById("toolpathsImg");
+            theImg.src = "content/manJumpingPaths.png";
+
+            }, function() {
+           
+            var theImg = document.getElementById("toolpathsImg");
+            theImg.src = "content/manJumping.png";
+        });
   
     });
 </script>

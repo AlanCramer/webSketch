@@ -152,13 +152,8 @@ var buildToolpaths3 = function(toolpaths, toolbitDiamInPix, incanvas, debugcanva
 //    path.drawSegments(incanvas);
 //    path.draw(pathcanvas);
     
-
     MyApp.path = path;
-
-
 }
-
-
 
 
 var buildToolpaths2 = function(toolpaths, incanvas, canvas){
@@ -240,6 +235,10 @@ $(document).ready(function() {
             
             img.src = progEvt.target.result;
 
+            var pathcanvas = document.getElementById('pathcanvas');
+            var pathctx = pathcanvas.getContext('2d');
+            pathctx.clearRect(0,0,pathcanvas.width, pathcanvas.height);
+            
             var canvas = document.getElementById('mycanvas');
             var ctx = canvas.getContext('2d');
             ctx.fillStyle = "white";
