@@ -4,4 +4,8 @@
 4. on load image - old path is shown
 5. direction algorithm fail sometimes - smallerStool, toolbit = 6
 6. onloadimage - convert to greyscale
+6.1 invert image should force greyscale
+7. Go3D should update scene
+8. Path needs to be 3D
+
 

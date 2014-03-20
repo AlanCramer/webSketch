@@ -14,7 +14,10 @@
 <script src="Path.js"></script>
 <script src="mathUtil.js"></script>
 
-
+<script src="../three/three.min.js"></script>
+<script src="../three/drawShape3D.js"></script>
+<!-- <script src="../three/TrackballControls.js"></script> -->
+<script src="../three/OrbitControls.js"></script>
 
 <link rel="stylesheet" href="pathImage.css" />
 
@@ -23,6 +26,28 @@
 
 <script>
 
+var emptyTheScene = function() {
+        
+    while(group.children.length>0) {
+    
+        // must be explicitly removed
+        group.remove(group.children[group.children.length-1]);
+    }
+}
+
+
+var onGo3D = function() {
+
+    var matThick = $("#matthkbox").val()-0;
+    emptyTheScene();
+    
+    MyApp.path.addSimpleSegsToScene();
+    
+    var path = buildZeroOffsetPath();
+    path.addSimpleSegsAsMeshes(matThick);
+    
+    animate();
+}
 
 var onGenGCode = function() {
 
@@ -57,7 +82,6 @@ var drawBoundaryCanvas = function(pixelsPerMm) {
     
     ctx.fillText(pixVal, 93, 8);
     ctx.fillText("mm", 120, 8);
-
 
     ctx.beginPath();
     for (var i = 0; i < canvas.width; i += 10) {
@@ -120,18 +144,38 @@ var onInvertImage = function() {
     }
 }
 
+var buildZeroOffsetPath = function() {
+
+    var pixelsPerMm = $("#pixelsPerMm").val()-0;
+    var canvas = document.getElementById('mycanvas');
+    var pathcanvas = document.getElementById('pathcanvas');
+            
+    var path = buildToolpaths3(0.0, canvas)      
+    return path;  
+}
+
 var onCalcPath = function() {
 
     var toolbitDiam = $("#toolbitDiam").val()-0;
     var pixelsPerMm = $("#pixelsPerMm").val()-0;
     var canvas = document.getElementById('mycanvas');
     var pathcanvas = document.getElementById('pathcanvas');
-    var toolpaths = {}; // todo temp - 
             
-    buildToolpaths3(toolpaths, toolbitDiam*pixelsPerMm, canvas, null, pathcanvas);  
+    var path = buildToolpaths3(toolbitDiam*pixelsPerMm, canvas); 
+
+    path.drawSimpleSegments(pathcanvas);  
+    
+    var pathctx = pathcanvas.getContext('2d');
+    pathctx.clearRect(0,0,pathcanvas.width, pathcanvas.height);
+
+    path.drawSimpleSegments(pathcanvas);
+//    path.drawSegments(incanvas);
+//    path.draw(pathcanvas);
+
+    MyApp.path = path;
 }
 
-var buildToolpaths3 = function(toolpaths, toolbitDiamInPix, incanvas, debugcanvas, pathcanvas){
+var buildToolpaths3 = function(toolbitDiamInPix, incanvas){
 
     var inCanvasImage = new AcGrey8Image(incanvas.width,incanvas.height);
     inCanvasImage.initFromCanvas(incanvas); // todo, decide about js ctors
@@ -139,20 +183,12 @@ var buildToolpaths3 = function(toolpaths, toolbitDiamInPix, incanvas, debugcanva
     var dt = new AcGrey16Image(incanvas.width, incanvas.height);
 
     computeDistTrans(inCanvasImage, dt);
-
-    var pathctx = pathcanvas.getContext('2d');
-    pathctx.clearRect(0,0,pathcanvas.width, pathcanvas.height);
     
     var path = new Path();
     vectorizeDistanceTrf(dt, toolbitDiamInPix/2, path);
     
     path.buildSimpleSegs(1);
-    
-    path.drawSimpleSegments(pathcanvas);    
-//    path.drawSegments(incanvas);
-//    path.draw(pathcanvas);
-    
-    MyApp.path = path;
+    return path;
 }
 
 
@@ -253,6 +289,8 @@ $(document).ready(function() {
     
     document.getElementById('openimage').addEventListener('change', handleFileSelect, false);
     
+    buildContainer();    // 3D rendering div
+    init(); // 3D rendering environment
     initBoundryCanvas();
     // call it to render the box
     onBoxDimChange();
@@ -318,10 +356,10 @@ $(document).ready(function() {
     <button onclick=onGenGCode() >Generate G-Code</button>
     <div> 
         <button onclick=onLoadImage() >Load Image</button>
-        <input id="invertImage" type="checkbox" onclick=onInvertImage() >Invert Image</button>
+        <input id="invertImage" type="checkbox" onclick=onInvertImage() >Invert</button>
     </div>
     <input id="unitSlider" type=range min=0 max=10 value=1 step="1" onchange=onChangeUnits(value)>
-
+    <button onclick=onGo3D() >Go 3D!</button>
 
     <input type="file" id="openimage" name="imagefile" accept="image/*" style="display:none"/>
     <output id="list"></output>

@@ -13,6 +13,17 @@
 
     }
 
+    button {
+        background-color:#428bca;
+        border-color:#357ebd;
+        border-radius:6px;
+        line-height:1.33;
+        font-size: 18px;
+        color:#fff;
+/*         padding:10px 16px; */
+        
+    }
+    
     input {
         width:60px;
         text-align:right;

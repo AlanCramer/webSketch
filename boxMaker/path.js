@@ -5,6 +5,54 @@ function Path() {
     this.pathSegments = []; // subarrays (by refs) of the above, collected in order 
     this.pathSimpleSegs = []; // reduced pathSegments
     
+    this.buildThreeShape = function(pathSeg) {
+    
+        var theShape = new THREE.Shape();
+        
+        var firstPt = pathSeg[0];
+        var lastPt = pathSeg[pathSeg.length -1];
+        var i;
+        
+        theShape.moveTo( firstPt.x, firstPt.y );
+        
+        for (i=1; i < pathSeg.length; ++i) {
+            theShape.lineTo(pathSeg[i].x, pathSeg[i].y);
+        }
+        
+        theShape.lineTo(lastPt.x, lastPt.y);
+        
+        return theShape;
+    }
+    
+    this.addSimpleSegsAsMeshes = function(matThick) {
+    
+        var i;
+        for (i=0; i < this.pathSimpleSegs.length; ++i) {
+            var nextShape = this.buildThreeShape(this.pathSimpleSegs[i]);
+                
+            var extrudeSettings = { amount: matThick }; // bevelSegments: 2, steps: 2 , bevelSegments: 5, bevelSize: 8, bevelThickness:5
+
+            extrudeSettings.bevelEnabled = false;
+            extrudeSettings.steps = 1;
+
+            // todo  - remove positioning hack. 
+            addShape( nextShape, extrudeSettings, 0xCFCF4A, -150, 300, 0, Math.PI, 0, 0, 1 );
+            //addLine( nextShape, 0x000000, -150, 300, 0, Math.PI, 0, 0, 1 );
+        }
+    }
+    
+    this.addSimpleSegsToScene = function() {
+    
+        var i;
+        for (i=0; i < this.pathSimpleSegs.length; ++i) {
+            var nextShape = this.buildThreeShape(this.pathSimpleSegs[i]);
+
+            // todo  - remove positioning hack. 
+            addLine( nextShape, 0x000000, -150, 300, 0, Math.PI, 0, 0, 1 );
+        }
+    }
+    
+    
     this.buildSimpleSegs = function(err) {
         
         var i;
