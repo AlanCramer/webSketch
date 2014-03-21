@@ -8,4 +8,5 @@
 7. Go3D should update scene
 8. Path needs to be 3D
 
-
+Change material thickness when image is loaded - redraws the box
+filenames need to be consistent - maybe all lower?
