@@ -36,7 +36,7 @@ function Path() {
             extrudeSettings.steps = 1;
 
             // todo  - remove positioning hack. 
-            addShape( nextShape, extrudeSettings, 0xCFCF4A, -150, 300, 0, Math.PI, 0, 0, 1 );
+            addShape( nextShape, extrudeSettings, 0xBF936D, -150, 300, 0, Math.PI, 0, 0, 1 );
             //addLine( nextShape, 0x000000, -150, 300, 0, Math.PI, 0, 0, 1 );
         }
     }

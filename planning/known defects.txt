@@ -8,5 +8,10 @@
 7. Go3D should update scene
 8. Path needs to be 3D
 
+if no tool paths (eg. error, eg color image), then clear 3D View
 Change material thickness when image is loaded - redraws the box
 filenames need to be consistent - maybe all lower?
+boxmaker two sides upside down
+bleeding fingers into base
+
+color of cnc box maker

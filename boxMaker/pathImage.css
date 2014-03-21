@@ -1,9 +1,10 @@
 
     #header {
-        background-color: #A5ACCE;
+        background-color: #428bca;
         font-family:"Georgia";
         margin:5px;
         border-radius:8px;
+        color:#fff;
     }
 
     body {
