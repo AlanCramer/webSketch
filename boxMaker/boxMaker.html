@@ -121,10 +121,13 @@ var onDoubleImage = function() {
     canvas.getContext('2d').drawImage(tempCanvas, 0,0,tempCanvas.width, tempCanvas.height, 0,0,canvas.width, canvas.height);
 }
 
+// converts to binary image based on fixed threshold
 var onInvertImage = function() {
 
     if (MyApp && MyApp.image)
     {
+        var threshold = 128; // 1-254
+    
         var img = MyApp.image;
         var canvas = document.getElementById('mycanvas');
         var canctx = canvas.getContext('2d');
@@ -132,10 +135,13 @@ var onInvertImage = function() {
         var imageData = canctx.getImageData(0, 0, img.width, img.height);
         var data = imageData.data;
         for(var i = 0; i < data.length; i += 4) {
-            data[i] = (data[i] > 200) ? 0 : 255;  //red
-            data[i+1] = (data[i+1] > 200) ? 0 : 255;  //g
-            data[i+2] = (data[i+2] > 200) ? 0 : 255;   //b
-            // data[i+3] = alpha    
+        
+            var goLow = (data[i] > threshold || data[i+1] > threshold || data [i+2] > threshold);
+        
+            data[i] = (goLow) ? 0 : 255;  //red
+            data[i+1] = (goLow) ? 0 : 255;  //g
+            data[i+2] = (goLow) ? 0 : 255;   //b
+            // data[i+3] = alpha   
         }
         
         canctx.fillStyle = "white";
