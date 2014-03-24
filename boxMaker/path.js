@@ -5,6 +5,21 @@ function Path() {
     this.pathSegments = []; // subarrays (by refs) of the above, collected in order 
     this.pathSimpleSegs = []; // reduced pathSegments
     
+    this.scaleSimpleSegs = function(scale) {
+    
+        for (var i=0; i < this.pathSimpleSegs.length; ++i) {
+            
+            var curSeg = this.pathSimpleSegs[i];
+            
+            for (var j = 0; j < curSeg.length; ++j)
+            {
+                curSeg[j].x *= scale;
+                curSeg[j].y *= scale;
+          
+            }
+        }
+    }
+    
     this.buildThreeShape = function(pathSeg) {
     
         var theShape = new THREE.Shape();

@@ -55,6 +55,33 @@ var onGenGCode = function() {
     MyApp.path.generateGCode(pixelsPerMm);	
 }
 
+var onChangeResolution = function(value) {
+
+    MyApp.displayRes = value;
+    
+    var hidCan = $("#hiddencanvas")[0]; // todo: how are selections derefed again? 
+    var hidCtx = hidCan.getContext('2d');
+    
+//    ctx.save();
+    hidCtx.scale(value, value);
+    drawCutouts(hidCan, MyApp.cutouts, MyApp.layout);    
+//    ctx.restore();
+    hidCtx.scale(1/value, 1/value);  // todo: why doesn't save restore work as I expect?
+    
+    var imageData = hidCtx.getImageData(0, 0, hidCan.width, hidCan.height);
+    // imageObj = new Image();
+    
+    
+    var canvas = document.getElementById('mycanvas');
+    var ctx = canvas.getContext('2d');
+//    ctx.imageSmoothingEnabled = false;
+//    ctx.crisp-edges = true;
+    ctx.scale(2/value, 2/value); // todo 2 because hidCan twice the size of mycanvas?
+    
+    ctx.drawImage(hidCan, 0,0,canvas.width, canvas.height);
+    ctx.scale(value/2, value/2);
+}
+
 var onLoadImage = function() {
 
     var fileElem = $("#openimage");
@@ -165,15 +192,18 @@ var onCalcPath = function() {
     var toolbitDiam = $("#toolbitDiam").val()-0;
     var pixelsPerMm = $("#pixelsPerMm").val()-0;
     var canvas = document.getElementById('mycanvas');
-    var pathcanvas = document.getElementById('pathcanvas');
+    var hidcanvas = document.getElementById('hiddencanvas');
             
-    var path = buildToolpaths3(toolbitDiam*pixelsPerMm, canvas); 
-
-    path.drawSimpleSegments(pathcanvas);  
+    var res = document.getElementById("resolutionSlider");
+    var resVal = res.value;
+    var factor = 1/resVal;
+            
+    var path = buildToolpaths3(toolbitDiam*pixelsPerMm*resVal, canvas); // hidcanvas); 
     
     var pathctx = pathcanvas.getContext('2d');
     pathctx.clearRect(0,0,pathcanvas.width, pathcanvas.height);
 
+    //path.scaleSimpleSegs(factor);
     path.drawSimpleSegments(pathcanvas);
 //    path.drawSegments(incanvas);
 //    path.draw(pathcanvas);
@@ -206,10 +236,7 @@ var buildToolpaths2 = function(toolpaths, incanvas, canvas){
     inCanvasImage.draw(canvas);
 }
 
-var onBoxDimChange = function() {
-
-      
-
+var buildCutoutsAndLayout = function() {
     var boxDims = {};
     boxDims.height = $("#heightbox").val()-0;
     boxDims.length = $("#lengthbox").val()-0;
@@ -227,9 +254,17 @@ var onBoxDimChange = function() {
 
     var layout = {};
     buildLayout(layout, boxDims, toolbitDiam, pixelsPerMm);
+
+    MyApp.cutouts = cutouts;
+    MyApp.layout = layout;
+}
+
+var onBoxDimChange = function() {
+      
+    buildCutoutsAndLayout();
     
     var canvas = document.getElementById('mycanvas');
-    drawCutouts(canvas, cutouts, layout);
+    drawCutouts(canvas, MyApp.cutouts, MyApp.layout);
 
 }
 </script>
@@ -365,24 +400,31 @@ $(document).ready(function() {
         <input id="invertImage" type="checkbox" onclick=onInvertImage() >Invert</button>
     </div>
     <input id="unitSlider" type=range min=0 max=10 value=1 step="1" onchange=onChangeUnits(value)>
+
+    <input id="resolutionSlider" type=range min=0.05 max=2 value=1 step=".05" onchange=onChangeResolution(value)>
+    
     <button onclick=onGo3D() >Go 3D!</button>
 
     <input type="file" id="openimage" name="imagefile" accept="image/*" style="display:none"/>
     <output id="list"></output>
 </div> <!-- inputs -->
 
-    <div style="position: relative;" width="465" height="465">
-        <canvas id="boundaryCanvas" width="460" height="460"
+    <div style="position: relative;" width="410" height="410">
+        <canvas id="boundaryCanvas" width="410" height="410"
             style="position: absolute; left: 250px; top: 0px; z-index: 0; "></canvas>
-        <canvas id="mycanvas" width="450" height="450" 
+        <canvas id="mycanvas" width="400" height="400" 
             style="position: absolute; left:265px; top: 15px; z-index: 1; border:1px solid red"></canvas>    
-        <canvas id="pathcanvas" width="450" height="450" 
+        <canvas id="pathcanvas" width="400" height="400" 
             style="position: absolute; left:265px; top: 15px; z-index: 2;border:1px solid blue"></canvas>
     </div>
 </div>
+
+
 <div id="statusbar" >
 &nbsp;&nbsp;Status Bar
 </div>
+<canvas id="hiddencanvas" width="900" height="900" 
+    style="position: relative;border:1px solid blue"></canvas>
 
 
 </body>

@@ -117,7 +117,10 @@ var vectorizeDistanceTrf = function(dt, dist, outpath)
     var dirMap = new DirectionMap(); // todo, how to make permanent to avoid reinit -make singleton
     var thresh = dt.copy();
     
-    thresh.thresholdImage(dist*dist);
+    var roundUp  = Math.ceil(dist);
+    var safeDist = roundUp*roundUp;
+    
+    thresh.thresholdImage(safeDist);
    
     var nw, nn, ne, ee, cc, ww, sw, ss, se, ennb, i, j, dir, nbrhd;
 
