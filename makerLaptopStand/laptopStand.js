@@ -1,4 +1,5 @@
 
+
 function LaptopLeg(args) {
 
     this.args = args;
@@ -34,10 +35,50 @@ function LaptopLeg(args) {
         ctx.lineTo(x, y);
         ctx.lineTo(x+pixLen/4, slope*(x+pixLen/4));
         ctx.closePath();
-        ctx.fill();
-        
+        ctx.fill();       
         ctx.restore();
+
+        // cut a slot
+        ctx.save();
+        ctx.fillStyle = 'red';
+        drawRotatedSlot(ctx, this.args.matThick/2, this.args.matThick, x+pixLen/3, slope*(x+pixLen/3), -theta, 4);
+        ctx.restore();
+        
+        // and another
+        ctx.save();
+        ctx.fillStyle = 'red';
+        drawRotatedSlot(ctx, this.args.height/3, this.args.matThick, x+2*pixLen/3, slope*(x+2*pixLen/3), -theta,4);
+        ctx.restore();
+        
     }    
+}
+
+function LaptopStandCrossBar(length, height, matThick, toolbitDiam) {
+
+    this.length = length;
+    this.height = height;
+    this.matThick = matThick;
+    this.toolbitDiam = toolbitDiam;
+    
+    this.draw = function (ctx, x, y) {
+    
+        ctx.save();
+        ctx.fillRect(x,y, this.length, this.height);
+        ctx.restore();
+        
+        ctx.save();
+        ctx.fillStyle = 'red';
+        drawRotatedSlot(ctx, this.height/2, this.matThick, this.length/4, 0, Math.PI/2, 3);
+        ctx.restore();
+        
+        ctx.save();
+        ctx.fillStyle = 'red';
+        drawRotatedSlot(ctx, this.height/2, this.matThick, 3*this.length/4, 0, Math.PI/2, 3);
+        ctx.restore();
+
+        
+    }
+
 }
 
 
@@ -54,6 +95,9 @@ function LaptopStand(length, depth, height, matThick, toolbitDiam, pixelsPerMm) 
     
     this.leftLeg = new LaptopLeg(this.args);
     this.rightLeg = new LaptopLeg(this.args);
+    
+    this.frontBar = new LaptopStandCrossBar(length, 20, matThick, toolbitDiam);
+    this.backBar = new LaptopStandCrossBar(length, 2*height/3, matThick, toolbitDiam);
     
     this.draw = function (canvas, x, y) {
         var ctx = canvas.getContext('2d');
@@ -77,6 +121,15 @@ function LaptopStand(length, depth, height, matThick, toolbitDiam, pixelsPerMm) 
         this.rightLeg.draw(ctx, x, y);
         ctx.restore();
         
+        ctx.save();
+        ctx.translate(20, 200);
+        this.backBar.draw(ctx, x, y);
+        ctx.restore();
+        
+        ctx.save();
+        ctx.translate(20, 300);
+        this.frontBar.draw(ctx, x, y);
+        ctx.restore();
         
     };
            
