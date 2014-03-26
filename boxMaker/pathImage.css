@@ -3,7 +3,8 @@
         background-color: #428bca;
         font-family:"Georgia";
         margin:5px;
-        border-radius:8px;
+        padding: 1px; /* commenting this out, makes the heading border (margin, padding?) much smaller */
+        border-radius:12px;
         color:#fff;
     }
 

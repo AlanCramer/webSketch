@@ -18,4 +18,5 @@ color of cnc box maker
 
 Sharp point, say tip of triangle, gets cut off - dt problem?
 
-
+laptop stand params not feeding draw
+laptop stand layout not parametric

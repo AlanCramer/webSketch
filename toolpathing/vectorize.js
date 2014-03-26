@@ -18,7 +18,7 @@ var followDirection = function (thresh, dirMap, pt) {
             pos.x--;
             break;
         default:
-            assert("what?");
+            console.log("followDirection: bad direction enum - file a bug");
     }
     
     var nbrhd = thresh.getEncodedNbrhd(pos.x, pos.y); 

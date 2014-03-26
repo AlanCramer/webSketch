@@ -1,11 +1,72 @@
 
+// todo this is a mismash of functions, organize!
+
+var initBoundryCanvas = function() {
+    var pixelsPerMm = $("#pixelsPerMm").val()-0;
+    
+    drawBoundaryCanvas(pixelsPerMm);
+}
+
+var drawBoundaryCanvas = function(pixelsPerMm) {
+    
+    var pixelsPerMm = $("#pixelsPerMm").val()-0;
+        
+    var canvas = document.getElementById('boundaryCanvas');
+    var ctx = canvas.getContext("2d");
+    
+    ctx.clearRect(0,0,canvas.width, canvas.height);
+    
+    ctx.font = "10px sans-serif";
+    var pixVal = 100/pixelsPerMm;
+    pixVal = pixVal.toFixed(1);
+    
+    ctx.fillText(pixVal, 93, 8);
+    ctx.fillText("mm", 120, 8);
+
+    ctx.beginPath();
+    for (var i = 0; i < canvas.width; i += 10) {
+        var y = (i / 100 == parseInt(i / 100)) ? 0 : 10;
+        ctx.moveTo(i + 15, y);
+        ctx.lineTo(i + 15, 15);
+        var x = (i / 100 == parseInt(i / 100)) ? 0 : 10;
+        ctx.moveTo(x, i + 15);
+        ctx.lineTo(15, i + 15);
+    }
+    ctx.stroke();
+
+}
+
+var emptyThe3DScene = function() {
+        
+    while(group.children.length>0) {
+    
+        // must be explicitly removed
+        group.remove(group.children[group.children.length-1]);
+    }
+}
+
+
+var onGo3D = function() {
+
+    var matThick = $("#matthkbox").val()-0;
+    emptyThe3DScene();
+    
+    MyApp.path.addSimpleSegsToScene();
+    
+    var path = buildZeroOffsetPath();
+    path.addSimpleSegsAsMeshes(matThick);
+    
+    animate();
+}
+
 var buildZeroOffsetPath = function() {
 
     var pixelsPerMm = $("#pixelsPerMm").val()-0;
     var canvas = document.getElementById('mycanvas');
     var pathcanvas = document.getElementById('pathcanvas');
             
-    var path = buildToolpaths3(0.0, canvas)      
+    // todo: this is hiding a bug - zero offset causes problems for the laptop stand        
+    var path = buildToolpaths3(1.0, canvas)      
     return path;  
 }
 

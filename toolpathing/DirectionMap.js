@@ -73,7 +73,7 @@ function DirectionMap() {
         // 011
         // 111
         // 110
-        this.addDirMapEntry(0,1,1,1,1,1,1,1,0,DirectionEnum.Corner);
+        this.addDirMapEntry(0,1,1,1,1,1,1,1,0,DirectionEnum.Corner); // this is probably a bug, the direction is "corner"
         // 011
         // 111
         // 101

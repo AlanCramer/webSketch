@@ -98,15 +98,19 @@ var onBoxDimChange = function() {
     var canvas = document.getElementById('mycanvas');
 
     var params = $(".boxDim");
-    console.log(params.length);
-    var param0 = params[0];
+    var paramObj = {};
+    params.each(function() {
+        var name = this.name;
+        var val = this.value;
+        paramObj[name] = val;
+    });
     
-    MyApp.currentApp.draw(canvas, params);
-
+    MyApp.currentApp.draw(canvas, paramObj);
 }
 
 $(document).ready(function() {
 
+    // todo - where does this belong?
     var laptopStandApp = new MakerApp();
     
     var makerAppObj = {};
@@ -129,7 +133,7 @@ $(document).ready(function() {
         },
         {
             name: "Material Thickness",
-            id:   "matThickness",
+            id:   "matthkbox",
             type: "number",
             value: "15",
         },
@@ -147,10 +151,10 @@ $(document).ready(function() {
         },
     ];
     
-    laptopStandApp.draw = function (canvas, params) {
+    laptopStandApp.draw = function (canvas, paramObj) {
 
         // <get the param values - js >
-        var lptp = new LaptopStand(300, 100, 75, 25, 15, 1);
+        var lptp = new LaptopStand(paramObj.Length, paramObj.Depth, paramObj.Height, paramObj["Material Thickness"], paramObj["Toolbit Diam"], paramObj["Pixels per mm"]);
         var canvas = document.getElementById("mycanvas");
         
         lptp.draw(canvas, 0,0);
@@ -160,6 +164,11 @@ $(document).ready(function() {
     
     MyApp.currentApp = laptopStandApp;
     //buildCanvases();
+    
+    // todo, this is duplicate from Box Maker
+    buildContainer();    // 3D rendering div
+    init(); // 3D rendering environment
+    initBoundryCanvas();
     
     $(".boxDim").change(function() {
         onBoxDimChange();

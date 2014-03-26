@@ -13,7 +13,7 @@ function LaptopLeg(args) {
         
         var laptopShelfThick = 20;
         
-        var pixLen = this.args.length * this.args.pixelsPerMm;
+        var pixLen = this.args.depth * this.args.pixelsPerMm;
         var pixHeight = this.args.height * this.args.pixelsPerMm;
         var slope = pixHeight/pixLen;
         var perpSlope = -pixLen/pixHeight;
@@ -41,7 +41,7 @@ function LaptopLeg(args) {
         // cut a slot
         ctx.save();
         ctx.fillStyle = 'red';
-        drawRotatedSlot(ctx, this.args.matThick/2, this.args.matThick, x+pixLen/3, slope*(x+pixLen/3), -theta, 4);
+        drawRotatedSlot(ctx, this.args.matThick, this.args.matThick, x+pixLen/3, slope*(x+pixLen/3), -theta, 4);
         ctx.restore();
         
         // and another
@@ -96,7 +96,7 @@ function LaptopStand(length, depth, height, matThick, toolbitDiam, pixelsPerMm) 
     this.leftLeg = new LaptopLeg(this.args);
     this.rightLeg = new LaptopLeg(this.args);
     
-    this.frontBar = new LaptopStandCrossBar(length, 20, matThick, toolbitDiam);
+    this.frontBar = new LaptopStandCrossBar(length, matThick*2, matThick, toolbitDiam);
     this.backBar = new LaptopStandCrossBar(length, 2*height/3, matThick, toolbitDiam);
     
     this.draw = function (canvas, x, y) {
