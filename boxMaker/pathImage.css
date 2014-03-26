@@ -25,11 +25,7 @@
         
     }
     
-    input {
-        width:60px;
-        text-align:right;
-        border-radius:5px;
-    }
+
     
     #invertImage {
         width:30px;
@@ -65,11 +61,17 @@
         margin:5px;
         border-radius:5px;
     }
+        
+    input {
+        width:60px;
+        text-align:right;
+        border-radius:15px;
+    }
     
     #Inputs {
         margin: 5px;
         width: 15em;
-        float: left;
+        float: left; 
         
     }
     

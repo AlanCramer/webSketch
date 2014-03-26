@@ -6,13 +6,14 @@
 
 <script src="../jquery-2.1.0.min.js"></script>
 <script src="cutout.js"></script>
-<script src="layoutCutoutUtil.js"></script>
-<script src="DirectionMap.js"></script>
-<script src="acGreyImage.js"></script>
-<script src="distTrans.js"></script>
-<script src="Vectorize.js"></script>
-<script src="Path.js"></script>
-<script src="mathUtil.js"></script>
+<script src="../toolpathing/layoutCutoutUtil.js"></script>
+<script src="../toolpathing/DirectionMap.js"></script>
+<script src="../toolpathing/acGreyImage.js"></script>
+<script src="../toolpathing/distTrans.js"></script>
+<script src="../toolpathing/Vectorize.js"></script>
+<script src="../toolpathing/Path.js"></script>
+<script src="../toolpathing/mathUtil.js"></script>
+<script src="../toolpathing/toolpathing.js"></script>
 
 <script src="../three/three.min.js"></script>
 <script src="../three/drawShape3D.js"></script>
@@ -177,55 +178,6 @@ var onInvertImage = function() {
     }
 }
 
-var buildZeroOffsetPath = function() {
-
-    var pixelsPerMm = $("#pixelsPerMm").val()-0;
-    var canvas = document.getElementById('mycanvas');
-    var pathcanvas = document.getElementById('pathcanvas');
-            
-    var path = buildToolpaths3(0.0, canvas)      
-    return path;  
-}
-
-var onCalcPath = function() {
-
-    var toolbitDiam = $("#toolbitDiam").val()-0;
-    var pixelsPerMm = $("#pixelsPerMm").val()-0;
-    var canvas = document.getElementById('mycanvas');
-    var hidcanvas = document.getElementById('hiddencanvas');
-            
-    var res = document.getElementById("resolutionSlider");
-    var resVal = res.value;
-    var factor = 1/resVal;
-            
-    var path = buildToolpaths3(toolbitDiam*pixelsPerMm*resVal, canvas); // hidcanvas); 
-    
-    var pathctx = pathcanvas.getContext('2d');
-    pathctx.clearRect(0,0,pathcanvas.width, pathcanvas.height);
-
-    //path.scaleSimpleSegs(factor);
-    path.drawSimpleSegments(pathcanvas);
-//    path.drawSegments(incanvas);
-//    path.draw(pathcanvas);
-
-    MyApp.path = path;
-}
-
-var buildToolpaths3 = function(toolbitDiamInPix, incanvas){
-
-    var inCanvasImage = new AcGrey8Image(incanvas.width,incanvas.height);
-    inCanvasImage.initFromCanvas(incanvas); // todo, decide about js ctors
-
-    var dt = new AcGrey16Image(incanvas.width, incanvas.height);
-
-    computeDistTrans(inCanvasImage, dt);
-    
-    var path = new Path();
-    vectorizeDistanceTrf(dt, toolbitDiamInPix/2, path);
-    
-    path.buildSimpleSegs(1);
-    return path;
-}
 
 
 var buildToolpaths2 = function(toolpaths, incanvas, canvas){

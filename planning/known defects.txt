@@ -15,3 +15,7 @@ boxmaker two sides upside down
 bleeding fingers into base
 
 color of cnc box maker
+
+Sharp point, say tip of triangle, gets cut off - dt problem?
+
+

@@ -1,0 +1,171 @@
+<!DOCTYPE HTML> <!-- HTML5 -->
+<html>
+<head>
+<meta charset="utf-8" /> <!-- To not declare encoding is a security issue -->
+<!-- Server content type will override this. http://diveintohtml5.info/semantics.html#encoding -->
+
+<script src="../jquery-2.1.0.min.js"></script>
+
+
+<script src="../makerApp.js"></script> 
+<script src="laptopStand.js"></script>
+
+<script src="../toolpathing/layoutCutoutUtil.js"></script>
+<script src="../toolpathing/DirectionMap.js"></script>
+<script src="../toolpathing/acGreyImage.js"></script>
+<script src="../toolpathing/distTrans.js"></script>
+<script src="../toolpathing/Vectorize.js"></script>
+<script src="../toolpathing/Path.js"></script>
+<script src="../toolpathing/mathUtil.js"></script> 
+<script src="../toolpathing/toolpathing.js"></script>
+
+<script src="../three/three.min.js"></script>
+<script src="../three/drawShape3D.js"></script>
+<!-- <script src="../three/TrackballControls.js"></script>  -->
+<script src="../three/OrbitControls.js"></script>
+
+<link rel="stylesheet" href="../boxMaker/pathImage.css" />
+   
+
+
+</head>
+
+<body>
+
+<div id="header" >
+    <h1>&nbsp;<span id="title"> Unnamed Maker App </span></h1>
+</div>
+
+<div>
+<div id="Inputs" >
+    <table id = "inputTable">
+        <tr>
+<!--           <td>Units</td>
+          <td>
+            <select id="unittype">
+                <option value=1 selected="selected">mm</option>
+                <option value=10>cm</option>
+                <option value=25.4>in</option>
+            <select>
+          </td>
+        </tr>
+        <tr>
+          <td>Height</td>
+          <td><input class="boxDim" id="heightbox" type="number" value="60" ></td>
+        </tr> -->
+    </table>
+
+    <button onclick=onCalcPath() >Calculate Tool Path</button>
+    <button onclick=onGenGCode() >Generate G-Code</button>
+<!--     <div> 
+        <button onclick=onLoadImage() >Load Image</button>
+        <input id="invertImage" type="checkbox" onclick=onInvertImage() >Invert</button>
+    </div> -->
+    <input id="unitSlider" type=range min=0 max=10 value=1 step="1" onchange=onChangeUnits(value)>
+
+    <input id="resolutionSlider" type=range min=0.05 max=2 value=1 step=".05" onchange=onChangeResolution(value)>
+    
+    <button onclick=onGo3D() >Go 3D!</button>
+
+    <input type="file" id="openimage" name="imagefile" accept="image/*" style="display:none"/>
+    <output id="list"></output>
+</div> <!-- inputs -->
+
+    <div style="position: relative;" width="410" height="410">
+        <canvas id="boundaryCanvas" width="410" height="410"
+            style="position: absolute; left: 250px; top: 0px; z-index: 0; "></canvas>
+        <canvas id="mycanvas" width="400" height="400" 
+            style="position: absolute; left:265px; top: 15px; z-index: 1; border:1px solid red"></canvas>    
+        <canvas id="pathcanvas" width="400" height="400" 
+            style="position: absolute; left:265px; top: 15px; z-index: 2;border:1px solid blue"></canvas>
+    </div>
+</div>
+
+
+<div id="statusbar" >
+&nbsp;&nbsp;Status Bar
+</div>
+
+<script>
+
+var MyApp = {}; // TODO : gotta figure out js modularity
+
+var onBoxDimChange = function() {
+      
+    var canvas = document.getElementById('mycanvas');
+
+    var params = $(".boxDim");
+    console.log(params.length);
+    var param0 = params[0];
+    
+    MyApp.currentApp.draw(canvas, params);
+
+}
+
+$(document).ready(function() {
+
+    var laptopStandApp = new MakerApp();
+    
+    var makerAppObj = {};
+    makerAppObj.title = "Laptop Stand Maker";    
+    makerAppObj.inputs = [
+        {
+            name: "Length",
+            type: "number",
+            value: "10",
+        },
+        {
+            name: "Depth",
+            type: "number",
+            value: "3",
+        },
+        {
+            name: "Height",
+            type: "number",
+            value: "3",
+        },
+        {
+            name: "Material Thickness",
+            id:   "matThickness",
+            type: "number",
+            value: ".25",
+        },
+        {
+            name: "Toolbit Diam",
+            id:   "toolbitDiam",
+            type: "number",
+            value: "5",
+        },
+        {
+            name: "Pixels per mm",
+            id:   "pixelsPerMm",
+            type: "number",
+            value: "1",
+        },
+    ];
+    
+    laptopStandApp.draw = function (canvas, params) {
+
+        // <get the param values - js >
+        var lptp = new LaptopStand(300, 100, 75, 25, 15, 1);
+        var canvas = document.getElementById("mycanvas");
+        
+        lptp.draw(canvas, 0,0);
+    }
+    
+    laptopStandApp.render(makerAppObj);
+    
+    MyApp.currentApp = laptopStandApp;
+    //buildCanvases();
+    
+    $(".boxDim").change(function() {
+        onBoxDimChange();
+    });
+    
+    onBoxDimChange();
+    
+});
+</script>
+
+</body>
+</html>

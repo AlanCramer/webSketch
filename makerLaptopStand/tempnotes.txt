@@ -1,0 +1,26 @@
+    <script>
+MyApp = {}; // not the right place I bet...
+</script>
+    
+    <script>
+
+
+<td>Height</td>
+<td><input class="boxDim" id="heightbox" type="number" value="60" ></td>
+
+<!-- var buildCanvases = function () {} -->
+
+
+    
+    
+    
+    laptopStandApp.inputs = [
+        {
+            name: "length",
+            type: "number",
+        },
+        {
+            name: "width",
+            type: "number",
+        }
+    ];
