@@ -12,7 +12,7 @@ var distPointPoint = function (p0, p1) {
     return Math.sqrt( (p1.x-p0.x)*(p1.x-p0.x) + (p1.y-p0.y)*(p1.y-p0.y));
 }
 
-// lineSeg = {p0, p1} where p0 = {x, y}
+// lineSeg = {p0, p1} where each pi = {x, y}
 var distPointLineseg = function (pt, lineseg) {
 
     var line = makeLine(lineseg.p0, lineseg.p1);
@@ -34,6 +34,7 @@ var distPointLine = function (pt, line) {
     return res;
 }
 
+// line has form ax+by+c=0
 var makeLine = function (pt0, pt1) {
 
     var a = pt0.y - pt1.y;
@@ -43,15 +44,33 @@ var makeLine = function (pt0, pt1) {
     return {a:a,b:b,c:c};
 }
 
+// circle with center = {x,y} and radius 
+// a, b, c are points with {x, y}
+var makeCircle = function (a, b, c) {
+
+    var tmp = 2*(a.x*(b.y-c.y) + b.x*(c.y-a.y) + c.x*(a.y - b.y));
+    var cx = ((a.x*a.x + a.y*a.y)*(b.y-c.y) + (b.x*b.x + b.y*b.y)*(c.y-a.y) + (c.x*c.x+c.y*c.y)*(a.y-b.y))/tmp;
+    var cy = ((a.x*a.x + a.y*a.y)*(c.x-b.x) + (b.x*b.x + b.y*b.y)*(a.x-c.x) + (c.x*c.x+c.y*c.y)*(b.x-a.x))/tmp;
+
+    var dnsq = ((b.x-a.x)*(b.x-a.x) + (b.y-a.y)*(b.y-a.y)) * ((b.x-c.x)*(b.x-c.x) + (b.y-c.y)*(b.y-c.y)) * ((c.x-a.x)*(c.x-a.x) + (c.y-a.y)*(c.y-a.y));
+    var dd = (a.x*b.y + b.x*c.y + c.x*a.y - a.x*c.y - b.x*a.y - c.x*b.y)^2;
+    
+    var diam = Math.sqrt(dnsq)/dd;
+    
+    return { center : {x:cx, y:cy}, radius : diam/2 };
+}
+
 var RamerDouglasPeucker = function(PointList, epsilon) {
     // Find the point with the maximum distance
     var dmax = 0;
     var index = 0;
+    var dCirc = 0;
     var end = PointList.length - 1;
     var resultList = [];
     
     for (var i = 0; i <= end; ++i) {
-        var d = distPointLineseg(PointList[i], {p0:PointList[0], p1:PointList[end]}); 
+        var d = distPointLineseg(PointList[i], {p0:PointList[0], p1:PointList[end]});
+        
         if ( d > dmax ) {
             index = i
             dmax = d

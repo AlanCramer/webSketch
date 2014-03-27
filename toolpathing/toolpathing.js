@@ -109,14 +109,13 @@ var onCalcPath = function() {
     var resVal = res.value;
     var factor = 1/resVal;
             
-    var path = buildToolpaths3(toolbitDiam*pixelsPerMm*resVal, canvas); // hidcanvas); 
+    var path = buildToolpaths3(toolbitDiam*pixelsPerMm*resVal, canvas); //hidcanvas); 
     
     var pathctx = pathcanvas.getContext('2d');
     pathctx.clearRect(0,0,pathcanvas.width, pathcanvas.height);
 
-    //path.scaleSimpleSegs(factor);
+//    path.scaleSimpleSegs(factor);
     path.drawSimpleSegments(pathcanvas);
-//    path.drawSegments(incanvas);
 //    path.draw(pathcanvas);
 
     MyApp.path = path;

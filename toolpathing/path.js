@@ -70,13 +70,11 @@ function Path() {
     
     this.buildSimpleSegs = function(err) {
         
-        var i;
-        var simpSeg;
+        var i, simpSeg;
         
         for (i=0; i < this.pathSegments.length; ++i) {
-//            simpSeg = new Array();
-            simpSeg = RamerDouglasPeucker(this.pathSegments[i], err);
-            
+
+            simpSeg = RamerDouglasPeucker(this.pathSegments[i], err);            
             this.pathSimpleSegs.push(simpSeg);
         }
     } 
