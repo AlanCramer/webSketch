@@ -40,14 +40,14 @@ function LaptopLeg(args) {
 
         // cut a slot
         ctx.save();
-        ctx.fillStyle = 'red';
-        drawRotatedSlot(ctx, this.args.matThick, this.args.matThick, x+pixLen/3, slope*(x+pixLen/3), -theta, 4);
+        ctx.fillStyle = 'white';
+        drawRotatedSlot(ctx, this.args.matThick, this.args.matThick, x+pixLen/3, slope*(x+pixLen/3), -theta, this.args.toolbitDiam);
         ctx.restore();
         
         // and another
         ctx.save();
-        ctx.fillStyle = 'red';
-        drawRotatedSlot(ctx, this.args.height/3, this.args.matThick, x+2*pixLen/3, slope*(x+2*pixLen/3), -theta,4);
+        ctx.fillStyle = 'white';
+        drawRotatedSlot(ctx, this.args.height/3, this.args.matThick, x+2*pixLen/3, slope*(x+2*pixLen/3), -theta, this.args.toolbitDiam);
         ctx.restore();
         
     }    
@@ -67,13 +67,13 @@ function LaptopStandCrossBar(length, height, matThick, toolbitDiam) {
         ctx.restore();
         
         ctx.save();
-        ctx.fillStyle = 'red';
-        drawRotatedSlot(ctx, this.height/2, this.matThick, this.length/4, 0, Math.PI/2, 3);
+        ctx.fillStyle = 'white';
+        drawRotatedSlot(ctx, this.height/2, this.matThick, this.length/4, 0, Math.PI/2, this.toolbitDiam);
         ctx.restore();
         
         ctx.save();
-        ctx.fillStyle = 'red';
-        drawRotatedSlot(ctx, this.height/2, this.matThick, 3*this.length/4, 0, Math.PI/2, 3);
+        ctx.fillStyle = 'white';
+        drawRotatedSlot(ctx, this.height/2, this.matThick, 3*this.length/4, 0, Math.PI/2, this.toolbitDiam);
         ctx.restore();
 
         
@@ -99,9 +99,11 @@ function LaptopStand(length, depth, height, matThick, toolbitDiam, pixelsPerMm) 
     this.frontBar = new LaptopStandCrossBar(length, matThick*2, matThick, toolbitDiam);
     this.backBar = new LaptopStandCrossBar(length, 2*height/3, matThick, toolbitDiam);
     
+    // todo extract the layout
     this.draw = function (canvas, x, y) {
         var ctx = canvas.getContext('2d');
         var cutawayColor = 'white';
+        var spacer = this.args.toolbitDiam*2+10;
         
         // clear the screen
         ctx.save();
@@ -110,24 +112,22 @@ function LaptopStand(length, depth, height, matThick, toolbitDiam, pixelsPerMm) 
         ctx.restore();
 
         ctx.save();
-        ctx.translate(20,20);
+        ctx.translate(spacer, spacer);
         this.leftLeg.draw(ctx, x, y);
         ctx.restore();
         
         ctx.save();
-        ctx.translate(300, 0);
+        ctx.translate(this.args.length, 0);
         ctx.rotate(Math.PI);
-        ctx.translate(-20, -150);
+        ctx.translate(-spacer, -this.args.height-spacer*3);
         this.rightLeg.draw(ctx, x, y);
         ctx.restore();
         
         ctx.save();
-        ctx.translate(20, 200);
+        ctx.translate(spacer, spacer + this.args.height*2); // 1.5 really depends on angle
         this.backBar.draw(ctx, x, y);
-        ctx.restore();
         
-        ctx.save();
-        ctx.translate(20, 300);
+        ctx.translate(0, spacer + 0.75*this.args.height); // ugh, layout!
         this.frontBar.draw(ctx, x, y);
         ctx.restore();
         

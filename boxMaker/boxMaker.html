@@ -35,32 +35,7 @@ var onGenGCode = function() {
     MyApp.path.generateGCode(pixelsPerMm);	
 }
 
-var onChangeResolution = function(value) {
 
-    MyApp.displayRes = value;
-    
-    var hidCan = $("#hiddencanvas")[0]; // todo: how are selections derefed again? 
-    var hidCtx = hidCan.getContext('2d');
-    
-//    ctx.save();
-    hidCtx.scale(value, value);
-    drawCutouts(hidCan, MyApp.cutouts, MyApp.layout);    
-//    ctx.restore();
-    hidCtx.scale(1/value, 1/value);  // todo: why doesn't save restore work as I expect?
-    
-    var imageData = hidCtx.getImageData(0, 0, hidCan.width, hidCan.height);
-    // imageObj = new Image();
-    
-    
-    var canvas = document.getElementById('mycanvas');
-    var ctx = canvas.getContext('2d');
-//    ctx.imageSmoothingEnabled = false;
-//    ctx.crisp-edges = true;
-    ctx.scale(2/value, 2/value); // todo 2 because hidCan twice the size of mycanvas?
-    
-    ctx.drawImage(hidCan, 0,0,canvas.width, canvas.height);
-    ctx.scale(value/2, value/2);
-}
 
 var onLoadImage = function() {
 
