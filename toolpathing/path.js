@@ -166,13 +166,21 @@ function Path() {
     // draw a line between each point
     var drawPtDirsWithLines = function(ctx, ptdirs) {
             
-        ctx.beginPath(); // todo, what's this do again? only for stroke?
+        var i, iPtDir;    
+        ctx.beginPath(); 
         
         ctx.moveTo(ptdirs[0].x, ptdirs[0].y);
         for (i=1; i < ptdirs.length-1; ++i) {
             
             iPtDir = ptdirs[i];
-            ctx.lineTo(iPtDir.x, iPtDir.y);            
+            if (iPtDir.circleRad > 0) // js abuse, being too subtle todo: make it explicit
+            {
+                //ctx.arcTo(ptdirs[i-1].x, ptdirs[i-1].y, ptdirs[i+1].x, ptdirs[i+1].y, iPtDir.circleRad);
+            }
+            else
+            {
+                ctx.lineTo(iPtDir.x, iPtDir.y);  
+            }
         }
         ctx.lineTo(ptdirs[0].x, ptdirs[0].y);
         

@@ -60,34 +60,75 @@ var makeCircle = function (a, b, c) {
     return { center : {x:cx, y:cy}, radius : diam/2 };
 }
 
-var RamerDouglasPeucker = function(PointList, epsilon) {
+var distancePtCircle = function (pt, cir)
+{
+    var cc = cir.center;
+    var dsq = (pt.x - cc.x)*(pt.x - cc.x) + (pt.y - cc.y)*(pt.y - cc.y);
+    
+    var d = Math.sqrt(dsq);
+    
+    return Math.abs(d - cir.radius);
+}
+
+
+var RamerDouglasPeucker = function(pointList, epsilon) {
     // Find the point with the maximum distance
     var dmax = 0;
     var index = 0;
-    var dCirc = 0;
-    var end = PointList.length - 1;
+    
+    var dC = 0;
+    var dCmax = 0;
+    var iC = 0;
+    var iRad = 0;
+    
+    var findCircs = false; // turn this on to find circles too
+    
+    var end = pointList.length - 1;
     var resultList = [];
     
     for (var i = 0; i <= end; ++i) {
-        var d = distPointLineseg(PointList[i], {p0:PointList[0], p1:PointList[end]});
+        var d = distPointLineseg(pointList[i], {p0:pointList[0], p1:pointList[end]});
         
         if ( d > dmax ) {
             index = i
             dmax = d
         }
+        
+        if (findCircs) {
+            var circ = makeCircle(pointList[0], pointList[Math.floor(end/2)], pointList[end]);
+            var dC = distancePtCircle(pointList[i], circ);
+            
+            if (dC > dCmax) {
+                iC = i;
+                dCmax = dC;
+                iRad = circ.radius;
+            }
+        }
     }
+    
+    if (findCircs) {
+        if ( dCmax < epsilon*2 && dmax > epsilon)
+        {
+            var midPt = pointList[Math.floor(end/2)];
+            resultList.push(pointList[0]);
+            resultList.push({ circleRad: iRad, x: midPt.x, y: midPt.y });
+            resultList.push(pointList[end]);
+            return resultList;
+        }
+    }
+    
     // If max distance is greater than epsilon, recursively simplify
     if ( dmax > epsilon ) {
         // Recursive call
-        var recResults1 = RamerDouglasPeucker(PointList.slice(0, index), epsilon);
-        var recResults2 = RamerDouglasPeucker(PointList.slice(index,end), epsilon);
+        var recResults1 = RamerDouglasPeucker(pointList.slice(0, index), epsilon);
+        var recResults2 = RamerDouglasPeucker(pointList.slice(index,end), epsilon);
  
         // Build the result list
         resultList = recResults1;
         resultList = resultList.concat(recResults2);
     } else {
-        resultList.push(PointList[0]);
-        resultList.push(PointList[end]);
+        resultList.push(pointList[0]);
+        resultList.push(pointList[end]);
     }
     // Return the result
     return resultList;
