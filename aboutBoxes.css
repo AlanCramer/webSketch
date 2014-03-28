@@ -1,0 +1,43 @@
+body {
+   margin: 2%;
+   padding: 0;
+      background-color: #eff;
+}
+#container {
+   margin: 0%;
+   padding: 2%;
+   width: 95%;
+
+}
+.left, .right {
+   float: left;
+   width: 46.5%;
+   margin: 0% 0 0% 0%;
+   padding: 1%;
+   /* border: 1px solid #00f; */
+   color: #000;
+}
+.right {
+   float: right;
+   width: 42%;
+   margin: 0% 0% 0% 0;
+}
+
+img {
+
+    border: 5px solid #f94;
+    width: 110%;
+}
+
+#chairImg {
+    background-color: #bcf;
+}
+
+.clear {
+   height: 0;
+   font-size: 1px;
+   margin: 0;
+   padding: 0;
+   line-height: 0;
+   clear: both;
+}
