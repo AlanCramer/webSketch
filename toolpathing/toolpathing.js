@@ -1,11 +1,31 @@
 
 // todo this is a mismash of functions, organize!
+// todo remove global pollution
 
 var initBoundryCanvas = function() {
     var pixelsPerMm = $("#pixelsPerMm").val()-0;
     
     drawBoundaryCanvas(pixelsPerMm);
 }
+
+var clearPathCanvas = function () {
+    var pathctx = pathcanvas.getContext('2d');
+    pathctx.clearRect(0,0,pathcanvas.width, pathcanvas.height);
+}
+
+var onGenGCode = function() {
+
+    var pixelsPerMm = $("#pixelsPerMm").val()-0;
+    MyApp.path.generateGCode(pixelsPerMm);	
+}
+
+var onChangeUnits = function (value) {
+
+    $("#pixelsPerMm").val(value);
+    drawBoundaryCanvas(value);
+}
+
+
 
 var onChangeResolution = function(value) {
 
@@ -109,10 +129,9 @@ var onCalcPath = function() {
     var resVal = res.value;
     var factor = 1/resVal;
             
-    var path = buildToolpaths3(toolbitDiam*pixelsPerMm*resVal, canvas); //hidcanvas); 
+    var path = buildToolpaths3(toolbitDiam*pixelsPerMm, canvas); //hidcanvas); 
     
-    var pathctx = pathcanvas.getContext('2d');
-    pathctx.clearRect(0,0,pathcanvas.width, pathcanvas.height);
+    clearPathCanvas();
 
 //    path.scaleSimpleSegs(factor);
     path.drawSimpleSegments(pathcanvas);

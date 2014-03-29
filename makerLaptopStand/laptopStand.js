@@ -13,8 +13,9 @@ function LaptopLeg(args) {
         
         var laptopShelfThick = 20;
         
-        var pixLen = this.args.depth * this.args.pixelsPerMm;
-        var pixHeight = this.args.height * this.args.pixelsPerMm;
+        var pixPerMm = this.args.pixelsPerMm-0;
+        var pixLen = this.args.depth;
+        var pixHeight = this.args.height;
         var slope = pixHeight/pixLen;
         var perpSlope = -pixLen/pixHeight;
         var theta = Math.atan(pixLen/pixHeight);
@@ -38,13 +39,13 @@ function LaptopLeg(args) {
         ctx.fill();       
         ctx.restore();
 
-        // cut a slot
+        // cut the front slot
         ctx.save();
         ctx.fillStyle = 'white';
-        drawRotatedSlot(ctx, this.args.matThick, this.args.matThick, x+pixLen/3, slope*(x+pixLen/3), -theta, this.args.toolbitDiam);
+        drawRotatedSlot(ctx, this.args.matThick*2, this.args.matThick, x+pixLen/3, slope*(x+pixLen/3), -theta, this.args.toolbitDiam);
         ctx.restore();
         
-        // and another
+        // and another for the back
         ctx.save();
         ctx.fillStyle = 'white';
         drawRotatedSlot(ctx, this.args.height/3, this.args.matThick, x+2*pixLen/3, slope*(x+2*pixLen/3), -theta, this.args.toolbitDiam);
@@ -68,12 +69,12 @@ function LaptopStandCrossBar(length, height, matThick, toolbitDiam) {
         
         ctx.save();
         ctx.fillStyle = 'white';
-        drawRotatedSlot(ctx, this.height/2, this.matThick, this.length/4, 0, Math.PI/2, this.toolbitDiam);
+        drawRotatedSlot(ctx, this.height/2, this.matThick, this.length/4, 0, Math.PI/2, this.toolbitDiam*1.1);
         ctx.restore();
         
         ctx.save();
         ctx.fillStyle = 'white';
-        drawRotatedSlot(ctx, this.height/2, this.matThick, 3*this.length/4, 0, Math.PI/2, this.toolbitDiam);
+        drawRotatedSlot(ctx, this.height/2, this.matThick, 3*this.length/4, 0, Math.PI/2, this.toolbitDiam*1.1);
         ctx.restore();
 
         
@@ -96,8 +97,8 @@ function LaptopStand(length, depth, height, matThick, toolbitDiam, pixelsPerMm) 
     this.leftLeg = new LaptopLeg(this.args);
     this.rightLeg = new LaptopLeg(this.args);
     
-    this.frontBar = new LaptopStandCrossBar(length, matThick*2, matThick, toolbitDiam);
-    this.backBar = new LaptopStandCrossBar(length, 2*height/3, matThick, toolbitDiam);
+    this.frontBar = new LaptopStandCrossBar(length, matThick*4, matThick, toolbitDiam);
+    this.backBar = new LaptopStandCrossBar(length, height/2, matThick, toolbitDiam);
     
     // todo extract the layout
     this.draw = function (canvas, x, y) {
@@ -119,15 +120,15 @@ function LaptopStand(length, depth, height, matThick, toolbitDiam, pixelsPerMm) 
         ctx.save();
         ctx.translate(this.args.length, 0);
         ctx.rotate(Math.PI);
-        ctx.translate(-spacer, -this.args.height-spacer*3);
+        ctx.translate(-spacer, -this.args.height-spacer*4);
         this.rightLeg.draw(ctx, x, y);
         ctx.restore();
         
         ctx.save();
-        ctx.translate(spacer, spacer + this.args.height*2); // 1.5 really depends on angle
+        ctx.translate(spacer, 2*spacer + this.args.height*1.5); // 1.5 really depends on angle
         this.backBar.draw(ctx, x, y);
         
-        ctx.translate(0, spacer + 0.75*this.args.height); // ugh, layout!
+        ctx.translate(0, spacer + 0.5*this.args.height); // ugh, layout!
         this.frontBar.draw(ctx, x, y);
         ctx.restore();
         

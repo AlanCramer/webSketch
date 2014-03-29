@@ -29,11 +29,6 @@
 
 
 
-var onGenGCode = function() {
-
-    var pixelsPerMm = $("#pixelsPerMm").val()-0;
-    MyApp.path.generateGCode(pixelsPerMm);	
-}
 
 
 
@@ -41,12 +36,6 @@ var onLoadImage = function() {
 
     var fileElem = $("#openimage");
     fileElem.click();
-}
-
-var onChangeUnits = function (value) {
-
-    $("#pixelsPerMm").val(value);
-    drawBoundaryCanvas(value);
 }
 
 
@@ -136,6 +125,8 @@ var buildCutoutsAndLayout = function() {
 
 var onBoxDimChange = function() {
       
+    clearPathCanvas();
+    
     buildCutoutsAndLayout();
     
     var canvas = document.getElementById('mycanvas');
@@ -260,7 +251,7 @@ $(document).ready(function() {
         </tr>
         <tr>
           <td>Toolbit Diam</td>
-          <td><input class="toolbit" id="toolbitDiam" type="number" value="3.175" ></td>
+          <td><input class="boxDim" id="toolbitDiam" type="number" value="3.175" ></td>
         </tr>
         <tr>
           <td>Pixels per mm</td>
@@ -284,12 +275,12 @@ $(document).ready(function() {
     <output id="list"></output>
 </div> <!-- inputs -->
 
-    <div style="position: relative;" width="410" height="410">
-        <canvas id="boundaryCanvas" width="410" height="410"
+    <div style="position: relative;" width="810" height="810">
+        <canvas id="boundaryCanvas" width="810" height="810"
             style="position: absolute; left: 250px; top: 0px; z-index: 0; "></canvas>
-        <canvas id="mycanvas" width="400" height="400" 
+        <canvas id="mycanvas" width="800" height="800" 
             style="position: absolute; left:265px; top: 15px; z-index: 1; border:1px solid red"></canvas>    
-        <canvas id="pathcanvas" width="400" height="400" 
+        <canvas id="pathcanvas" width="800" height="800" 
             style="position: absolute; left:265px; top: 15px; z-index: 2;border:1px solid blue"></canvas>
     </div>
 </div>

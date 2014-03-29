@@ -94,47 +94,9 @@ function init() {
     scene.add( group );
 
     // axes
-//axes = new THREE.AxisHelper( 100 );
-//scene.add( axes );
-    
-    
-    // Triangle
-
-    var triangleShape = new THREE.Shape();
-    triangleShape.moveTo(  80, 20 );
-    triangleShape.lineTo(  40, 80 );
-    triangleShape.lineTo( 120, 80 );
-    triangleShape.lineTo(  80, 20 ); // close path
-
-
-
-
-    // Square
-
-    var sqLength = 80;
-
-    var squareShape = new THREE.Shape();
-    squareShape.moveTo( 0,0 );
-    squareShape.lineTo( 0, sqLength );
-    squareShape.lineTo( sqLength, sqLength );
-    squareShape.lineTo( sqLength, 0 );
-    squareShape.lineTo( 0, 0 );
-
-
-    // Spline shape + path extrusion
-
-    var splinepts = [];
-    splinepts.push( new THREE.Vector2 ( 350, 100 ) );
-    splinepts.push( new THREE.Vector2 ( 400, 450 ) );
-    splinepts.push( new THREE.Vector2 ( -140, 350 ) );
-    splinepts.push( new THREE.Vector2 ( 0, 0 ) );
-
-    var splineShape = new THREE.Shape(  );
-    splineShape.moveTo( 0, 0 );
-    splineShape.splineThru( splinepts );
-
-    // splineShape.debug( document.getElementById("debug") );
-
+    //axes = new THREE.AxisHelper( 100 );
+    //scene.add( axes );
+     
     // TODO 3d path?
 
     var apath = new THREE.SplineCurve3();
@@ -143,46 +105,31 @@ function init() {
     apath.points.push(new THREE.Vector3(40, 220, 50));
     apath.points.push(new THREE.Vector3(200, 290, 100));
 
-
     var extrudeSettings = { amount: 20 }; // bevelSegments: 2, steps: 2 , bevelSegments: 5, bevelSize: 8, bevelThickness:5
-
-    // addShape( shape, color, x, y, z, rx, ry,rz, s );
-
-    //addShape( californiaShape, extrudeSettings, 0xffaa00, -300, -100, 0, 0, 0, 0, 0.25 );
 
     extrudeSettings.bevelEnabled = true;
     extrudeSettings.bevelSegments = 2;
     extrudeSettings.steps = 2;
 
-    //addShape( triangleShape, extrudeSettings, 0xffee00, -180, 0, 0, 0, 0, 0, 1 );
-    //addShape( squareShape, extrudeSettings, 0x0055ff, 150, 100, 0, 0, 0, 0, 1 );
-    
+        // this plus a call in animate gets the trackball controls going.     
+        // controls = new THREE.TrackballControls( camera );
 
-    // extrudeSettings.extrudePath = apath;
-    // extrudeSettings.bevelEnabled = false;	
-    // extrudeSettings.steps = 20;
+        // controls.rotateSpeed = 2.0;
+        // controls.zoomSpeed = 1.2;
+        // controls.panSpeed = 0.8;
 
-    //addShape( splineShape, extrudeSettings, 0x888888, -50, -100, -50, 0, 0, 0, 0.2 );
+        // controls.noZoom = false;
+        // controls.noPan = false;
 
-    //
+        // controls.staticMoving = true;
+        // controls.dynamicDampingFactor = 0.3;
 
-// this plus a call in animate gets the trackball controls going.     
-// controls = new THREE.TrackballControls( camera );
+        // controls.keys = [ 65, 83, 68 ];
 
-// controls.rotateSpeed = 2.0;
-// controls.zoomSpeed = 1.2;
-// controls.panSpeed = 0.8;
+        // controls.addEventListener( 'change', render );
 
-// controls.noZoom = false;
-// controls.noPan = false;
-
-// controls.staticMoving = true;
-// controls.dynamicDampingFactor = 0.3;
-
-// controls.keys = [ 65, 83, 68 ];
-
-// controls.addEventListener( 'change', render );
-
+    // or this gets orbit controls going - but all mouse events are taken - not
+    // just the ones in the div
     // controls = new THREE.OrbitControls( camera );
     // controls.addEventListener( 'change', render );
 
@@ -196,8 +143,6 @@ function init() {
     container.addEventListener( 'mousedown', onDocumentMouseDown, false );
     container.addEventListener( 'touchstart', onDocumentTouchStart, false );
     container.addEventListener( 'touchmove', onDocumentTouchMove, false );
-
-    //
 
     window.addEventListener( 'resize', onWindowResize, false );
 
@@ -284,8 +229,6 @@ function onDocumentTouchMove( event ) {
 
 }
 
-//
-
 function animate() {
 
     requestAnimationFrame( animate );
@@ -297,6 +240,8 @@ function render() {
 
     group.rotation.y += ( targetXRotation - group.rotation.y ) * 0.05;
     group.rotation.x += ( targetYRotation - group.rotation.x ) * 0.05;
+    
+    //group.rotation.z += ( targetXRotation - group.rotation.z ) * 0.05;
 
     renderer.render( scene, camera );
 

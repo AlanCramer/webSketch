@@ -8,7 +8,7 @@
 
 
 <script src="../makerApp.js"></script> 
-<script src="laptopStand.js"></script>
+<script src="testParts.js"></script>
 
 <script src="../toolpathing/layoutCutoutUtil.js"></script>
 <script src="../toolpathing/DirectionMap.js"></script>
@@ -74,12 +74,12 @@
     <output id="list"></output>
 </div> <!-- inputs -->
 
-    <div style="position: relative;" width="810" height="410">
-        <canvas id="boundaryCanvas" width="810" height="410"
+    <div style="position: relative;" width="410" height="410">
+        <canvas id="boundaryCanvas" width="410" height="410"
             style="position: absolute; left: 250px; top: 0px; z-index: 0; "></canvas>
-        <canvas id="mycanvas" width="800" height="400" 
+        <canvas id="mycanvas" width="400" height="400" 
             style="position: absolute; left:265px; top: 15px; z-index: 1; border:1px solid red"></canvas>    
-        <canvas id="pathcanvas" width="800" height="400" 
+        <canvas id="pathcanvas" width="400" height="400" 
             style="position: absolute; left:265px; top: 15px; z-index: 2;border:1px solid blue"></canvas>
     </div>
 </div>
@@ -112,25 +112,25 @@ var onBoxDimChange = function() {
 $(document).ready(function() {
 
     // todo - where does this belong?
-    var laptopStandApp = new MakerApp();
+    var makerApp = new MakerApp();
     
     var makerAppObj = {};
-    makerAppObj.title = "Laptop Stand Maker";    
+    makerAppObj.title = "Test Parts Maker";    
     makerAppObj.inputs = [
         {
             name: "Length",
             type: "number",
-            value: "300",
+            value: "30",
         },
         {
-            name: "Depth",
+            name: "Width",
             type: "number",
-            value: "300",
+            value: "30",
         },
         {
-            name: "Height",
+            name: "Diameter",
             type: "number",
-            value: "75",
+            value: "40",
         },
         {
             name: "Material Thickness",
@@ -152,18 +152,18 @@ $(document).ready(function() {
         },
     ];
     
-    laptopStandApp.draw = function (canvas, paramObj) {
+    makerApp.draw = function (canvas, paramObj) {
 
         // <get the param values - js >
-        var lptp = new LaptopStand(paramObj.Length, paramObj.Depth, paramObj.Height, paramObj["Material Thickness"], paramObj["Toolbit Diam"], paramObj["Pixels per mm"]);
+        var lptp = new TestParts(paramObj.Length, paramObj.Width, paramObj.Diameter, paramObj["Material Thickness"], paramObj["Toolbit Diam"], paramObj["Pixels per mm"]);
         var canvas = document.getElementById("mycanvas");
         
         lptp.draw(canvas, 0,0);
     }
     
-    laptopStandApp.render(makerAppObj);
+    makerApp.render(makerAppObj);
     
-    MyApp.currentApp = laptopStandApp;
+    MyApp.currentApp = makerApp;
     //buildCanvases();
     
     // todo, this is duplicate from Box Maker
