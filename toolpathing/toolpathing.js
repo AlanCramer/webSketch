@@ -9,8 +9,19 @@ var initBoundryCanvas = function() {
 }
 
 var clearPathCanvas = function () {
-    var pathctx = pathcanvas.getContext('2d');
+    // todo: ack! js! where is pathcanvas defined?
+    var pathctx = pathcanvas.getContext('2d'); 
     pathctx.clearRect(0,0,pathcanvas.width, pathcanvas.height);
+}
+
+var clearDrawingCanvas = function () {
+    var dwgcan = document.getElementById("mycanvas");
+    var ctx = dwgcan.getContext('2d');
+   
+    ctx.save();
+    ctx.fillStyle = "white"; //"#ffffff";
+    ctx.fillRect(0,0,dwgcan.width, dwgcan.height);
+    ctx.restore();
 }
 
 var onGenGCode = function() {
