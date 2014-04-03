@@ -52,10 +52,21 @@ var makeCircleBy3Pts = function (a, b, c) {
     var cx = ((a.x*a.x + a.y*a.y)*(b.y-c.y) + (b.x*b.x + b.y*b.y)*(c.y-a.y) + (c.x*c.x+c.y*c.y)*(a.y-b.y))/tmp;
     var cy = ((a.x*a.x + a.y*a.y)*(c.x-b.x) + (b.x*b.x + b.y*b.y)*(a.x-c.x) + (c.x*c.x+c.y*c.y)*(b.x-a.x))/tmp;
 
-    var dnsq = ((b.x-a.x)*(b.x-a.x) + (b.y-a.y)*(b.y-a.y)) * ((b.x-c.x)*(b.x-c.x) + (b.y-c.y)*(b.y-c.y)) * ((c.x-a.x)*(c.x-a.x) + (c.y-a.y)*(c.y-a.y));
-    var dd = (a.x*b.y + b.x*c.y + c.x*a.y - a.x*c.y - b.x*a.y - c.x*b.y)^2;
     
-    var diam = Math.sqrt(dnsq)/dd;
+    var lenABsq = (b.x-a.x)*(b.x-a.x) + (b.y-a.y)*(b.y-a.y);
+    var lenBCsq = (b.x-c.x)*(b.x-c.x) + (b.y-c.y)*(b.y-c.y);
+    var lenCAsq = (c.x-a.x)*(c.x-a.x) + (c.y-a.y)*(c.y-a.y);
+
+    var diamNum = 2*Math.sqrt(lenABsq * lenBCsq * lenCAsq);
+    
+    var lenAB = Math.sqrt(lenABsq);
+    var lenBC = Math.sqrt(lenBCsq);
+    var lenCA = Math.sqrt(lenCAsq);
+
+    var diamDenomSq = (lenAB+lenBC+lenCA)*(-lenAB+lenBC+lenCA)*(lenAB-lenBC+lenCA)*(lenAB+lenBC-lenCA);
+    var diamDenom = Math.sqrt(diamDenomSq);
+    
+    var diam = diamNum/diamDenom; 
     
     return { center : {x:cx, y:cy}, radius : diam/2 };
 }
