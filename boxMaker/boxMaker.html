@@ -28,12 +28,34 @@
 <script>
 
 
-var buildToolpaths2 = function(toolpaths, incanvas, canvas){
+var onAssemble = function() {
 
-    var inCanvasImage = new AcGrey8Image(0,0);
-    inCanvasImage.initFromCanvas(incanvas); // todo, decide about js ctors
+    var path = MyApp.zOffPath;
     
-    inCanvasImage.draw(canvas);
+    if (!path || !path.meshes || path.meshes.length === 0)
+        return;
+        
+    var mesh0 = path.meshes[0];
+    var mesh1= path.meshes[1];
+        
+    var curpos = mesh0.position;
+
+    var mat4 = new THREE.Matrix4();
+    var vec3 = new THREE.Vector3();
+    var mat = mat4.makeRotationX(Math.PI/4);    
+
+    var lay = MyApp.layout;
+    mesh0.translateX(-lay.front.x);
+    mesh0.translateY(-lay.front.y);
+   
+    //mesh1.translateX(lay.left.x);
+    //mesh1.translateY(lay.left.y);
+    //mesh0.rotateOnAxis(new THREE.Vector3(1,0,0), Math.PI/2);
+    
+    //mesh0.translateX(lay.front.x);
+    //mesh0.translateY(lay.front.y); 
+    
+    
 }
 
 var buildCutoutsAndLayout = function() {
@@ -165,6 +187,7 @@ $(document).ready(function() {
 
     <button onclick=onCalcPath() >Calculate Tool Path</button>
     <button onclick=onGenGCode() >Generate G-Code</button>
+    <button onclick=onAssemble() >Assembly Instructions</button>
 
     <input id="unitSlider" type=range min=0 max=10 value=1 step="1" onchange=onChangeUnits(value)>
     <input id="resolutionSlider" type=range min=0.05 max=2 value=1 step=".05" onchange=onChangeResolution(value)>

@@ -104,7 +104,7 @@ var emptyThe3DScene = function() {
     }
 }
 
-
+// todo:  so not the  right place
 var onGo3D = function() {
 
     var matThick = $("#matthkbox").val()-0;
@@ -114,6 +114,7 @@ var onGo3D = function() {
     
     var path = buildZeroOffsetPath();
     path.addSimpleSegsAsMeshes(matThick);
+    MyApp.zOffPath = path;
     
     animate();
 }

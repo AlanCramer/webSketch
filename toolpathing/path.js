@@ -5,6 +5,8 @@ function Path() {
     this.pathSegments = []; // subarrays (by refs) of the above, collected in order 
     this.pathSimpleSegs = []; // reduced pathSegments
     
+    this.meshes = [];
+    
     this.scaleSimpleSegs = function(scale) {
     
         for (var i=0; i < this.pathSimpleSegs.length; ++i) {
@@ -51,8 +53,10 @@ function Path() {
             extrudeSettings.steps = 1;
 
             // todo  - remove positioning hack. 
-            addShape( nextShape, extrudeSettings, 0xBF936D, -150, 300, 0, Math.PI, 0, 0, 1 );
+            var mesh = addShape( nextShape, extrudeSettings, 0xBF936D, -150, 300, 0, Math.PI, 0, 0, 1 );
             //addLine( nextShape, 0x000000, -150, 300, 0, Math.PI, 0, 0, 1 );
+            
+            this.meshes.push(mesh);
         }
     }
     

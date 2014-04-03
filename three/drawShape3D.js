@@ -50,6 +50,7 @@ function addShape( shape, extrudeSettings, color, x, y, z, rx, ry, rz, s ) {
     mesh.scale.set( s, s, s );
     group.add( mesh );
 
+    return mesh;
 }
 
 function addLine(shape, color, x, y, z, rx, ry, rz, s) {
@@ -94,8 +95,8 @@ function init() {
     scene.add( group );
 
     // axes
-    //axes = new THREE.AxisHelper( 100 );
-    //scene.add( axes );
+    axes = new THREE.AxisHelper( 100 );
+    scene.add( axes );
      
     // TODO 3d path?
 

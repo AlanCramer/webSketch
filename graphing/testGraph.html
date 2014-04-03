@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script src="../jquery-2.1.0.min.js"></script>
+    <script src="graph.js"></script>
+
+
+</head>
+
+<body>
+
+<h1> Test Graph </h1>
+<canvas id="testCanvas" width="600" height="600" style= "border:1px solid black"></canvas>
+
+
+
+<script>
+$(document).ready(function() {
+      var myGraph = new Graph({
+        canvasId: 'testCanvas',
+        minX: -10,
+        minY: -10,
+        maxX: 10,
+        maxY: 10,
+        unitsPerTick: 1
+      });
+
+      myGraph.drawEquation(function(x) {
+        return 5 * Math.sin(x);
+      }, 'green', 3);
+
+      myGraph.drawEquation(function(x) {
+        return x * x;
+      }, 'blue', 3);
+
+      myGraph.drawEquation(function(x) {
+        return 1 * x;
+      }, 'red', 3);
+      
+      myGraph.drawParametricEqn(
+          function(x) {
+            return 3*Math.sin(2*Math.PI*x/10);
+          }, 
+          function(x) {
+            return 3*Math.cos(2*Math.PI*x/10);
+          }, 
+          'red', 3);
+      
+      myGraph.drawEquation(function(x) {
+        return Math.sqrt(25-x*x);
+     }, 'yellow', 3);
+     
+     var pts = [
+        {x:-3, y:5}, 
+        {x:-1, y:-2}, 
+        {x: 1, y:2},  
+        {x: 3, y:5},
+    ];
+    myGraph.drawPointSet(pts, 'green', 3);
+});
+</script>
+
+
+</body>
+

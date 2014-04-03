@@ -46,7 +46,7 @@ var makeLine = function (pt0, pt1) {
 
 // circle with center = {x,y} and radius 
 // a, b, c are points with {x, y}
-var makeCircle = function (a, b, c) {
+var makeCircleBy3Pts = function (a, b, c) {
 
     var tmp = 2*(a.x*(b.y-c.y) + b.x*(c.y-a.y) + c.x*(a.y - b.y));
     var cx = ((a.x*a.x + a.y*a.y)*(b.y-c.y) + (b.x*b.x + b.y*b.y)*(c.y-a.y) + (c.x*c.x+c.y*c.y)*(a.y-b.y))/tmp;
