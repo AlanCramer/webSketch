@@ -136,7 +136,7 @@ Graph.prototype.drawEquation = function(equation, color, thickness) {
     context.restore();
 };
 
-Graph.prototype.drawParametricEqn = function(equationX, equationY, color, thickness) {
+Graph.prototype.drawParametricEqn = function(equationX, equationY, tmin, tmax, titr, color, thickness) {
     var context = this.context;
     context.save();
     context.save();
@@ -145,10 +145,15 @@ Graph.prototype.drawParametricEqn = function(equationX, equationY, color, thickn
     context.beginPath();
     context.moveTo(equationX(this.minX), equationY(this.minX));
 
-    for(var x = this.minX + this.iteration; x <= this.maxX; x += this.iteration) {
-      context.lineTo(equationX(x), equationY(x));
+    for(var t = tmin + titr; t <= tmax; t += titr) {
+      context.lineTo(equationX(t), equationY(t));
     }
-
+    
+    // always connect up the last point
+    if (titr !== tmax) {
+        context.lineTo(equationX(tmax), equationY(tmax));
+    }
+    
     context.restore();
     context.lineJoin = 'round';
     context.lineWidth = thickness;
@@ -174,6 +179,19 @@ Graph.prototype.drawPointSet = function(ptArr, color, thickness) {
     }
 
     context.restore();
+};
+
+Graph.prototype.drawCircle = function(circle, color, thickness) {
+      
+    var xt = function(t) {
+        return circle.radius*Math.cos(2*Math.PI*t) + circle.center.x;
+    }; 
+    
+    var yt = function(t) {
+        return circle.radius*Math.sin(2*Math.PI*t) + circle.center.y;
+    };
+    
+    this.drawParametricEqn(xt, yt, 0, 1, .01, color, thickness);
 };
 
 Graph.prototype.transformContext = function() {

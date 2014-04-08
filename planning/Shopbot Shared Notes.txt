@@ -1,0 +1,28 @@
+
+Although I'm willing to slash my salary, I want to work my way back to Autodesk Salary. I'm willing to work with equity in companies.
+No equity in shopbot
+50% equity in paramcad
+100% in transforms
+
+I want ParamCAD to be a profitable company - at some point.
+
+I don't have to be CEO, but I do want to be a major stake holder. And I want to influence business strategy as well as technical infrastructure.
+
+
+Some Big Open Questions
+
+  Who's the boss?
+  Who pays for accounting, hardware, travel, attorney?
+  How is hiring managed?
+
+
+Should Transforms own some of the tech and license it to ParamCAD?
+
+Expecting at least one year, more than one developer
+
+Not seeing advantage to transforms?
+ 
+perhaps shopbot just contracts paramcad
+ 
+One last point: the 80/20 rule  - I showed 20% of the work that needs to happen
+   I don't want to give the impression that these tools are production ready.

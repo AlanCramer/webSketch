@@ -1,24 +1,17 @@
 
-// given an array of objects with properties x and y
-//    that represent a curve in the plane (ordered)
-// return a (shorter) array of points that approximates that curve
 
-var SimplifyCurve = function(ptArray, err) {
 
-    
-}
-
-var distPointPoint = function (p0, p1) {
+var distPtPt = function (p0, p1) {
     return Math.sqrt( (p1.x-p0.x)*(p1.x-p0.x) + (p1.y-p0.y)*(p1.y-p0.y));
 }
 
 // lineSeg = {p0, p1} where each pi = {x, y}
 var distPointLineseg = function (pt, lineseg) {
 
-    var line = makeLine(lineseg.p0, lineseg.p1);
+    var line = makeLineBy2Pts(lineseg.p0, lineseg.p1);
     var dline = distPointLine(pt, line);
-    var dp0 = distPointPoint(pt, lineseg.p0);
-    var dp1 = distPointPoint(pt, lineseg.p1);
+    var dp0 = distPtPt(pt, lineseg.p0);
+    var dp1 = distPtPt(pt, lineseg.p1);
 
     return Math.min(dline, dp0, dp1);
 }
@@ -35,7 +28,8 @@ var distPointLine = function (pt, line) {
 }
 
 // line has form ax+by+c=0
-var makeLine = function (pt0, pt1) {
+// todo : error handling
+var makeLineBy2Pts = function (pt0, pt1) {
 
     var a = pt0.y - pt1.y;
     var b = pt1.x - pt0.x;
@@ -43,6 +37,22 @@ var makeLine = function (pt0, pt1) {
     
     return {a:a,b:b,c:c};
 }
+
+// line has form ax+by+c=0
+// todo : error handling
+var makePerpBisectLine = function (p0, p1) {
+
+    var bisectPt = { x:(p0.x + p1.x)/2, y:(p0.y + p1.y)/2 };
+
+    // rotate p1 (or p0) 90deg about bisectPt
+    // translate bisectPt to origin, multiply by 2x2 [0 -1, 1 0], and add back on bisectPt
+    // I get, for (c,d) 90 about (a, b), I get (b+a-d, c+b-a)
+    // so for p1 90 about bisectPt
+    var otherPt = {x:bisectPt.y + bisectPt.x -p1.y, y:p1.x + bisectPt.y - p1.x};
+    
+    return makeLineBy2Pts(bisectPt, otherPt);
+}
+
 
 // circle with center = {x,y} and radius 
 // a, b, c are points with {x, y}
@@ -79,6 +89,44 @@ var distancePtCircle = function (pt, cir)
     var d = Math.sqrt(dsq);
     
     return Math.abs(d - cir.radius);
+}
+
+// intersect the circle with the line through p0 and p1.
+// return two solutions, as array of pts
+var intersectLineCircle = function (p0, p1, c)
+{
+    var tol = 1e-6;
+    if (distPtPt(p0, p1) < tol  
+        || c.radius < tol) {
+        return false;
+    }
+
+    var cx = c.center.x;
+    var cy = c.center.y;
+    var cr = c.radius;
+
+    var a = Math.pow(p1.x - p0.x, 2) + Math.pow(p1.y-p0.y, 2);
+    var b = 2*(p1.x - p0.x)*(p0.x - cx) + 2*(p1.y - p0.y)*(p0.y - cy);
+    var c = Math.pow(p0.x - cx, 2) + Math.pow(p0.y - cy, 2) - Math.pow(cr, 2);
+
+    var bb4ac = b*b - 4*a*c;
+    if (bb4ac < 0) {
+        return false;
+    }
+    
+    var d = Math.sqrt(bb4ac);
+
+    var t0 = (-b + d)/(2*a);
+    var t1 = (-b - d)/(2*a);
+
+    var xt0 = (p1.x - p0.x)*t0 + p0.x;
+    var yt0 = (p1.y - p0.y)*t0 + p0.y;
+
+    var xt1 = (p1.x - p0.x)*t1 + p0.x;
+    var yt1 = (p1.y - p0.y)*t1 + p0.y;
+
+    // return two solutions s0 and s1
+    return [{x:xt0, y:yt0}, {x:xt1, y:yt1}];
 }
 
 

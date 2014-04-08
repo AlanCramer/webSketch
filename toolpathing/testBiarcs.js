@@ -21,14 +21,8 @@ testBiarcs = function() {
     var eps = .001; // todo: what should this be? seems like a couple of iterations is pretty good
     var circ = findBestCircleFit(pts, eps);
     
-    myGraph.drawParametricEqn(
-        function(x) {
-            return circ.radius*Math.sin(2*Math.PI*x/5) + circ.center.x;
-        }, 
-        function(x) {
-            return circ.radius*Math.cos(2*Math.PI*x/5) + circ.center.y;
-        }, 
-        'green', 2
+    myGraph.drawCircle(
+        circ, 'green', 2
     );
 }
 

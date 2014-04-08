@@ -45,6 +45,7 @@ $(document).ready(function() {
           function(x) {
             return 3*Math.cos(2*Math.PI*x/10);
           }, 
+          0, 10, .2, 
           'red', 3);
       
       myGraph.drawEquation(function(x) {
@@ -58,6 +59,8 @@ $(document).ready(function() {
         {x: 3, y:5},
     ];
     myGraph.drawPointSet(pts, 'green', 3);
+    
+    myGraph.drawCircle({center: {x: 5, y:-6}, radius:2}, 'blue', 6);
 });
 </script>
 

@@ -57,12 +57,15 @@ findMminMmax = function(ptArr) {
     var mmin, mi, mmax;
     var circ;
     
+    var perp = makePerpBisectLine(st, en);
+    
     mmin = Number.MAX_VALUE;
     mmax = Number.MIN_VALUE;
 
     for (var i = 1; i < last; ++i) {
         circ = makeCircleBy3Pts(st, ptArr[i], en);
         
+        // assumes y axis - todo : I guess this should be a param value on the line
         mi = circ.center.y + circ.radius;
         
         if (mi < mmin)

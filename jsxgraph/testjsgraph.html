@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script src="../jquery-2.1.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="jsxgraph.css" />
+    <script src="jsxgraphcore.js"></script>
+
+    
+</head>
+
+<body>
+
+<h1> Test JS Graph </h1>
+<div id="box" class="jxgbox" style="width:400px; height:400px;"></div>
+
+<script>
+$(document).ready(function() {
+    var board = JXG.JSXGraph.initBoard('box', {boundingbox: [-2, 4, 6, -4], axis:true, grid:true});
+    //var b = JXG.JSXGraph.initBoard('jxgbox', {boundingbox: [-5, 2, 5, -2]});
+    var p1 = board.createElement('point',[3,3], {name:'A',size: 4, face: 'o'});
+    var p2 = board.createElement('point',[2,-1], {name:'B',size: 4, face: 'o'});
+    var ci = board.createElement('circle',["A","B"], {strokeColor:'#00ff00',strokeWidth:2});
+});
+</script>
+
+
+</body>
+

@@ -1,0 +1,55 @@
+
+
+Three Entities
+
+  My Company - working name "Transforms"
+  Shared Company - working name "ParamCAD"
+  Shopbot
+  
+  
+What needs to be Built 
+
+  Community WebSite
+    Focused at HandiBot Owners
+    Basic Apps (HandiApps - provided by us)
+        Export
+            image
+            dxf (to import into Vectric or other CAM)
+            gcode (with additional ui)
+        Examples
+            Hole cutter
+            Load greyscale image
+        
+    Utilities for New Apps 
+        Maker Extenders (this is less than the MakerMaker Env)
+        Image to GCode API (no ui)
+        Image to GCode with UI
+        Tiling
+        Inlay Tool (?)        
+    
+    MakerMaker Environment
+        This will enable the creation of HandiDesigns
+        
+    HandiDesigns (some built by us, some by the community)
+        Examples
+            Chair Maker
+            Art Piece Maker
+            Box with FanciJoints            
+            Guitar Peghead
+            Simple EggCrater
+    
+    FanciApps (these would be built by the community - we are providing sharing/rating site)
+        Hosted on website with ratings and reviews
+            Functionality of nitrc.org with updated ui
+        Examples
+            Drawing Utilities
+            Pick and Place
+            HandiAccessory Support
+                laser scanner
+                sensors
+            WikiHouse Designer
+            
+    Tighter integration with 100K Garages
+    
+    
+    
