@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script src="jquery-2.1.0.min.js"></script>
+    
+    <script src="toolpathing/DirectionMap.js"></script>
+    <script src="toolpathing/acGreyImage.js"></script>
+    <script src="toolpathing/distTrans.js"></script>
+    <script src="toolpathing/Vectorize.js"></script>
+    <script src="toolpathing/mathUtil.js"></script>
+    <script src="toolpathing/toolpathing.js"></script>
+    
+
+    <link rel="stylesheet" href="testMAT.css" />
+</head>
+
+<body>
+
+<h1> Test Medial Axis Transform </h1>
+<div>
+<button onclick=onLoadImage() >Load Image</button>
+</div>
+<input type="file" id="openimage" name="imagefile" accept="image/*" style="display:none"/>
+<output id="list"></output>
+
+<canvas id="inputcanvas" width="200" height="200"></canvas>
+<canvas id="dtcanvas" width="200" height="200"></canvas>
+<canvas id="matcanvas" width="200" height="200"></canvas>
+
+<script>
+
+// weird trick to push the invisible button
+// which fires the event listener to call handleFileSelect
+var onLoadImage = function() {
+
+    var fileElem = $("#openimage");
+    fileElem.click();
+}
+
+function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+    var file = files[0];
+    
+    var fileReadAsDataUrl = new FileReader();
+    fileReadAsDataUrl.onload = (function(progEvt) {
+        console.log("in data url reader");
+        var imageAsDataUrl = progEvt.target.result;
+        
+        var img = new Image();
+        
+        img.src = progEvt.target.result;
+        MyApp.inputImage = img;
+        
+        onImageLoaded(img);
+    });
+    fileReadAsDataUrl.readAsDataURL(file); 
+    
+}
+
+function onImageLoaded(img) {
+
+    // draw input image
+    var incanvas = document.getElementById('inputcanvas');
+    var ctx = incanvas.getContext('2d');
+    ctx.fillStyle = "white";
+    ctx.fillRect(0,0, incanvas.width, incanvas.height);
+    ctx.drawImage(img, 0, 0); // ,canvas.width, canvas.height);
+
+    // convert to acgrey
+    var inputImage = new AcGrey8Image(incanvas.width,incanvas.height);
+    inputImage.initFromCanvas(incanvas); // todo, decide about js ctors
+    
+    // compute dt
+    var dtcanvas = document.getElementById('dtcanvas');
+    var dt = new AcGrey16Image(dtcanvas.width, dtcanvas.height);
+    computeDistTrans(inputImage, dt);    
+
+    dt.draw(dtcanvas, 0, 0);
+    
+    // compute mat
+    var mat = dt.copy();
+    
+    var isMaxIn4Nbr = function (nbr) {
+        if (   nbr.cc >= nbr.nn 
+            && nbr.cc >= nbr.ee  
+            && nbr.cc >= nbr.ss  
+            && nbr.cc >= nbr.ww) {
+            return nbr.cc;
+        }
+        
+        return 0;
+    }; 
+    
+    mat.convolve3x3(dt, isMaxIn4Nbr);
+    
+    var matcanvas = document.getElementById('matcanvas');
+    mat.draw(matcanvas);
+    
+}
+
+</script>
+
+<script>
+$(document).ready(function() {
+
+    MyApp = {};
+    document.getElementById('openimage').addEventListener('change', handleFileSelect, false);
+    
+});
+</script>
+
+
+</body>
+

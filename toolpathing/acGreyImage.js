@@ -187,6 +187,20 @@ AcGreyImage.prototype.draw = function(canvas, xPos, yPos) {
     imageData.data.set(buf8);
     ctx.putImageData(imageData, 0, 0);
 }
+   
+// call the input function on the neighborhood at each pixel in img
+// set the value in this to the returned value   
+AcGreyImage.prototype.convolve3x3 = function(img, fn) {
+    
+    for (var y = 1; y < this.height; ++y) {
+        for (var x = 1; x < this.width; ++x) {
+        
+            var nbr = img.getNbrhd(x, y);
+            var val = fn(nbr);
+            this.setAt(x, y, val);
+        }  
+    }
+}   
     
 //private:
     // height is 0 to 255, littleEndian is a bool

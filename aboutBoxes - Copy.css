@@ -1,0 +1,46 @@
+body {
+   margin: 2%;
+   padding: 0;
+
+}
+#container {
+   margin: 0%;
+   padding: 2%;
+   width: 95%;
+}
+.left, .right {
+   float: left;
+   width: 46.5%;
+   margin: 0% 0 0% 0%;
+   padding: 1%;
+  /*  border: 1px solid #00f; */
+}
+.right {
+   float: right;
+   width: 42%;
+   margin: 0% 0% 0% 0;
+}
+
+img {
+
+    border: 6px solid #428bca;
+    width: 110%;
+}
+
+#chairImg {
+    background-color: #bcf;
+}
+
+.clear {
+   height: 0;
+   font-size: 1px;
+   margin: 0;
+   padding: 0;
+   line-height: 0;
+   clear: both;
+}
+
+#buttonRow {
+    margin:  20px;
+    float: left;
+}

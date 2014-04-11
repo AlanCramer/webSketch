@@ -1,6 +1,4 @@
 
-// forwards
-var AcGrey16Image;
 
 // g(i) = G(i, y) for some fixed y
 // Sep(i, u) = (u^2 - i^2 +g(u)^2-g(i)^2) div (2(u-i))  where div is integer division
@@ -20,6 +18,7 @@ function EDT_f(G, y, x, i) {
 }
 
 //void DistTransUtil::ComputeDistTrans(const AcImage &in, AcImage &dt)
+// todo: error checking, what if inImg is not an image, what if it's not the same size as dt?
 function computeDistTrans(inGreyImg, dt) {
 
     "use strict";
