@@ -80,7 +80,7 @@ findMminMmax = function(ptArr) {
 
 // find circ that minimizes max E_inf dist from ptArr
 // requires ptArr[0] = (-a, 0) and ptArr[end] = (a, 0)
-_findBestCircleFit = function(ptArr, epsilon) {
+_findBestArcYVal = function(ptArr, epsilon) {
 
     var intvl = findMminMmax(ptArr);
     var ma, mb;
@@ -95,10 +95,10 @@ _findBestCircleFit = function(ptArr, epsilon) {
     }
     
     var mbar = (intvl.max + intvl.min)/2;
-    return makeCircleBy3Pts(ptArr[0], {x:0, y:mbar}, ptArr[ptArr.length - 1]);
+    return mbar;
+    //return makeCircleBy3Pts(ptArr[0], {x:0, y:mbar}, ptArr[ptArr.length - 1]);
 }
 
-// containing the endpoints! Should be called findBestCircleContatiningEndpoints
 findBestCircleFit = function(pts, epsilon) {
 
     // copy input array
@@ -134,7 +134,8 @@ findBestCircleFit = function(pts, epsilon) {
         trfPts[iPt].y = trfPts[iPt].y - midpt.y;
     }    
     
-    var circ = _findBestCircleFit(trfPts, epsilon);
+    var arcY = _findBestArcYVal(trfPts, epsilon);
+    var circ = makeCircleBy3Pts(trfPts[0], {x:0, y:arcY}, trfPts[end]);
     
     // finally, transform the circle back
     circ.center.x = circ.center.x + midpt.x;
