@@ -28,6 +28,10 @@
 <canvas id="dtcanvas" width="200" height="200"></canvas>
 <canvas id="matcanvas" width="200" height="200"></canvas>
 
+<div id="statbar">
+Status Bar
+</div>
+
 <script>
 
 // weird trick to push the invisible button
@@ -75,6 +79,7 @@ function onImageLoaded(img) {
     var dtcanvas = document.getElementById('dtcanvas');
     var dt = new AcGrey16Image(dtcanvas.width, dtcanvas.height);
     computeDistTrans(inputImage, dt);    
+    MyApp.dt = dt;
 
     dt.draw(dtcanvas, 0, 0);
     
@@ -82,10 +87,8 @@ function onImageLoaded(img) {
     var mat = dt.copy();
     
     var isMaxIn4Nbr = function (nbr) {
-        if (   nbr.cc >= nbr.nn 
-            && nbr.cc >= nbr.ee  
-            && nbr.cc >= nbr.ss  
-            && nbr.cc >= nbr.ww) {
+        if (   ( nbr.cc > nbr.nn && nbr.cc > nbr.ss )
+            || ( nbr.cc > nbr.ee && nbr.cc > nbr.ww ) ){
             return nbr.cc;
         }
         
@@ -93,6 +96,7 @@ function onImageLoaded(img) {
     }; 
     
     mat.convolve3x3(dt, isMaxIn4Nbr);
+    MyApp.mat = mat;
     
     var matcanvas = document.getElementById('matcanvas');
     mat.draw(matcanvas);
@@ -109,6 +113,51 @@ $(document).ready(function() {
     
 });
 </script>
+
+
+<script>
+      function writeMessage(canvas, message) {
+//        var context = canvas.getContext('2d');
+//        context.clearRect(0, 0, canvas.width, canvas.height);
+//        context.font = '18pt Calibri';
+//        context.fillStyle = 'black';
+ //       context.fillText(message, 10, 25);
+          var statbar = document.getElementById('statbar');
+          statbar.innerText = message;
+      }
+      function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: Math.floor(evt.clientX - rect.left),
+          y: Math.floor(evt.clientY - rect.top)
+        };
+      }
+      var canvas = document.getElementById('dtcanvas');
+      var context = canvas.getContext('2d');
+
+      canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+        
+        if (MyApp.dt) {
+            
+            var val = MyApp.dt.getAt(mousePos.x, mousePos.y);
+            message = message + "\nDistance Transform is: " + val;
+            
+            var nbrs = MyApp.dt.getNbrhd(mousePos.x, mousePos.y);
+            message = message + "\n" + nbrs.nw + "  " + nbrs.nn + "  " + nbrs.ne;
+            message = message + "\n" + nbrs.ww + "  " + nbrs.cc + "  " + nbrs.ee;
+            message = message + "\n" + nbrs.sw + "  " + nbrs.ss + "  " + nbrs.se;
+            
+            if (MyApp.mat) {
+                var matval = MyApp.mat.getAt(mousePos.x, mousePos.y);
+                message = message + "\nMedial Axis Trans: " + matval;
+            }
+        }
+        
+        writeMessage(canvas, message);
+      }, false);
+    </script>
 
 
 </body>

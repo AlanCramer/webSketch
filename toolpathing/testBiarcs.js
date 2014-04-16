@@ -11,18 +11,28 @@ testBiarcs = function() {
     });
 
     var pts = [
-        {x:-3, y:0}, 
+        {x:-2, y:0}, 
         {x:-1, y:4}, 
+        {x:0, y:-2},
         {x: 1, y:3},  
-        {x: 3, y:0},
+        {x: 2, y:-2},
     ];
     myGraph.drawPointSet(pts, 'red', 4);
 
     var eps = .001; // todo: what should this be? seems like a couple of iterations is pretty good
-    var circ = findBestCircleFit(pts, eps);
     
+    newPts = findBestCircleFit(pts, eps);
+    myGraph.drawPointSet(newPts, 'blue', 4);
+    
+    //var circ = _findBestCircleFit(newPts, eps);
+    
+    //myGraph.drawCircle(
+    //    circ, 'blue', 2
+    //);
+
+    var bestCirc = findBestCircleFit(pts, eps);
     myGraph.drawCircle(
-        circ, 'green', 2
+        bestCirc, 'red', 2
     );
 }
 

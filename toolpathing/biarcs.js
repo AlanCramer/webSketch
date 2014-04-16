@@ -79,8 +79,8 @@ findMminMmax = function(ptArr) {
 }
 
 // find circ that minimizes max E_inf dist from ptArr
-// todo: requires ptArr[0] = (-a, 0) and ptArr[end] = (a, 0)
-findBestCircleFit = function(ptArr, epsilon) {
+// requires ptArr[0] = (-a, 0) and ptArr[end] = (a, 0)
+_findBestCircleFit = function(ptArr, epsilon) {
 
     var intvl = findMminMmax(ptArr);
     var ma, mb;
@@ -97,6 +97,54 @@ findBestCircleFit = function(ptArr, epsilon) {
     var mbar = (intvl.max + intvl.min)/2;
     return makeCircleBy3Pts(ptArr[0], {x:0, y:mbar}, ptArr[ptArr.length - 1]);
 }
+
+// containing the endpoints! Should be called findBestCircleContatiningEndpoints
+findBestCircleFit = function(pts, epsilon) {
+
+    // copy input array
+    trfPts = pts.slice(0);
+    var pt0 = pts[0];
+    var end = pts.length-1;
+    var ptn = pts[end];
+    
+    // transform points so that pts[0] = (-a,0)  and pts[end] = (a,0)
+    // first rotate then we'll find a translation
+    // rotate about origin so that pt0 and ptn have same y val
+    var dy = ptn.y - pt0.y;
+    var dx = ptn.x - pt0.x;
+    var dist = distPtPt(pt0, ptn); 
+    var dyu = dy/dist;
+    var dxu = dx/dist;
+    
+    var rot = new Matrix2(dxu, dyu, -dyu, dxu);
+    var rotinv = new Matrix2(dxu, -dyu, dyu, dxu); // we'll need this later
+
+    // rotate by negative theta
+    for (var iPt = 0; iPt < pts.length; ++iPt) {
+        trfPts[iPt] = rot.multiplyVec(pts[iPt]);
+    }    
+
+    // now translate each pt by negative the midpoint vec
+    var midpt = makeMidPt(trfPts[0], trfPts[end]);
+    
+    // todo: avoid a loop by doing both at once
+    // another todo: are we making a geom lib or not? - this is a point operation
+    for (var iPt = 0; iPt < pts.length; ++iPt) {  
+        trfPts[iPt].x = trfPts[iPt].x - midpt.x;
+        trfPts[iPt].y = trfPts[iPt].y - midpt.y;
+    }    
+    
+    var circ = _findBestCircleFit(trfPts, epsilon);
+    
+    // finally, transform the circle back
+    circ.center.x = circ.center.x + midpt.x;
+    circ.center.y = circ.center.y + midpt.y;
+
+    circ.center = rotinv.multiplyVec(circ.center);
+   
+    return circ;
+}
+
 
 
 

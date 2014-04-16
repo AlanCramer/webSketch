@@ -38,11 +38,15 @@ var makeLineBy2Pts = function (pt0, pt1) {
     return {a:a,b:b,c:c};
 }
 
+var makeMidPt = function (p0, p1) {
+    return { x:(p0.x + p1.x)/2, y:(p0.y + p1.y)/2 };
+}
+
 // line has form ax+by+c=0
 // todo : error handling
 var makePerpBisectLine = function (p0, p1) {
 
-    var bisectPt = { x:(p0.x + p1.x)/2, y:(p0.y + p1.y)/2 };
+    var bisectPt = makeMidPt;
 
     // rotate p1 (or p0) 90deg about bisectPt
     // translate bisectPt to origin, multiply by 2x2 [0 -1, 1 0], and add back on bisectPt
