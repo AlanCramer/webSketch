@@ -4,6 +4,7 @@ function Path() {
     this.ptdirs = []; // array of positions and dir, x,y,dir
     this.pathSegments = []; // subarrays (by refs) of the above, collected in order 
     this.pathSimpleSegs = []; // reduced pathSegments
+    this.pathArcSegs = []; // reduced arc approx
     
     this.meshes = [];
     
@@ -82,6 +83,17 @@ function Path() {
             this.pathSimpleSegs.push(simpSeg);
         }
     } 
+    
+    this.buildArcInterp = function(err) {
+            
+        var i, simpArc;
+        
+        for (i=0; i < this.pathSegments.length; ++i) {
+
+            simpArc = DouglasPeuckerCircs(this.pathSegments[i], err);            
+            this.pathArcSegs.push(simpArc);
+        }
+    }
     
     var getGCodeMoveTo = function(pt, zVal, pixelsPerMm) {
             
@@ -162,8 +174,21 @@ function Path() {
         
         var ctx = canvas.getContext('2d');
         var i;
-        for (i=0; i < this.pathSimpleSegs.length; ++i) {
+        var end = this.pathSimpleSegs.length;
+        
+        for (i=0; i < end; ++i) {
             drawPtDirsWithLines(ctx, this.pathSimpleSegs[i]);
+        }
+    }
+    
+    this.drawArcSegs = function(canvas) {
+        
+        var ctx = canvas.getContext('2d');
+        var i;
+        var end = this.pathArcSegs.length;
+        
+        for (i=0; i < end; ++i) {
+            drawPtsWithArcs(ctx, this.pathArcSegs[i]);
         }
     }
     
@@ -177,16 +202,34 @@ function Path() {
         for (i=1; i < ptdirs.length-1; ++i) {
             
             iPtDir = ptdirs[i];
-            if (iPtDir.circleRad > 0) // js abuse, being too subtle todo: make it explicit
-            {
-                //ctx.arcTo(ptdirs[i-1].x, ptdirs[i-1].y, ptdirs[i+1].x, ptdirs[i+1].y, iPtDir.circleRad);
-            }
-            else
-            {
-                ctx.lineTo(iPtDir.x, iPtDir.y);  
-            }
+            ctx.lineTo(iPtDir.x, iPtDir.y);  
         }
         ctx.lineTo(ptdirs[0].x, ptdirs[0].y);
+        
+        ctx.stroke();
+    }
+    
+    var drawPtsWithArcs = function(ctx, pts) {
+            
+        var i, ipt, ipt1, ipt2;   
+        var end = pts.length-1;
+        
+        ctx.save();
+        
+        ctx.strokeStyle='rgb(150,0,0)';
+        ctx.lineWidth=4;
+        
+        ctx.beginPath(); 
+        
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (i=0; i < pts.length-2; i += 2) {
+            
+            ipt = pts[i];
+            ipt1 = pts[i+1];
+            ipt2 = pts[i+2];
+            
+            ctx.arcTo(ipt1.x, ipt1.y, ipt2.x, ipt2.y, ipt1.radius);  
+        }
         
         ctx.stroke();
     }

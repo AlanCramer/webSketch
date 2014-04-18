@@ -16,6 +16,7 @@ testBiarcs = function() {
         {x:0, y:-2},
         {x: 1, y:3},  
         {x: 2, y:-2},
+        {x: 3, y:3},
     ];
     myGraph.drawPointSet(pts, 'red', 4);
 
@@ -32,8 +33,9 @@ testBiarcs = function() {
 
     var bestCirc = findBestCircleFit(pts, eps);
     myGraph.drawCircle(
-        bestCirc, 'red', 2
+        bestCirc.circle, 'red', 2
     );
+
 }
 
 

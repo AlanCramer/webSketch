@@ -11,7 +11,7 @@ circToPtsErr = function(ptArr, circle) {
     for (var i = 0; i < ptArr.length; ++i) {
 
         // e_i(m) = min {d(V_i, P): P in G_m}
-        var curErr = distancePtCircle(ptArr[i], circle)
+        var curErr = distPtCirc(ptArr[i], circle)
 
         if (curErr > maxErr)
             maxErr = curErr;
@@ -140,10 +140,12 @@ findBestCircleFit = function(pts, epsilon) {
     // finally, transform the circle back
     circ.center.x = circ.center.x + midpt.x;
     circ.center.y = circ.center.y + midpt.y;
-
+    var arcmid = {x:0+midpt.x, y:arcY+midpt.y};
+    
     circ.center = rotinv.multiplyVec(circ.center);
+    arcmid = rotinv.multiplyVec(arcmid);
    
-    return circ;
+    return {circle:circ, arcpts:[pts[0], arcmid, pts[end]]};
 }
 
 

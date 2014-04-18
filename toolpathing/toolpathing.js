@@ -147,6 +147,7 @@ var onCalcPath = function() {
 
 //    path.scaleSimpleSegs(factor);
     path.drawSimpleSegments(pathcanvas);
+    //path.drawArcSegs(pathcanvas);
 //    path.draw(pathcanvas);
 
     MyApp.path = path;
@@ -165,5 +166,7 @@ var buildToolpaths3 = function(toolbitDiamInPix, incanvas){
     vectorizeDistanceTrf(dt, toolbitDiamInPix/2, path);
     
     path.buildSimpleSegs(1);
+    //path.buildArcInterp(2);
+    
     return path;
 }

@@ -85,7 +85,7 @@ var makeCircleBy3Pts = function (a, b, c) {
     return { center : {x:cx, y:cy}, radius : diam/2 };
 }
 
-var distancePtCircle = function (pt, cir)
+var distPtCirc = function (pt, cir)
 {
     var cc = cir.center;
     var dsq = (pt.x - cc.x)*(pt.x - cc.x) + (pt.y - cc.y)*(pt.y - cc.y);
@@ -132,6 +132,53 @@ var intersectLineCircle = function (p0, p1, c)
     // return two solutions s0 and s1
     return [{x:xt0, y:yt0}, {x:xt1, y:yt1}];
 }
+
+
+
+var DouglasPeuckerCircs = function(pointList, epsilon) {
+    // Find the point with the maximum distance
+    var dmax = 0;
+    var index = 0;
+    
+    var dC = 0;
+    var dCmax = 0;
+    var iC = 0;
+    var iRad = 0;
+    
+    var circInfo = findBestCircleFit(pointList, epsilon);
+    var circ = circInfo.circle;
+    
+    var end = pointList.length - 1;
+    var resultList = [];
+    
+    for (var i = 0; i <= end; ++i) {
+        
+        var d = distPtCirc(pointList[i], circ);
+        
+        if ( d > dmax ) {
+            index = i
+            dmax = d
+        }   
+    }
+        
+    // If max distance is greater than epsilon, recursively simplify
+    if ( dmax > epsilon ) {
+        // Recursive call
+        var recResults1 = DouglasPeuckerCircs(pointList.slice(0, index), epsilon);
+        var recResults2 = DouglasPeuckerCircs(pointList.slice(index,end), epsilon);
+ 
+        // Build the result list
+        resultList = recResults1;
+        resultList = resultList.concat(recResults2);
+    } else {
+        resultList.push(pointList[0]);
+        resultList.push({x:circInfo.arcpts[1].x, y:circInfo.arcpts[1].y, radius:circInfo.circle.radius});
+        resultList.push(pointList[end]);
+    }
+    // Return the result
+    return resultList;
+}
+
 
 
 var RamerDouglasPeucker = function(pointList, epsilon) {

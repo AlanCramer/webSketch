@@ -13,6 +13,8 @@
 <script src="../toolpathing/Vectorize.js"></script>
 <script src="../toolpathing/Path.js"></script>
 <script src="../toolpathing/mathUtil.js"></script>
+<script src="../toolpathing/biarcs.js"></script>
+<script src="../toolpathing/Matrix2.js"></script>
 <script src="../toolpathing/toolpathing.js"></script>
 
 <script src="../three/three.min.js"></script>
@@ -110,9 +112,9 @@ $(document).ready(function() {
         });
     });
     
-    $(".boxDim").change(function() {
-        onBoxDimChange();
-    });
+//    $(".boxDim").change(function() {
+//        onBoxDimChange();
+//    });
     
     function handleFileSelect(evt) {
         var files = evt.target.files; // FileList object
