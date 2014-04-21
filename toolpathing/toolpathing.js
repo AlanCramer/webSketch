@@ -208,7 +208,6 @@ var buildZeroOffsetPath = function() {
             
     // todo: this is hiding a bug - zero offset causes problems for the laptop stand        
     var path = buildToolpaths3(1.0, canvas)      
-    var path2 = buildToolpaths3(1.0, hidcanvas);
     
     return path;  
 }
@@ -222,19 +221,16 @@ var onCalcPath = function() {
             
     var res = document.getElementById("resolutionSlider");
     var resVal = res.value;
-    var factor = 1/resVal;
             
     var path = buildToolpaths3(toolbitDiam*pixelsPerMm, canvas); //hidcanvas); 
-    var path2 = buildToolpaths3(toolbitDiam*pixelsPerMm, hidcanvas); 
+    //var path2 = buildToolpaths3(toolbitDiam*pixelsPerMm, hidcanvas); 
     
     clearPathCanvas();
 
-//    path.scaleSimpleSegs(factor);
     path.drawSimpleSegments(pathcanvas);
-    path2.drawSimpleSegments(hidcanvas);
- //   drawtestsquare(hidcanvas);
+//    path2.drawSimpleSegments(hidcanvas);
+
     //path.drawArcSegs(pathcanvas);
-//    path.draw(pathcanvas);
 
     MyApp.path = path;
 }

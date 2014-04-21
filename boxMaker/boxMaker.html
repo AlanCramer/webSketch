@@ -92,15 +92,15 @@ var onBoxDimChange = function() {
     var canvas = document.getElementById('mycanvas');
     drawCutouts(canvas, MyApp.cutouts, MyApp.layout);
     
-    var hidcanvas = document.getElementById('hiddencanvas');
-    var hidctx = hidcanvas.getContext('2d');
+//    var hidcanvas = document.getElementById('hiddencanvas');
+//    var hidctx = hidcanvas.getContext('2d');
     
-    hidctx.save();
-    hidctx.scale(3,3);
+//    hidctx.save();
+//    hidctx.scale(3,3);
     
-    drawCutouts(hidcanvas, MyApp.cutouts, MyApp.layout);
+//    drawCutouts(hidcanvas, MyApp.cutouts, MyApp.layout);
 
-    hidctx.restore();
+//    hidctx.restore();
 }
 
 
@@ -229,8 +229,8 @@ $(document).ready(function() {
 &nbsp;&nbsp;Status Bar
 </div>
 
-    <canvas id="hiddencanvas" width="900" height="900" 
-        style="position: relative; border:1px solid blue; "></canvas>
+<!--     <canvas id="hiddencanvas" width="900" height="900" 
+        style="position: relative; border:1px solid blue; "></canvas> -->
 
 </body>
 </html>
