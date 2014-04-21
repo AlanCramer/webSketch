@@ -34,8 +34,10 @@ function Cutout(length, width, matThick, posSlots, fingerLength, fingerSpacing, 
         ctx.fill();
 
         if (this.posSlots === null)
+        {
+            ctx.restore();
             return;
-            
+        }    
         // draw finger slots - front and back opposite of left and right
 
         ctx.beginPath();
