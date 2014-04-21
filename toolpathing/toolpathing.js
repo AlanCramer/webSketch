@@ -36,6 +36,9 @@ var onChangeUnits = function (value) {
     drawBoundaryCanvas(value);
 }
 
+var onExportSTL = function() {
+
+}
 
 
 var onChangeResolution = function(value) {
@@ -110,7 +113,8 @@ var onGo3D = function() {
     var matThick = $("#matthkbox").val()-0;
     emptyThe3DScene();
     
-    MyApp.path.addSimpleSegsToScene();
+    if (MyApp.path)
+        MyApp.path.addSimpleSegsToScene();
     
     var path = buildZeroOffsetPath();
     path.addSimpleSegsAsMeshes(matThick);
@@ -118,6 +122,83 @@ var onGo3D = function() {
     
     animate();
 }
+
+var onExportOBJ= function() {
+
+    var matThick = $("#matthkbox").val()-0;
+    var path = buildZeroOffsetPath();
+    path.addSimpleSegsAsMeshes(matThick); // if exists and is up to date, this is not necessary
+    
+    var obj = meshesToObj(path.meshes);
+    exportToFile(obj, "boxmaker.obj");
+
+}
+
+var meshesToObj = function (meshes) {
+
+    var obj = "";
+    var vtxCt = 0;
+    var mesh;
+    
+//    obj = meshToObj(meshes[0]);
+    for (var imesh = 0; imesh < meshes.length; ++imesh) {
+    
+        mesh = meshes[imesh];
+        obj += meshToObj(mesh, vtxCt);
+        vtxCt += mesh.children[0].geometry.vertices.length; // todo: error checking
+    }
+    
+    return obj;
+}
+
+var meshToObj = function(mesh, vertexOffset) {
+    
+    // ToDo: why is the mesh a child of the top object?
+    // i.e., what is the three data structure exactly?
+    obj = geometryToObj(mesh.children[0].geometry, vertexOffset);
+    return obj;
+}
+
+// vertexOffset is for merging mutilple objs. 
+// The face refs will get the offset added supporting multiple files
+// in one obj. 
+// todo: material and other reference types 
+var geometryToObj = function (geometry, vertexOffset) {
+    var s = '';
+    for (i = 0; i < geometry.vertices.length; i++) {
+        s+= 'v '+(geometry.vertices[i].x) + ' ' +
+        geometry.vertices[i].y + ' '+
+        geometry.vertices[i].z + '\n';
+    }
+
+    for (i = 0; i < geometry.faces.length; i++) {
+
+        s+= 'f '+ (geometry.faces[i].a+1 + vertexOffset) + ' ' +
+        (geometry.faces[i].b+1 + vertexOffset) + ' '+
+        (geometry.faces[i].c+1 + vertexOffset);
+
+        if (geometry.faces[i].d !== undefined) {
+            s+= ' '+ (geometry.faces[i].d+1 +  vertexOffset);
+        }
+        s+= '\n';
+    }
+
+    return s;
+}
+
+var exportToFile = function(content, filename) {
+
+    var file = "data:text/csv;charset=utf-8,";
+    file += content;
+    
+    var encodedUri = encodeURI(file);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", filename);
+    
+    link.click();
+}
+
 
 var buildZeroOffsetPath = function() {
 
