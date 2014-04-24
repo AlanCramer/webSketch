@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script src="../jquery-2.1.0.min.js"></script>
+    <script src="../util/fileutil.js"></script>
+    <script src="mmMouseHandlers.js"></script>
+    <script src="mmInitOverlay.js"></script>
+    <script src="mmCmds.js"></script>
+    
+    <link rel="stylesheet" href="mmStyles.css" />
+    
+</head>
+
+<body>
+
+<h1> Maker Maker </h1>
+
+<div id="statusBar">Stat bar </div>
+
+<div style="width: 100%; border:1px solid blue">
+<div id="textFrame" style="width: 300px; float: left; border:1px solid green">
+
+    <button onclick=evaluateProgram() >Restart</button>    
+    <button onclick=saveProgram() >Save</button>    
+    <button onclick=publishProgram() >Publish</button>    
+
+    <textarea id = "progText" rows = "25" cols = "45" spellcheck="false" 
+        style= "font-family:Courier New, sans-serif; font-size:10px">
+ctx.fillStyle = 'black';
+ctx.fillRect(20, 50, 40, 60);
+</textarea>
+</div>
+
+<div id="picFrame" style="margin-left:320px; border:1px solid yellow">
+    <button onclick=cmdRect() id="rectBtn" >R</button>
+    <button onclick=cmdCirc(this) id="circBtn" >C</button>
+    <button onclick=cmdPtrn() id="ptrnBtn" >P</button>
+
+    <div id = "canvases" style="postion:relative">
+        <canvas id="picCanvas" width="400" height="400" style="position:absolute; border:1px solid red"></canvas>    
+        <canvas id="overlayCanvas" width="400" height="400" style= "position:absolute; border:1px solid purple; z-index=10"></canvas>
+    </div>            
+
+</div>
+
+
+</div>
+
+<script>
+
+var cmdState = {
+    active: "select",
+};
+
+var cmdRect = function () {
+
+    cmdState.active = "rect";
+}
+var cmdCirc = function (caller) {
+
+    cmdState.active = "circ";
+}
+var cmdPtrn = function () {
+
+}
+
+var saveProgram = function() {
+
+    var progBox = document.getElementById("progText");
+    var prog = progBox.value;
+    exportToFile(prog, "YourProg.mmjs");
+    
+}
+
+var evaluateProgram = function () {
+
+    var prog = document.getElementById("progText");
+    var lines = prog.value.split("\n");
+    
+    var canvas = document.getElementById("picCanvas");
+    var ctx = canvas.getContext('2d');
+    
+    ctx.save();
+    ctx.fillStyle = "white";
+    ctx.fillRect(0,0,canvas.width, canvas.height);    
+    ctx.restore();
+    
+    ctx.beginPath();
+  
+    eval(prog.value);
+//    for (iline =0; iline < lines.length; ++iline) {
+//        var line = lines[iline];
+//        if (line.length > 1) {
+//            var theline = line;
+//            eval (theline);
+//        }
+//    }
+
+}
+
+$(document).ready(function() {
+    
+    var overlay = document.getElementById("overlayCanvas");
+    mmInitOverlay(overlay);
+    evaluateProgram();
+});
+</script>
+
+
+</body>
+
