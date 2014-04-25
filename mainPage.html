@@ -20,6 +20,14 @@
     <link href="bootstrap-3.1.1-dist/css/carousel_alan.css" rel="stylesheet">
 
 <script>
+
+    onContactInfo = function(btn) {
+        var el = document.getElementById("contactInfo");
+        el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+        
+        
+    }
+
     onSignUp = function(btn) {
     
         var rect = btn.getBoundingClientRect();
@@ -85,13 +93,16 @@
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
                 <li class="active"><a href="#">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="https://www.youtube.com/watch?v=f-WIeiTDWaQ">About CNC</a></li>
+                <li><a href="#contact" onclick='onContactInfo(this)'>Contact</a></li>
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">More Ideas <b class="caret"></b></a>
                   <ul class="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
+                  
+                  <li><a href="https://www.youtube.com/watch?v=eiZ6DxULJhg">HandiBot builds Toolbox</a></li>
+                  <li><a href="https://www.youtube.com/watch?v=HInc-4Hc6BI">HandiBot Indexing</a></li>
+                  <li><a href="https://www.youtube.com/watch?v=8gGgeYOf6Ok">3D Assembly Instructions</a></li>
+
                     <li><a href="#">Something else here</a></li>
                     <li class="divider"></li>
                     <li class="dropdown-header">Nav header</li>
@@ -105,6 +116,13 @@
         </div>
 
       </div>
+    </div>
+    
+    <div id="contactInfo" onclick='onContactInfo(this)'>
+     <div>
+        <p> Alan Cramer </p>
+        <p> alan dot charles dot cramer at gmail dot com</p>
+     </div>
     </div>
     
 <div id="container" position="relative">    

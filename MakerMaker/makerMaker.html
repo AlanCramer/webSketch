@@ -73,30 +73,66 @@ var saveProgram = function() {
     
 }
 
+function receiveMessage(event)
+{
+//  if (event.origin !== "http://example.org:8080")
+//    return;
+    debugger;
+
+    event.source.postMessage(progInfo, "*"); // todo - targetOrigin
+
+}    
+
+var publishProgram = function() {
+
+    window.addEventListener("message", receiveMessage, false);
+
+    this.progInfo = {};
+    progInfo.title = "Yeah, Baby!";
+    progInfo.prog = getProgramAsString();
+    progInfo.inputs = [       
+        {
+            name: "Tool Bit Diam",
+            id: "toolbitDiam",
+            type: "number",
+            value: "3.175",
+        },
+        {
+            name: "Material Thickness",
+            type: "number",
+            value: "10",
+        },
+    ]
+    
+    // open a new window, it will postMessage to opener 
+    // when ready. We recieveMessage gets that, and responds with
+    // the program to set as the Maker.
+    var wnd = window.open('templateMaker.html');
+    //wnd.progInfo = progInfo;
+
+ 
+}
+
+var getProgramAsString = function (canvasname) {
+    var progSetUp = 
+        "var ctx = canvas.getContext('2d'); " + 
+        "ctx.save();" +
+        "ctx.fillStyle = 'white';" +
+        "ctx.fillRect(0,0,canvas.width, canvas.height);" +
+        "ctx.restore();" +
+        "ctx.beginPath();"
+
+    var progBox = document.getElementById("progText");
+    return (progSetUp + progBox.value);
+}
+
 var evaluateProgram = function () {
 
-    var prog = document.getElementById("progText");
-    var lines = prog.value.split("\n");
+    var prog = getProgramAsString();
+    var fn = new Function("canvas", "paramObj", prog);
     
     var canvas = document.getElementById("picCanvas");
-    var ctx = canvas.getContext('2d');
-    
-    ctx.save();
-    ctx.fillStyle = "white";
-    ctx.fillRect(0,0,canvas.width, canvas.height);    
-    ctx.restore();
-    
-    ctx.beginPath();
-  
-    eval(prog.value);
-//    for (iline =0; iline < lines.length; ++iline) {
-//        var line = lines[iline];
-//        if (line.length > 1) {
-//            var theline = line;
-//            eval (theline);
-//        }
-//    }
-
+    fn(canvas);
 }
 
 $(document).ready(function() {

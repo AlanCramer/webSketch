@@ -4,6 +4,7 @@
 
 var initBoundryCanvas = function() {
     var pixelsPerMm = $("#pixelsPerMm").val()-0;
+    pixelsPerMm = pixelsPerMm || 1;
     
     drawBoundaryCanvas(pixelsPerMm);
 }
@@ -70,8 +71,6 @@ var onChangeResolution = function(value) {
 
 
 var drawBoundaryCanvas = function(pixelsPerMm) {
-    
-    var pixelsPerMm = $("#pixelsPerMm").val()-0;
         
     var canvas = document.getElementById('boundaryCanvas');
     var ctx = canvas.getContext("2d");
@@ -203,11 +202,13 @@ var onCalcPath = function() {
 
     var toolbitDiam = $("#toolbitDiam").val()-0;
     var pixelsPerMm = $("#pixelsPerMm").val()-0;
+    pixelsPerMm = pixelsPerMm || 1;
+    
     var canvas = document.getElementById('mycanvas');
     var hidcanvas = document.getElementById('hiddencanvas');
             
     var res = document.getElementById("resolutionSlider");
-    var resVal = res.value;
+    var resVal = res ? res.value : 1;
             
     var path = buildToolpaths3(toolbitDiam*pixelsPerMm, canvas); //hidcanvas); 
     //var path2 = buildToolpaths3(toolbitDiam*pixelsPerMm, hidcanvas); 

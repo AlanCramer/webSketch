@@ -8,7 +8,6 @@
 
 
 <script src="../makerApp.js"></script> 
-<script src="laptopStand.js"></script>
 
 <script src="../toolpathing/layoutCutoutUtil.js"></script>
 <script src="../toolpathing/DirectionMap.js"></script>
@@ -22,16 +21,12 @@
 
 <script src="../three/three.min.js"></script>
 <script src="../three/drawShape3D.js"></script>
-<!-- <script src="../three/TrackballControls.js"></script>  -->
 <script src="../three/OrbitControls.js"></script>
 
 <script src="../drawingUtils.js"></script>
 
-
 <link rel="stylesheet" href="../boxMaker/pathImage.css" />
    
-
-
 </head>
 
 <body>
@@ -93,74 +88,49 @@ var onBoxDimChange = function() {
     MyApp.currentApp.draw(canvas, paramObj);
 }
 
-$(document).ready(function() {
+var setActiveApp = function(title, inputs, drawFunc) {
 
-    // todo - where does this belong?
-    var laptopStandApp = new MakerApp();
+    var newapp = new MakerApp();
     
     var makerAppObj = {};
-    makerAppObj.title = "Laptop Stand Maker";    
-    makerAppObj.inputs = [
-        {
-            name: "Length",
-            type: "number",
-            value: "300",
-        },
-        {
-            name: "Depth",
-            type: "number",
-            value: "300",
-        },
-        {
-            name: "Height",
-            type: "number",
-            value: "75",
-        },
-        {
-            name: "Material Thickness",
-            id:   "matthkbox",
-            type: "number",
-            value: "5",
-        },
-        {
-            name: "Toolbit Diam",
-            id:   "toolbitDiam",
-            type: "number",
-            value: "3.175",
-        },
-        {
-            name: "Pixels per mm",
-            id:   "pixelsPerMm",
-            type: "number",
-            value: "1",
-        },
-    ];
+    makerAppObj.title = title;
+    makerAppObj.inputs = inputs;
     
-    laptopStandApp.draw = function (canvas, paramObj) {
-
-        // <get the param values - js >
-        var lptp = new LaptopStand(paramObj.Length, paramObj.Depth, paramObj.Height, paramObj["Material Thickness"], paramObj["Toolbit Diam"], paramObj["Pixels per mm"]);
-        var canvas = document.getElementById("mycanvas");
-        
-        lptp.draw(canvas, 0,0);
-    }
-    
-    laptopStandApp.render(makerAppObj);
-    
-    MyApp.currentApp = laptopStandApp;
-    //buildCanvases();
-    
-    // todo, this is duplicate from Box Maker
-    buildContainer();    // 3D rendering div
-    init(); // 3D rendering environment
-    initBoundryCanvas();
+    newapp.draw = new Function("canvas", "paramObj", drawFunc);
+    newapp.render(makerAppObj);
     
     $(".boxDim").change(function() {
         onBoxDimChange();
     });
     
-    onBoxDimChange();
+    MyApp.currentApp = newapp;
+}
+
+
+function receiveMessage(event)
+{
+//  if (event.origin !== "http://example.org:8080")
+//    return;
     
+    var title = event.data.title; 
+    var inputs = event.data.inputs; 
+    var drawfn = event.data.prog;
+    
+    setActiveApp(title, inputs, drawfn);
+    onBoxDimChange();
+}    
+
+
+$(document).ready(function() {
+
+    window.addEventListener("message", receiveMessage, false);
+    window.opener.postMessage("ready", "*");
+    
+    // todo, this is duplicate from Box Maker
+    buildContainer();    // 3D rendering div
+    init(); // 3D rendering environment
+    initBoundryCanvas();
+     
 });
 </script>
 
