@@ -28,6 +28,9 @@
     <textarea id = "progText" rows = "25" cols = "45" spellcheck="false" 
         style= "font-family:Courier New, sans-serif; font-size:10px">
 ctx.fillStyle = 'black';
+var MaterialThickness = 5;
+var Bub = 2;
+var ToolBitDiam = 3.175;
 ctx.fillRect(20, 50, 40, 60);
 </textarea>
 </div>
@@ -80,8 +83,29 @@ function receiveMessage(event)
     debugger;
 
     event.source.postMessage(progInfo, "*"); // todo - targetOrigin
-
 }    
+
+// input is string of the user program
+var buildInputNameVals = function(prog) {
+
+// todo: "var bub = 2;" not working
+    var getVars = /\bvar\s+([a-zA-Z]\w+)\s*=\s*(\d*.?\d*);/;
+    var getVarsAll = /\bvar\s+([a-zA-Z]\w+)\s*=\s*(\d*.?\d*);/g;
+    var namevals = [];
+    
+    // gets the relevant lines
+    var varlines = prog.match(getVarsAll);
+    
+    for (var i = 0; i < varlines.length; ++i) {
+        var line = varlines[i];
+        var results = getVars.exec(line);
+
+        if (results) // todo: assert that results == 3
+            namevals.push({name: results[1], id: "toolbitDiam", type: "number", value: results[2]});
+    }
+    
+    return namevals;
+}
 
 var publishProgram = function() {
 
@@ -90,30 +114,40 @@ var publishProgram = function() {
     this.progInfo = {};
     progInfo.title = "Yeah, Baby!";
     progInfo.prog = getProgramAsString();
-    progInfo.inputs = [       
-        {
-            name: "Tool Bit Diam",
-            id: "toolbitDiam",
-            type: "number",
-            value: "3.175",
-        },
-        {
-            name: "Material Thickness",
-            type: "number",
-            value: "10",
-        },
-    ]
+    
+    var inputs = buildInputNameVals(getUserProgAsString());
+    progInfo.inputs = inputs;
+//   [       
+//        {
+//            name: "Tool Bit Diam",
+//            id: "toolbitDiam",
+//            type: "number",
+//            value: "3.175",
+//        },
+//        {
+//            name: "Material Thickness",
+//            type: "number",
+//            value: "10",
+//        },
+//    ]
     
     // open a new window, it will postMessage to opener 
     // when ready. We recieveMessage gets that, and responds with
     // the program to set as the Maker.
     var wnd = window.open('templateMaker.html');
     //wnd.progInfo = progInfo;
-
- 
 }
 
-var getProgramAsString = function (canvasname) {
+
+// what the user is seeing
+var getUserProgAsString = function () {
+
+    var progBox = document.getElementById("progText");
+    return progBox.value;
+}
+
+// with the external context
+var getProgramAsString = function () {
     var progSetUp = 
         "var ctx = canvas.getContext('2d'); " + 
         "ctx.save();" +
@@ -122,8 +156,8 @@ var getProgramAsString = function (canvasname) {
         "ctx.restore();" +
         "ctx.beginPath();"
 
-    var progBox = document.getElementById("progText");
-    return (progSetUp + progBox.value);
+    var userPart = getUserProgAsString();
+    return (progSetUp + userPart);
 }
 
 var evaluateProgram = function () {

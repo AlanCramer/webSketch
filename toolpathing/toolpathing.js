@@ -28,6 +28,7 @@ var clearDrawingCanvas = function () {
 var onGenGCode = function() {
 
     var pixelsPerMm = $("#pixelsPerMm").val()-0;
+    pixelsPerMm = pixelsPerMm || 1;
     MyApp.path.generateGCode(pixelsPerMm);	
 }
 
