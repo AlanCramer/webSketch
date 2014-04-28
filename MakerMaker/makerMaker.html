@@ -24,19 +24,56 @@
     <button onclick=evaluateProgram() >Restart</button>    
     <button onclick=saveProgram() >Save</button>    
     <button onclick=publishProgram() >Publish</button>    
+    
 
+    <div>
+        Input Parameters
+        <table id="inputParamTable">
+<!--             <caption> Input Parameters</caption> -->
+            <thead>
+                <tr>
+                    <th> Presented Name </th>
+                    <th> Variable Name </th>
+                    <th> Value </th>
+                    <th> Id </th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr onclick="onAddRow('inputParamTable')" >
+                    <th> click to add </th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </tfoot>
+            <tbody>
+                <tr>
+                    <td> Material Thickness
+                    <td> matThick
+                    <td> 5
+                    <td> matThick
+                </tr>
+                <tr>
+                    <td> Tool Bit Diameter
+                    <td> toolBitDiam
+                    <td> 3.175
+                    <td> toolbitDiam
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+    
+    Draw Function
     <textarea id = "progText" rows = "25" cols = "45" spellcheck="false" 
         style= "font-family:Courier New, sans-serif; font-size:10px">
 ctx.fillStyle = 'black';
-var MaterialThickness = 5;
-var Bub = 2;
-var ToolBitDiam = 3.175;
 ctx.fillRect(20, 50, 40, 60);
 </textarea>
 </div>
 
 <div id="picFrame" style="margin-left:320px; border:1px solid yellow">
-    <button onclick=cmdRect() id="rectBtn" >R</button>
+    <button onclick=cmdRect() id="rectBtn" >R</button>	
     <button onclick=cmdCirc(this) id="circBtn" >C</button>
     <button onclick=cmdPtrn() id="ptrnBtn" >P</button>
 
@@ -48,9 +85,31 @@ ctx.fillRect(20, 50, 40, 60);
 </div>
 
 
-</div>
+</div>	
 
 <script>
+
+var onAddRow = function(tableId) {
+
+    var table = document.getElementById(tableId).getElementsByTagName('tbody')[0];;
+    var rowCount = table.rows.length;
+    var row = table.insertRow(rowCount);
+    
+    var dispNameCell = row.insertCell(0);
+    var el = document.createElement('input');
+    el.value= "<display name>";
+    dispNameCell.appendChild(el);
+    
+    var varNameCell = row.insertCell(1);
+    el = document.createElement('input');
+    el.value = '<var name>';
+    varNameCell.appendChild(el);
+    
+    var valCell = row.insertCell(2);
+    el = document.createElement('input');
+    el.value = '<value>';
+    valCell.appendChild(el);
+}
 
 var cmdState = {
     active: "select",
@@ -115,21 +174,9 @@ var publishProgram = function() {
     progInfo.title = "Yeah, Baby!";
     progInfo.prog = getProgramAsString();
     
-    var inputs = buildInputNameVals(getUserProgAsString());
+    var inputs = getUserVarsAsObjArray();
+
     progInfo.inputs = inputs;
-//   [       
-//        {
-//            name: "Tool Bit Diam",
-//            id: "toolbitDiam",
-//            type: "number",
-//            value: "3.175",
-//        },
-//        {
-//            name: "Material Thickness",
-//            type: "number",
-//            value: "10",
-//        },
-//    ]
     
     // open a new window, it will postMessage to opener 
     // when ready. We recieveMessage gets that, and responds with
@@ -146,6 +193,50 @@ var getUserProgAsString = function () {
     return progBox.value;
 }
 
+var getUserVarsAsObjArray = function() {
+
+    var obj = {};
+    var res = [];
+    var table = document.getElementById('inputParamTable').getElementsByTagName('tbody')[0];
+    for (var i = 0, row; row = table.rows[i]; i++) {
+
+        // todo: this has got to be cleaned up - so many assumptions
+        var text = row.cells[0].innerText;
+        var textcell = text && text.length > 0;
+    
+        obj = {};
+        obj.display = textcell ? text : row.cells[0].childNodes[0].value;
+        obj.name = textcell ? row.cells[1].innerText : row.cells[1].childNodes[0].value;
+        obj.value = textcell ? row.cells[2].innerText : row.cells[2].childNodes[0].value;
+        obj.type = "number";
+        res.push(obj);
+    }
+    return res;
+}
+
+var getUserVarsAsString = function() {
+
+    var name, val;
+    var res = "";
+    var table = document.getElementById('inputParamTable').getElementsByTagName('tbody')[0];
+    for (var i = 0, row; row = table.rows[i]; i++) {
+    
+        // todo inputs are not playing nicely - maybe jeditable?
+        name = row.cells[1].innerText;
+        if (name && name.length > 0) {
+            
+           val = row.cells[2].innerText;
+        } else {
+        
+            name = row.cells[1].childNodes[0].value;
+            val = row.cells[2].childNodes[0].value;
+        }
+        
+         res = res + "var " + name + " = " + val + ";";
+    }
+    return res;
+}
+
 // with the external context
 var getProgramAsString = function () {
     var progSetUp = 
@@ -155,18 +246,41 @@ var getProgramAsString = function () {
         "ctx.fillRect(0,0,canvas.width, canvas.height);" +
         "ctx.restore();" +
         "ctx.beginPath();"
+        
+    var userVars = ""; // getUserVarsAsString();    
 
-    var userPart = getUserProgAsString();
-    return (progSetUp + userPart);
+    var userProg = getUserProgAsString();
+    
+    return (progSetUp + userVars + userProg);
 }
 
 var evaluateProgram = function () {
 
     var prog = getProgramAsString();
-    var fn = new Function("canvas", "paramObj", prog);
     
     var canvas = document.getElementById("picCanvas");
-    fn(canvas);
+    
+    var inputs = getUserVarsAsObjArray();
+    var inputNames = inputs.map(function(elem) { 
+                                    return elem.name;
+                                }).join(",");
+                            
+    var inputVals = [];
+  
+    for (var i = 0; i < inputs.length; ++i) {
+        inputVals.push(inputs[i].value);
+    }
+//    inputs.each(function() { 
+//                    inputVals.push(this.value);
+//                });
+    
+    var drawAsString = "function(canvas, " + inputNames + ") {" + prog + "};"; 
+    
+    eval("var fn = " + drawAsString);
+    
+    var args = [canvas];
+    args = args.concat(inputVals);
+    fn.apply(null, args);
 }
 
 $(document).ready(function() {
