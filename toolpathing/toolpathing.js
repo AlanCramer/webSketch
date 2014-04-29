@@ -202,6 +202,8 @@ var buildZeroOffsetPath = function() {
 var onCalcPath = function() {
 
     var toolbitDiam = $("#toolbitDiam").val()-0;
+    toolbitDiam = toolbitDiam || 5; // todo, this is a hack hiding a bug
+    
     var pixelsPerMm = $("#pixelsPerMm").val()-0;
     pixelsPerMm = pixelsPerMm || 1;
     
