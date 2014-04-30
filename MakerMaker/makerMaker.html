@@ -269,7 +269,7 @@ var evaluateProgram = function () {
     var inputVals = [];
   
     for (var i = 0; i < inputs.length; ++i) {
-        inputVals.push(inputs[i].value);
+        inputVals.push(parseFloat(inputs[i].value));
     }
 //    inputs.each(function() { 
 //                    inputVals.push(this.value);

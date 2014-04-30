@@ -13,9 +13,8 @@ MakerApp.prototype.draw = function() {
 
 
 var addRow = function(tableName, inputName, inputId, inputType, inputValue) {
+    
     var tableRef = document.getElementById(tableName); 
-
-    // Insert a row in the table at row index 0
     var newRow = tableRef.insertRow(tableRef.rows.length);
 
     // Insert a cell in the row at index 0
@@ -43,7 +42,7 @@ var addRow = function(tableName, inputName, inputId, inputType, inputValue) {
 var buildInputs = function(args) {
 
     for (var i = 0; i < args.length; ++i) {
-        addRow('inputTable', args[i].name, args[i].id, args[i].type, args[i].value);
+        addRow('inputTable', args[i].display, args[i].id, args[i].type, args[i].value);
     }
 }
 

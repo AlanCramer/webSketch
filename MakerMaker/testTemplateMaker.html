@@ -25,8 +25,8 @@
 
 <script src="../drawingUtils.js"></script>
 
-<link rel="stylesheet" href="../boxMaker/pathImage.css" />
-<!-- <link rel="stylesheet" href="templateMaker.css" />  -->
+<!-- <link rel="stylesheet" href="../boxMaker/pathImage.css" />   -->
+<link rel="stylesheet" href="templateMaker.css" /> 
    
 </head>
 
@@ -36,54 +36,29 @@
     <h1>&nbsp;<span id="title"> Unnamed Maker App </span></h1>
 </div>
 
-<div> <!--  id="cssmenu"> -->
-    <div id="Inputs" >
-        
-<!--       <ul>
-        <li><span>Home</span> -->
-          <table id = "inputTable">
-             <!-- params programatically added here -->
-          </table>
-<!--         </li> -->
-<!--         
-        <li><span>Products</span>
-          <ul>-->
-            <button onclick=onCalcPath() >Calculate Tool Path</button>
-            <button onclick=onGenGCode() >Generate G-Code</button>
-            <button onclick=onExportOBJ() >Export OBJ file</button>
-            <button onclick=onGo3D() >Go 3D!</button>
-          <!-- </ul>   -->
-            
-        <!-- </li> -->
-        
-        <!-- 
-        <input id="unitSlider" type=range min=0 max=10 value=1 step="1" onchange=onChangeUnits(value)>
-        <input id="resolutionSlider" type=range min=0.05 max=2 value=1 step=".05" onchange=onChangeResolution(value)> -->
-        
-        <input type="file" id="openimage" name="imagefile" accept="image/*" style="display:none"/>
-        <output id="list"></output>
-        
-      </ul>  
-    </div> <!-- inputs -->
 
-    <div style="position: relative;" width="810" height="410">
-        <canvas id="boundaryCanvas" width="810" height="410"
-            style="position: absolute; left: 250px; top: 0px; z-index: 0; "></canvas>
-        <canvas id="mycanvas" width="800" height="400" 
-            style="position: absolute; left:265px; top: 15px; z-index: 1; border:1px solid red"></canvas>    
-        <canvas id="pathcanvas" width="800" height="400" 
-            style="position: absolute; left:265px; top: 15px; z-index: 2;border:1px solid blue"></canvas>
-    </div>
-
+<div id="cssmenu">
+<ul>
+    <li><a href="#"><span>Home</span></a></li>
+    <li><a href="#"><span>Products</span></a>
+        <ul>
+            <li><a href="#">Widgets</a></li>
+            <li><a href="#">Menus</a></li>
+            <li><a href="#">Products</a></li>
+        </ul>
+    </li>
+    <li><a href="#"><span>Company</span></a>
+        <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Location</a></li>
+        </ul>
+    </li>
+    <li><a href="#"><span>Contact</span></a></li>
+</ul>
 </div>
 
-
-<div id="statusbar" >
-&nbsp;&nbsp;Status Bar
-</div>
-<canvas id="hiddencanvas" width="900" height="900" 
-    style="position: relative;border:1px solid blue; display: none"></canvas>
-<script>
+ 
+ <script>
 
 var MyApp = {}; // TODO : gotta figure out js modularity
 
@@ -99,7 +74,7 @@ var onBoxDimChange = function() {
         var name = this.name;
         var val = this.value;
         paramObj[name] = val;
-        paramVals.push(parseFloat(val));
+        paramVals.push(val);
     });
     
     //MyApp.currentApp.draw(canvas, paramObj);
