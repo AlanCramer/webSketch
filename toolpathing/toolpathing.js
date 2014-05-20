@@ -218,10 +218,9 @@ var onCalcPath = function() {
     
     clearPathCanvas();
 
-    path.drawSimpleSegments(pathcanvas);
+    //path.drawSimpleSegments(pathcanvas);
 //    path2.drawSimpleSegments(hidcanvas);
-
-    //path.drawArcSegs(pathcanvas);
+    path.drawArcSegs(pathcanvas);
 
     MyApp.path = path;
 }
@@ -255,7 +254,7 @@ var buildToolpaths3 = function(toolbitDiamInPix, incanvas){
     vectorizeDistanceTrf(dt, toolbitDiamInPix/2, path);
     
     path.buildSimpleSegs(1);
-    //path.buildArcInterp(2);
+    path.buildArcInterp(1);
     
     return path;
 }

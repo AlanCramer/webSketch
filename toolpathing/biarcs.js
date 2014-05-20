@@ -63,6 +63,10 @@ findMminMmax = function(ptArr) {
     mmax = Number.MIN_VALUE;
 
     for (var i = 1; i < last; ++i) {
+    
+        if (collinear(st, ptArr[i], en))
+            continue;
+    
         circ = makeCircleBy3Pts(st, ptArr[i], en);
         
         // assumes y axis - todo : I guess this should be a param value on the line
@@ -102,7 +106,7 @@ _findBestArcYVal = function(ptArr, epsilon) {
 findBestCircleFit = function(pts, epsilon) {
 
     // copy input array
-    trfPts = pts.slice(0);
+    var trfPts = pts.slice(0);
     var pt0 = pts[0];
     var end = pts.length-1;
     var ptn = pts[end];
@@ -134,6 +138,7 @@ findBestCircleFit = function(pts, epsilon) {
         trfPts[iPt].y = trfPts[iPt].y - midpt.y;
     }    
     
+    // TODO problems here if when line is the fit - MUST THINK HERE!!!
     var arcY = _findBestArcYVal(trfPts, epsilon);
     var circ = makeCircleBy3Pts(trfPts[0], {x:0, y:arcY}, trfPts[end]);
     

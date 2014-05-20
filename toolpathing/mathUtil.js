@@ -42,17 +42,36 @@ var makeMidPt = function (p0, p1) {
     return { x:(p0.x + p1.x)/2, y:(p0.y + p1.y)/2 };
 }
 
+var collinear = function(p0, p1, p2, tol) {
+    
+    if (!tol) 
+        tol = .001;
+    
+    var v0 = {};
+    var v1 = {};
+    
+    v0.x = p1.x - p0.x;
+    v0.y = p1.y - p0.y;
+    
+    v1.x = p2.x - p0.x;
+    v1.y = p2.y - p0.y;
+    
+    var det = v0.x*v1.y - v1.x*v0.y;
+    
+    return det < tol;
+}
+
 // line has form ax+by+c=0
 // todo : error handling
 var makePerpBisectLine = function (p0, p1) {
 
-    var bisectPt = makeMidPt;
+    var bisectPt = makeMidPt(p0,p1);
 
     // rotate p1 (or p0) 90deg about bisectPt
     // translate bisectPt to origin, multiply by 2x2 [0 -1, 1 0], and add back on bisectPt
     // I get, for (c,d) 90 about (a, b), I get (b+a-d, c+b-a)
     // so for p1 90 about bisectPt
-    var otherPt = {x:bisectPt.y + bisectPt.x -p1.y, y:p1.x + bisectPt.y - p1.x};
+    var otherPt = {x:bisectPt.y + bisectPt.x -p1.y, y:p1.x + bisectPt.y - bisectPt.x};
     
     return makeLineBy2Pts(bisectPt, otherPt);
 }
@@ -172,8 +191,11 @@ var DouglasPeuckerCircs = function(pointList, epsilon) {
         resultList = resultList.concat(recResults2);
     } else {
         resultList.push(pointList[0]);
-        resultList.push({x:circInfo.arcpts[1].x, y:circInfo.arcpts[1].y, radius:circInfo.circle.radius});
-        resultList.push(pointList[end]);
+        resultList.push({x:circInfo.arcpts[1].x, y:circInfo.arcpts[1].y, 
+                         cx: circInfo.circle.center.x, 
+                         cy: circInfo.circle.center.y, 
+                         radius:circInfo.circle.radius});
+        //resultList.push(pointList[end]);
     }
     // Return the result
     return resultList;
