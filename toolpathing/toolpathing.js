@@ -254,7 +254,7 @@ var buildToolpaths3 = function(toolbitDiamInPix, incanvas){
     vectorizeDistanceTrf(dt, toolbitDiamInPix/2, path);
     
     path.buildSimpleSegs(1);
-    path.buildArcInterp(1);
+    //path.buildArcInterp(1);
     
     return path;
 }
