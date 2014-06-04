@@ -58,7 +58,7 @@ var collinear = function(p0, p1, p2, tol) {
     
     var det = v0.x*v1.y - v1.x*v0.y;
     
-    return det < tol;
+    return Math.abs(det) < tol;
 }
 
 // line has form ax+by+c=0
@@ -155,6 +155,10 @@ var intersectLineCircle = function (p0, p1, c)
 
 
 var DouglasPeuckerCircs = function(pointList, epsilon) {
+
+    if (pointList.length < 3)
+        return [];
+        
     // Find the point with the maximum distance
     var dmax = 0;
     var index = 0;

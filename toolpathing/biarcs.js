@@ -49,13 +49,18 @@ reduceInterval = function (ptArr, mmin, ma, mb, mmax) {
     }
 }
 
+// assumes more than 2 pts, and pt[0].y === pt[last].y === 0
 findMminMmax = function(ptArr) {
+    
+    if (ptArr.length < 3)
+        alert("less than 3 pts in findMminMmax");
 
     var last = ptArr.length-1;
     var st = ptArr[0];
     var en = ptArr[last];
     var mmin, mi, mmax;
     var circ;
+    var allCollinear = true;
     
     var perp = makePerpBisectLine(st, en);
     
@@ -67,6 +72,8 @@ findMminMmax = function(ptArr) {
         if (collinear(st, ptArr[i], en))
             continue;
     
+        allCollinear = false;
+    
         circ = makeCircleBy3Pts(st, ptArr[i], en);
         
         // assumes y axis - todo : I guess this should be a param value on the line
@@ -77,6 +84,12 @@ findMminMmax = function(ptArr) {
             
         if (mi > mmax)
             mmax = mi;
+    }
+    
+    if (allCollinear)
+    {
+        alert("all collinear?");
+        mmin = mmax = 0;
     }
     
     return {min:mmin, max:mmax};
