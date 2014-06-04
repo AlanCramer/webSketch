@@ -218,9 +218,9 @@ var onCalcPath = function() {
     
     clearPathCanvas();
 
-    //path.drawSimpleSegments(pathcanvas);
-//    path2.drawSimpleSegments(hidcanvas);
-    path.drawArcSegs(pathcanvas);
+    path.drawSimpleSegments(pathcanvas);
+    //path2.drawSimpleSegments(hidcanvas);
+    //path.drawArcSegs(pathcanvas);
 
     MyApp.path = path;
 }
