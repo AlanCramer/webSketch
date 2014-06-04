@@ -1,0 +1,3 @@
+from toolpathing directory:
+
+uglifyjs `ls` -o ../tlpt.min.js
