@@ -217,8 +217,6 @@ var RamerDouglasPeucker = function(pointList, epsilon) {
     var iC = 0;
     var iRad = 0;
     
-    var findCircs = false; // turn this on to find circles too
-    
     var end = pointList.length - 1;
     var resultList = [];
     
@@ -228,28 +226,6 @@ var RamerDouglasPeucker = function(pointList, epsilon) {
         if ( d > dmax ) {
             index = i
             dmax = d
-        }
-        
-        if (findCircs) {
-            var circ = makeCircle(pointList[0], pointList[Math.floor(end/2)], pointList[end]);
-            var dC = distancePtCircle(pointList[i], circ);
-            
-            if (dC > dCmax) {
-                iC = i;
-                dCmax = dC;
-                iRad = circ.radius;
-            }
-        }
-    }
-    
-    if (findCircs) {
-        if ( dCmax < epsilon*2 && dmax > epsilon)
-        {
-            var midPt = pointList[Math.floor(end/2)];
-            resultList.push(pointList[0]);
-            resultList.push({ circleRad: iRad, x: midPt.x, y: midPt.y });
-            resultList.push(pointList[end]);
-            return resultList;
         }
     }
     

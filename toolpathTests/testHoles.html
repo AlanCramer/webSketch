@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <script src="testHoles.js"></script>
+    <script src="../jquery-2.1.0.min.js"></script>
+    
+    <script src="../toolpathing/mathUtil.js"></script>
+    
+</head>
+
+<body>
+
+<h1> Test Holes </h1>
+
+<div>
+    <button id="calcPathBtn" onclick="onTestPath()">Draw Path</button>
+    <button id="calcPockBtn" onclick="onTestPocket()">Draw Pocket</button>
+    <button id="gCodePathBtn" onclick="onTestGCodePath()">G Code Path</button>
+    <button id="gCodePockBtn" onclick="onTestGCodePocket()">G Code Pocket</button>
+
+</div>
+
+<!--- <canvas id="testCanvas" width="300" height="300" style= "border:1px solid black"></canvas> -->
+
+<div>  
+    <canvas id="testcanvas" width="300" height="300"
+        style="position: absolute; left:0px; top: 120px; z-index: 1; border:1px solid red"></canvas>    
+    <canvas id="pathcanvas" width="300" height="300" 
+        style="position: absolute; left:0px; top: 120px; z-index: 2;border:1px solid blue"></canvas>
+</div>
+<script src="../toolpathing/layoutCutoutUtil.js"></script>
+<script src="../toolpathing/DirectionMap.js"></script>
+<script src="../toolpathing/acGreyImage.js"></script>
+<script src="../toolpathing/distTrans.js"></script>
+<script src="../toolpathing/Vectorize.js"></script>
+<script src="../toolpathing/Path.js"></script>
+<script src="../toolpathing/mathUtil.js"></script>
+<script src="../toolpathing/biarcs.js"></script>
+<script src="../toolpathing/Matrix2.js"></script>
+<script src="../toolpathing/toolpathing.js"></script>
+<script src="../util/fileutil.js"></script> 
+
+<script>
+    $(document).ready(function() {
+        
+        drawHoles();
+
+    });
+</script>
+
+</body>
+

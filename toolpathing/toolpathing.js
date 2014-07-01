@@ -29,7 +29,9 @@ var onGenGCode = function() {
 
     var pixelsPerMm = $("#pixelsPerMm").val()-0;
     pixelsPerMm = pixelsPerMm || 1;
-    MyApp.path.generateGCode(pixelsPerMm);	
+    var gcode = MyApp.path.generateGCode(pixelsPerMm);
+
+    exportToFile(gcode, "partGCode.nc");
 }
 
 var onChangeUnits = function (value) {
@@ -241,7 +243,37 @@ var drawtestsquare = function(canvas) {
     // ctx.restore();
 }
 
-var buildToolpaths3 = function(toolbitDiamInPix, incanvas){
+var buildPocketToolpaths = function(incanvas, toolbitDiamInPx) {
+    
+    var inCanvasImage = new AcGrey8Image(incanvas.width,incanvas.height);
+    inCanvasImage.initFromCanvas(incanvas); // todo, decide about js ctors
+
+    var dt = new AcGrey16Image(incanvas.width, incanvas.height);
+    computeDistTrans(inCanvasImage, dt);
+    
+    var paths = [];
+    var path;
+    
+    var done = false;
+    var pathCt = 1;
+    while (!done) {
+    
+        path = new Path();
+        
+        vectorizeDistanceTrf(dt, pathCt * toolbitDiamInPx/2, path);
+        path.buildSimpleSegs(.5);
+        
+        done = (path.pathSegments.length === 0);
+        if (!done) {
+            paths.push(path);
+            ++pathCt;
+        }
+    }
+    
+    return paths;
+}
+
+var buildToolpaths3 = function(toolbitDiamInPx, incanvas){
 
     var inCanvasImage = new AcGrey8Image(incanvas.width,incanvas.height);
     inCanvasImage.initFromCanvas(incanvas); // todo, decide about js ctors
@@ -251,7 +283,7 @@ var buildToolpaths3 = function(toolbitDiamInPix, incanvas){
     computeDistTrans(inCanvasImage, dt);
     
     var path = new Path();
-    vectorizeDistanceTrf(dt, toolbitDiamInPix/2, path);
+    vectorizeDistanceTrf(dt, toolbitDiamInPx/2, path);
     
     path.buildSimpleSegs(1);
     //path.buildArcInterp(1);

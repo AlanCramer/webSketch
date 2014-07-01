@@ -121,6 +121,7 @@ var vectorizeDistanceTrf = function(dt, dist, outpath)
     var safeDist = roundUp*roundUp;
     
     thresh.thresholdImage(safeDist);
+    thresh.insertBoundary();
    
     var nw, nn, ne, ee, cc, ww, sw, ss, se, ennb, i, j, dir, nbrhd;
 

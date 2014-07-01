@@ -87,6 +87,28 @@ AcGreyImage.prototype.getEncodedNbrhd = function(x,y) {
                                     ret.sw, ret.ss, ret.se);
 }
 
+// make the edges of the image a 2, 
+// this is a speciality function for threshold images
+AcGreyImage.prototype.insertBoundary  = function() {
+
+    var i, j;
+    var maxj = this.height -1;
+    var maxi = this.width -1;
+    
+    for (i = 0; i < this.width; ++i)
+    {
+        this.setAt(i, 0, 2) ;
+        this.setAt(i, maxj, 2);
+    }
+    
+    for (j = 0; j < this.height; ++j)
+    {
+        this.setAt(0, j, 2) ;
+        this.setAt(maxi, j, 2);
+    }
+
+}
+
 AcGreyImage.prototype.thresholdImage  = function(value) {
 
     var i, j;
