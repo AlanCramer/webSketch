@@ -109,6 +109,18 @@ AcGreyImage.prototype.insertBoundary  = function() {
 
 }
 
+AcGreyImage.prototype.invertImage  = function() {
+
+    var i, j;
+    for (i = 0; i < this.width; ++i)
+    {
+        for (j = 0; j < this.height; ++j)
+        {
+            this.setAt(i,j, (this.getAt(i,j) === 0)? 1.0 : 0) ;
+        }
+    }
+}
+
 AcGreyImage.prototype.thresholdImage  = function(value) {
 
     var i, j;
@@ -173,6 +185,10 @@ AcGreyImage.prototype.initFromCanvas = function(canvas) {
             
             var val = 0.2126 *red + 0.7152*green + 0.0722 *blue; // wikipedia: Stokes et al, 
                //"A Standard Default Color Space for the Internet - sRGB" 
+            
+            // but for us, transparent is going to be white
+            if (alpha === 0)
+               val = 1.0;
             
             this.data[y * this.width + x] = val;
         }

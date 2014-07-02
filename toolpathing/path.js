@@ -244,12 +244,18 @@ function Path() {
     this.drawSimpleSegments = function(canvas) {
         
         var ctx = canvas.getContext('2d');
+        ctx.save();
+        //ctx.fillStyle = "#0000FF";
+        ctx.lineStyle = "#0000FF";
+        
         var i;
         var end = this.pathSimpleSegs.length;
         
         for (i=0; i < end; ++i) {
             drawPtDirsWithLines(ctx, this.pathSimpleSegs[i]);
         }
+        
+        ctx.restore();
     }
     
     this.drawArcSegs = function(canvas) {

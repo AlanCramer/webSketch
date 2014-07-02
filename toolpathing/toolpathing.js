@@ -243,10 +243,13 @@ var drawtestsquare = function(canvas) {
     // ctx.restore();
 }
 
+// input assumes what to cut is black - leave white alone
+// an invert of the image happens, so that toolpaths are in the white area
 var buildPocketToolpaths = function(incanvas, toolbitDiamInPx) {
     
     var inCanvasImage = new AcGrey8Image(incanvas.width,incanvas.height);
     inCanvasImage.initFromCanvas(incanvas); // todo, decide about js ctors
+    inCanvasImage.invertImage();
 
     var dt = new AcGrey16Image(incanvas.width, incanvas.height);
     computeDistTrans(inCanvasImage, dt);

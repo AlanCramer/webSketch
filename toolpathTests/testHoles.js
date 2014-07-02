@@ -10,11 +10,11 @@ drawHoles = function() {
     
     ctx.save();
     
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(0,0, w, h);
 
     ctx.beginPath();
-    ctx.fillStyle = "#FFFFFF";    
+    ctx.fillStyle = "#000000";    
     ctx.arc(w/2, h/2, w/4, 0, 2*Math.PI, true);
     
     ctx.fill();
@@ -33,8 +33,8 @@ var drawPath = function(canvas, path) {
 
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = "#0000FF";
-    ctx.lineStyle = "#0000FF";
-    ctx.lineWidth = "1";
+    ctx.strokeStyle = "#0000FF";
+    ctx.lineWidth = 3;
     path.drawSimpleSegments(canvas);
 }
 
@@ -65,6 +65,7 @@ onTestPocket = function() {
     var paths = buildPocketToolpaths(canvas, toolbitDiam*pxPerMm); 
 
     clearCanvas(pathcanvas);
+    //clearCanvas(canvas);
     for (var i = 0; i < paths.length; ++i) {
         drawPath(pathcanvas, paths[i]);
     }
