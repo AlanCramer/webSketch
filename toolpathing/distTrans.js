@@ -19,6 +19,7 @@ function EDT_f(G, y, x, i) {
 
 //void DistTransUtil::ComputeDistTrans(const AcImage &in, AcImage &dt)
 // todo: error checking, what if inImg is not an image, what if it's not the same size as dt?
+// this expects binary images - distance to black is 0, any non black is the same as white
 function computeDistTrans(inGreyImg, dt) {
 
     "use strict";
@@ -33,9 +34,6 @@ function computeDistTrans(inGreyImg, dt) {
     maxGVal = m + n;
 
     // phase 1 - define g(i,j)
-    //  todo - this seems wrong if w or h is pretty large.
-    //         distances can get too large to store in AcImage's unsigned chars.
-
     //  todo - last column is uninitialized, what should it be?
     for (i = 0; i < m; i += 1) {
         // todo why is this a ref error (invalid lhs) ? g.getAt(i, 0) = ...

@@ -245,14 +245,20 @@ var drawtestsquare = function(canvas) {
 
 // input assumes what to cut is black - leave white alone
 // an invert of the image happens, so that toolpaths are in the white area
-var buildPocketToolpaths = function(incanvas, toolbitDiamInPx) {
+var buildPocketToolpaths = function(incanvas, bitDiamPx) {
     
     var inCanvasImage = new AcGrey8Image(incanvas.width,incanvas.height);
     inCanvasImage.initFromCanvas(incanvas); // todo, decide about js ctors
     inCanvasImage.invertImage();
+    return buildPocketToolpathsFromImage(inCanvasImage, bitDiamPx);
+}
 
-    var dt = new AcGrey16Image(incanvas.width, incanvas.height);
-    computeDistTrans(inCanvasImage, dt);
+// assumes binary image -- 0 and 1s, zeros are not touched, non zeros get cut
+// 
+var buildPocketToolpathsFromImage = function(img, bitDiamPx) {
+    
+    var dt = new AcGrey16Image(img.width, img.height);
+    computeDistTrans(img, dt);
     
     var paths = [];
     var path;
@@ -263,7 +269,7 @@ var buildPocketToolpaths = function(incanvas, toolbitDiamInPx) {
     
         path = new Path();
         
-        vectorizeDistanceTrf(dt, pathCt * toolbitDiamInPx/2, path);
+        vectorizeDistanceTrf(dt, pathCt * bitDiamPx/2, path);
         path.buildSimpleSegs(.5);
         
         done = (path.pathSegments.length === 0);
@@ -274,8 +280,9 @@ var buildPocketToolpaths = function(incanvas, toolbitDiamInPx) {
     }
     
     return paths;
+    
 }
-
+// todo, rename this any time now..., and add a namespace
 var buildToolpaths3 = function(toolbitDiamInPx, incanvas){
 
     var inCanvasImage = new AcGrey8Image(incanvas.width,incanvas.height);
@@ -293,3 +300,40 @@ var buildToolpaths3 = function(toolbitDiamInPx, incanvas){
     
     return path;
 }
+
+// input the image, build the path for the given height
+// instead of a canvas, first param should be an AcGrey8Image
+// height is 0 to 1
+var buildRoughPass = function(geomCanvas, bitDiamPx, stepDepth) {
+
+    var geomImage = new AcGrey8Image(geomCanvas.width,geomCanvas.height);
+    geomImage.initFromCanvas(geomCanvas); // todo, decide about js ctors
+
+    var curImage;// = geomImage.copy();
+    var allpaths = [];
+    
+    // threshold the image at the height
+    var curDepth = stepDepth;
+    
+    while(curDepth <= 1)
+    {
+        var curImage = geomImage.copy(); 
+        curImage.thresholdImage(curDepth *  255); // the 255 comes from the grey8 image
+        paths = buildPocketToolpathsFromImage(curImage, bitDiamPx);
+        allpaths.push(paths);
+        curDepth = curDepth + stepDepth;
+    }
+    
+    return allpaths;
+}
+
+// var thresholdImage = function(canvas, height) {
+    // var geomImage = new AcGrey8Image(geomCanvas.width,geomCanvas.height);
+    // geomImage.initFromCanvas(geomCanvas); // todo, decide about js ctors
+
+    // // threshold the image at the height
+    // geomImage.thresholdImage(height *  255); // the 255 comes from the grey8 image
+    
+    
+// }
+

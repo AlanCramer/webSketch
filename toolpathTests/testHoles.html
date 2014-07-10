@@ -15,6 +15,9 @@
 <h1> Test Holes </h1>
 
 <div>
+    <button id="drawHole" onclick="onDrawHole()">Draw Holes</button>
+    <button id="drawGrey" onclick="onDrawGrey()">Draw Grey scale</button>
+<div>
     <button id="calcPathBtn" onclick="onTestPath()">Draw Path</button>
     <button id="calcPockBtn" onclick="onTestPocket()">Draw Pocket</button>
     <button id="gCodePathBtn" onclick="onTestGCodePath()">G Code Path</button>
@@ -22,14 +25,23 @@
 
 </div>
 
-<!--- <canvas id="testCanvas" width="300" height="300" style= "border:1px solid black"></canvas> -->
-
-<div>  
-    <canvas id="testcanvas" width="300" height="300"
-        style="position: absolute; left:0px; top: 120px; z-index: 1; border:1px solid red"></canvas>    
-    <canvas id="pathcanvas" width="300" height="300" 
-        style="position: absolute; left:0px; top: 120px; z-index: 2;border:1px solid blue"></canvas>
+<div>
+    <button id="roughPassBtn" onclick="onTestRoughPass()">Rough Pass</button>
+    <input id="depthPerPass" type="number" value=".25">depth per pass</input>
 </div>
+
+<div id="uicontrols" >
+    <input id="pathsSlider" type="range" min="0" max="1" onchange="onChangeDisplayPath(this.value)" />
+</div>
+
+<div  style= "position:relative;">  
+   <canvas id="testcanvas" width="300" height="300"
+        style="position: absolute; left:0px; top: 0px; z-index: 1; border:1px solid blue"></canvas>    
+    <canvas id="pathcanvas" width="300" height="300" 
+        style="position: absolute; left:0px; top: 0px; z-index: 2;border:1px solid blue"></canvas> 
+</div>
+
+
 <script src="../toolpathing/layoutCutoutUtil.js"></script>
 <script src="../toolpathing/DirectionMap.js"></script>
 <script src="../toolpathing/acGreyImage.js"></script>
@@ -45,7 +57,7 @@
 <script>
     $(document).ready(function() {
         
-        drawHoles();
+        drawHole();
 
     });
 </script>
