@@ -54,8 +54,39 @@ drawGrey = function() {
     ctx.arc(3*w/8, 3*h/8, w/10, 0, 2*Math.PI, true);
       
     ctx.fill();
+    
+    ctx.restore();
+}
 
+var drawMultiHoles = function() {
+    var canvas = document.getElementById("testcanvas");
+    var ctx = canvas.getContext('2d');
 
+    ctx.save();
+
+    var w = canvas.width;
+    var h = canvas.height;
+        
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0,0, w, h);
+
+    ctx.beginPath();
+    ctx.fillStyle = "333333";
+    ctx.arc(w/4, h/4, w/8, 0, 2*Math.PI, true); 
+    ctx.closePath();    
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.fillStyle = "555555";
+    ctx.arc(3*w/4, 3*h/4, w/8, 0, 2*Math.PI, true);    
+    ctx.closePath();
+    ctx.fill();
+   
+    ctx.fillStyle = "999999";
+    ctx.beginPath();
+    ctx.arc(w/4, 3*h/4, w/8, 0, 2*Math.PI, true);    
+    ctx.closePath();
+    ctx.fill();
     
     ctx.restore();
 
@@ -97,6 +128,14 @@ onDrawGrey = function() {
     clearCanvas(pathcanvas);
     
     drawGrey();
+}
+
+onDrawMultiHoles = function() {
+
+    var pathcanvas = document.getElementById('pathcanvas');
+    clearCanvas(pathcanvas);
+    
+    drawMultiHoles();
 }
 
 onTestPath = function() {
@@ -165,6 +204,7 @@ buildSlider = function(max, intvl) {
    
     pathsSlider.max = max - 1;
     pathsSlider.step = 1;
+    pathsSlider.value = 0;
        
 }
 
