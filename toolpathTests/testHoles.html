@@ -18,27 +18,37 @@
     <button id="drawHole" onclick="onDrawHole()">Draw Hole</button>
     <button id="drawGrey" onclick="onDrawGrey()">Draw Grey Scale</button>
     <button id="drawGrey" onclick="onDrawMultiHoles()">Draw Holes</button>
+    <button id="loadImage" onclick="onLoadImage()">Load Image</button>
+    <input type="file" id="openimage" name="imagefile" accept="image/*" style="display:none"/>
+</div>
 <div>
     <button id="calcPathBtn" onclick="onTestPath()">Draw Path</button>
     <button id="calcPockBtn" onclick="onTestPocket()">Draw Pocket</button>
+    <button id="roughPassBtn" onclick="onTestRoughPass()">Rough Pass</button>
+</div>
+<div>
     <button id="gCodePathBtn" onclick="onTestGCodePath()">G Code Path</button>
     <button id="gCodePockBtn" onclick="onTestGCodePocket()">G Code Pocket</button>
-
+    <button id="gCodeRoughBtn" onclick="onTestGCodeRoughPass()">G Code Rough Pass</button>
 </div>
 
 <div>
-    <button id="roughPassBtn" onclick="onTestRoughPass()">Rough Pass</button>
-    <input id="depthPerPass" type="number" value=".25">depth per pass</input>
+    <input id="toolbitDiam" type="number" value=".25">Toolbit Diameter</input> <br>
+    <input id="matThick" type="number" value=".5">Material Thickness</input>   <br>    
+    <input id="depthPerPass" type="number" value=".25">depth per pass</input>  <br>    
+    <input id="pxPerIn" type="number" value="100">pixels per inch</input>    
+
 </div>
+
 
 <div id="uicontrols" >
     <input id="pathsSlider" type="range" min="0" max="1" onchange="onChangeDisplayPath(this.value)" />
 </div>
 
 <div  style= "position:relative;">  
-   <canvas id="testcanvas" width="300" height="300"
+   <canvas id="testcanvas" width="500" height="500"
         style="position: absolute; left:0px; top: 0px; z-index: 1; border:1px solid blue"></canvas>    
-    <canvas id="pathcanvas" width="300" height="300" 
+    <canvas id="pathcanvas" width="500" height="500" 
         style="position: absolute; left:0px; top: 0px; z-index: 2;border:1px solid blue"></canvas> 
 </div>
 
@@ -54,12 +64,13 @@
 <script src="../toolpathing/Matrix2.js"></script>
 <script src="../toolpathing/toolpathing.js"></script>
 <script src="../util/fileutil.js"></script> 
+<script src="../toolpathing/ha_pathutil.js"></script> 
 
 <script>
     $(document).ready(function() {
         
         drawHole();
-
+        document.getElementById('openimage').addEventListener('change', handleFileSelect, false);
     });
 </script>
 

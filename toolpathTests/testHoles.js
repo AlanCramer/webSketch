@@ -1,6 +1,11 @@
 
 var theApp = {};
 
+
+
+    
+
+
 drawHole = function() {
 
     var canvas = document.getElementById("testcanvas");
@@ -138,6 +143,45 @@ onDrawMultiHoles = function() {
     drawMultiHoles();
 }
 
+function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+    var file = files[0];
+    
+    var fileReadAsDataUrl = new FileReader();
+    fileReadAsDataUrl.onload = (function(progEvt) {
+        console.log("in data url reader");
+        var imageAsDataUrl = progEvt.target.result;
+        
+        var img = new Image();
+        //MyApp.image = img;
+        
+        img.src = progEvt.target.result;
+
+        var pathcanvas = document.getElementById('pathcanvas');
+        var pathctx = pathcanvas.getContext('2d');
+        pathctx.clearRect(0,0,pathcanvas.width, pathcanvas.height);
+        
+        var canvas = document.getElementById('testcanvas');
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = "white";
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+      
+        ctx.drawImage(img,10,10);//, canvas.width -20, canvas.height -20); // ,canvas.width, canvas.height);
+        
+    });
+    fileReadAsDataUrl.readAsDataURL(file); 
+    
+}
+
+
+
+
+var onLoadImage = function() {
+
+    var fileElem = $("#openimage");
+    fileElem.click();
+}
+
 onTestPath = function() {
 
     var toolbitDiam = 20; // so that radius is 1 px
@@ -153,15 +197,51 @@ onTestPath = function() {
     
 }
 
+// in pixels
+getToolbitDiam = function() {
+    
+    var tbd = document.getElementById('toolbitDiam');
+    var tbdval = tbd.value;
+    
+    tbdval = tbdval * getPixelsPerInch(); 
+    return tbdval;
+}
+
+getMatThick = function() {
+    
+    var mt = document.getElementById('matThick');
+    return mt.value;    
+}
+
+getDepthPerPass = function() {
+    
+    var dpp = document.getElementById('depthPerPass');
+    return dpp.valueAsNumber;
+}
+
+getPixelsPerInch = function() {
+    
+    var ppi = document.getElementById('pxPerIn');
+    var ppival = ppi.value;
+    
+    return ppival;
+}
+
+getPixelsPerMm = function() {
+    
+    var ppi = getPixelsPerInch();
+    
+    return ppi / 25.4;
+}
+
 onTestPocket = function() {
     
     var canvas = document.getElementById('testcanvas');
     var pathcanvas = document.getElementById('pathcanvas');
     
-    var toolbitDiam = 20; // so that radius is 1 px
-    var pxPerMm = 1;
+    var toolbitDiam = getToolbitDiam(); // so that radius is 1 px
     
-    var paths = buildPocketToolpaths(canvas, toolbitDiam*pxPerMm); 
+    var paths = buildPocketToolpaths(canvas, toolbitDiam); 
 
     clearCanvas(pathcanvas);
     //clearCanvas(canvas);
@@ -173,13 +253,12 @@ onTestPocket = function() {
 
 onTestGCodePath = function() {
 
-    var pixelsPerMm = 1;
-    var toolbitDiam = 20; // so that radius is 1 px
+    var toolbitDiam = getToolbitDiam; 
     var canvas = document.getElementById('testcanvas');
             
-    var path = buildToolpaths3(toolbitDiam*pixelsPerMm, canvas); 
+    var path = buildToolpaths3(toolbitDiam, canvas); 
     
-    var gcode = path.generateGCode(pixelsPerMm, false);
+    var gcode = path.generateGCode(getPixelsPerMm(), false);
 
     exportToFile(gcode, "partGCode.nc");
 }
@@ -187,13 +266,28 @@ onTestGCodePath = function() {
 
 onTestGCodePocket = function() {
 
-    var pxPerMm = 1;
-    var toolbitDiam = 20; // in px
     var canvas = document.getElementById('testcanvas');
             
-    var paths = buildPocketToolpaths(canvas, toolbitDiam*pxPerMm); 
+    var paths = buildPocketToolpaths(canvas, getToolBitDiam()); 
     
-    var gcode = HA_PathUtil.gCodePaths(paths, pxPerMm);
+    var gcode = HA_PathUtil.gCodePaths(paths, getPixelsPerMm());
+
+    exportToFile(gcode, "partGCode.nc");
+}
+
+onTestGCodeRoughPass = function() {
+
+    var toolbitDiam = getToolbitDiam(); // in px
+    var canvas = document.getElementById('testcanvas');
+    var depthPerPass = getDepthPerPass();
+    var matThick = getMatThick();
+    
+    var arrayOfPaths = buildRoughPass(canvas, toolbitDiam, depthPerPass, matThick);
+    
+    var pathcanvas = document.getElementById('pathcanvas');
+    
+//    var gcode = HA_PathUtil.gCodePaths(paths, pxPerMm);
+    var gcode = HA_PathUtil.gCodeRoughPass(arrayOfPaths, depthPerPass, getPixelsPerMm());
 
     exportToFile(gcode, "partGCode.nc");
 }
@@ -221,12 +315,12 @@ onChangeDisplayPath = function(val) {
 
 onTestRoughPass = function() {
 
-    var toolbitDiam = 20; // in px
+    var toolbitDiam = getToolbitDiam(); // in px
     var canvas = document.getElementById('testcanvas');
-    var depthCtrl = document.getElementById('depthPerPass');
-    var depthPerPass = depthCtrl.valueAsNumber;
+    var depthPerPass = getDepthPerPass();
+    var matThick = getMatThick();
     
-    var arrayOfPaths = buildRoughPass(canvas, toolbitDiam, depthPerPass);
+    var arrayOfPaths = buildRoughPass(canvas, toolbitDiam, depthPerPass, matThick);
     
     var pathcanvas = document.getElementById('pathcanvas');
     clearCanvas(pathcanvas);    

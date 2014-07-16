@@ -128,7 +128,7 @@ AcGreyImage.prototype.thresholdImage  = function(value) {
     {
         for (j = 0; j < this.height; ++j)
         {
-            this.setAt(i,j, (this.getAt(i,j) <= value)? 1 : 0) ;
+            this.setAt(i,j, (this.getAt(i,j) < value)? 1 : 0) ;
         }
     }
 }

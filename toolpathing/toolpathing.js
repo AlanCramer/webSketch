@@ -303,8 +303,11 @@ var buildToolpaths3 = function(toolbitDiamInPx, incanvas){
 
 // input the image, build the path for the given height
 // instead of a canvas, first param should be an AcGrey8Image
-// height is 0 to 1
-var buildRoughPass = function(geomCanvas, bitDiamPx, stepDepth) {
+// canvas in px
+// bit in px
+// step in inches
+// matthick in inches
+var buildRoughPass = function(geomCanvas, bitDiamPx, stepDepth, matThick) {
 
     var geomImage = new AcGrey8Image(geomCanvas.width,geomCanvas.height);
     geomImage.initFromCanvas(geomCanvas); // todo, decide about js ctors
@@ -314,14 +317,32 @@ var buildRoughPass = function(geomCanvas, bitDiamPx, stepDepth) {
     
     // threshold the image at the height
     var curDepth = stepDepth;
+    var done = false; // done becomes true if we have no paths at some layer ... no need to keep going
     
-    while(curDepth <= 1)
+    while(curDepth <= matThick && !done)
     {
         var curImage = geomImage.copy(); 
-        curImage.thresholdImage(curDepth *  255); // the 255 comes from the grey8 image
+        curImage.thresholdImage(curDepth/matThick * 255); // the 255 comes from the grey8 image
         paths = buildPocketToolpathsFromImage(curImage, bitDiamPx);
-        allpaths.push(paths);
+        
+        if (paths.length > 0)
+            allpaths.push(paths);
+        else
+            done = true;
+        
         curDepth = curDepth + stepDepth;
+    }
+    
+    // if curdepth != matThick, then do it one more time at matThick
+    if (!done && Math.abs(curDepth - matThick) < .01) {
+    
+        curDepth = matThick;
+        curImage = geomImage.copy(); 
+        curImage.thresholdImage(curDepth/matThick * 255); // the 255 comes from the grey8 image
+        paths = buildPocketToolpathsFromImage(curImage, bitDiamPx);
+        
+        if (paths.length > 0)
+            allpaths.push(paths);
     }
     
     return allpaths;
