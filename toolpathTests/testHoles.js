@@ -1,11 +1,6 @@
 
 var theApp = {};
 
-
-
-    
-
-
 drawHole = function() {
 
     var canvas = document.getElementById("testcanvas");
@@ -76,18 +71,18 @@ var drawMultiHoles = function() {
     ctx.fillRect(0,0, w, h);
 
     ctx.beginPath();
-    ctx.fillStyle = "333333";
+    ctx.fillStyle = "#333333";
     ctx.arc(w/4, h/4, w/8, 0, 2*Math.PI, true); 
     ctx.closePath();    
     ctx.fill();
 
     ctx.beginPath();
-    ctx.fillStyle = "555555";
+    ctx.fillStyle = "#555555";
     ctx.arc(3*w/4, 3*h/4, w/8, 0, 2*Math.PI, true);    
     ctx.closePath();
     ctx.fill();
    
-    ctx.fillStyle = "999999";
+    ctx.fillStyle = "#999999";
     ctx.beginPath();
     ctx.arc(w/4, 3*h/4, w/8, 0, 2*Math.PI, true);    
     ctx.closePath();
@@ -110,6 +105,20 @@ var drawPath = function(canvas, path) {
     ctx.strokeStyle = "#0000FF";
     ctx.lineWidth = 3;
     path.drawSimpleSegments(canvas);
+}
+
+var drawPath3D = function(canvas, path3d) {
+    var ctx = canvas.getContext('2d');
+    
+    ctx.save();
+    
+    ctx.fillStyle = "#0000FF";
+    ctx.strokeStyle = "#0000FF";
+    ctx.lineWidth = 3;
+
+    draw3DPtArrayWithLines(ctx, path3d.pts);
+
+    ctx.restore();
 }
 
 var drawPaths = function(canvas, paths) {
@@ -169,12 +178,9 @@ function handleFileSelect(evt) {
         ctx.drawImage(img,10,10);//, canvas.width -20, canvas.height -20); // ,canvas.width, canvas.height);
         
     });
-    fileReadAsDataUrl.readAsDataURL(file); 
     
+    fileReadAsDataUrl.readAsDataURL(file);    
 }
-
-
-
 
 var onLoadImage = function() {
 
@@ -329,6 +335,25 @@ onTestRoughPass = function() {
     drawPaths(pathcanvas, arrayOfPaths[0]);    
 
     theApp.roughPassPaths = arrayOfPaths;
+}
+
+onTestRasterPass = function () {
+
+    var toolbitDiam = getToolbitDiam(); // in px
+    var canvas = document.getElementById('testcanvas');
+    var depthPerPass = getDepthPerPass();
+    var matThick = getMatThick();
+    
+    var inCanvasImage = new AcGrey8Image(canvas.width,canvas.height);
+    inCanvasImage.initFromCanvas(canvas); // todo, decide about js ctors
+    
+    var path = buildRasterPathInXFromImage(inCanvasImage, toolbitDiam);
+    
+    var pathcanvas = document.getElementById('pathcanvas');
+    clearCanvas(pathcanvas);
+    
+    drawPath3D(pathcanvas, path);
+
 }
 
 

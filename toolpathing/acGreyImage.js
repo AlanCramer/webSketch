@@ -1,12 +1,7 @@
 
-
-// quick note that may become useful:
-// how to copy an ArrayBuffer
-// function copy(src)  {
-    // var dst = new ArrayBuffer(src.byteLength);
-    // new Uint8Array(dst).set(new Uint8Array(src));
-    // return dst;
-// }
+// would be nice to introduce a binary image as well, 
+// could be fancy with space requirements and is needed for each
+// distance transform input
 
 function AcGrey8Image(width, height) {
 
@@ -15,6 +10,7 @@ function AcGrey8Image(width, height) {
     this.databuffer = new ArrayBuffer(width*height);
     this.data = new Uint8ClampedArray(this.databuffer);
 }
+
 AcGrey8Image.prototype = Object.create(AcGreyImage.prototype);
 AcGrey8Image.prototype.constructor = AcGreyImage;
 AcGrey8Image.prototype.copy = function () {

@@ -18,6 +18,8 @@ function EDT_f(G, y, x, i) {
 }
 
 //void DistTransUtil::ComputeDistTrans(const AcImage &in, AcImage &dt)
+// Meijster algorithm, e.g.
+// http://iwi.eldoc.ub.rug.nl/FILES/root/2002/CompImagVisMeijster/2002CompImagVisMeijster.pdf
 // todo: error checking, what if inImg is not an image, what if it's not the same size as dt?
 // this expects binary images - distance to black is 0, any non black is the same as white
 function computeDistTrans(inGreyImg, dt) {

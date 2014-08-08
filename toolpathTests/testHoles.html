@@ -1,13 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+<meta charset="utf-8">
 
-    <script src="testHoles.js"></script>
-    <script src="../jquery-2.1.0.min.js"></script>
+<script src="testHoles.js"></script>
+<script src="../jquery-2.1.0.min.js"></script>
     
-    <script src="../toolpathing/mathUtil.js"></script>
-    
+<script src="../toolpathing/layoutCutoutUtil.js"></script>
+<script src="../toolpathing/DirectionMap.js"></script>
+<script src="../toolpathing/acGreyImage.js"></script>
+<script src="../toolpathing/distTrans.js"></script>
+<script src="../toolpathing/Vectorize.js"></script>
+<script src="../toolpathing/Path.js"></script>
+<script src="../toolpathing/mathUtil.js"></script>
+<script src="../toolpathing/biarcs.js"></script>
+<script src="../toolpathing/Matrix2.js"></script>
+<script src="../toolpathing/toolpathing.js"></script>
+<script src="../toolpathing/raster.js"></script>
+<script src="../util/fileutil.js"></script> 
+<script src="../toolpathing/drawUtil.js"></script> 
+<script src="../toolpathing/ha_pathutil.js"></script> 
 </head>
 
 <body>
@@ -25,6 +37,7 @@
     <button id="calcPathBtn" onclick="onTestPath()">Draw Path</button>
     <button id="calcPockBtn" onclick="onTestPocket()">Draw Pocket</button>
     <button id="roughPassBtn" onclick="onTestRoughPass()">Rough Pass</button>
+    <button id="roughPassBtn" onclick="onTestRasterPass()">Raster Pass</button>
 </div>
 <div>
     <button id="gCodePathBtn" onclick="onTestGCodePath()">G Code Path</button>
@@ -53,18 +66,7 @@
 </div>
 
 
-<script src="../toolpathing/layoutCutoutUtil.js"></script>
-<script src="../toolpathing/DirectionMap.js"></script>
-<script src="../toolpathing/acGreyImage.js"></script>
-<script src="../toolpathing/distTrans.js"></script>
-<script src="../toolpathing/Vectorize.js"></script>
-<script src="../toolpathing/Path.js"></script>
-<script src="../toolpathing/mathUtil.js"></script>
-<script src="../toolpathing/biarcs.js"></script>
-<script src="../toolpathing/Matrix2.js"></script>
-<script src="../toolpathing/toolpathing.js"></script>
-<script src="../util/fileutil.js"></script> 
-<script src="../toolpathing/ha_pathutil.js"></script> 
+
 
 <script>
     $(document).ready(function() {

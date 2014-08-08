@@ -1,5 +1,6 @@
 
 
+// these are 2D paths - todo, consolidate with 3D paths
 function Path() {
 
     this.ptdirs = []; // array of positions and dir, x,y,dir
@@ -111,9 +112,6 @@ function Path() {
         return dataStr;
     }
     
-
-
-    
     // array of pointdirs to gcode
     this.gcodeForSegment = function(pathSegment, jogHeight, cutHeight, pxPerMm) {
               
@@ -181,7 +179,7 @@ function Path() {
         var end = this.pathSimpleSegs.length;
         
         for (i=0; i < end; ++i) {
-            drawPtDirsWithLines(ctx, this.pathSimpleSegs[i]);
+            draw2DPtArrayWithLines(ctx, this.pathSimpleSegs[i]);
         }
     }
     
@@ -195,24 +193,7 @@ function Path() {
             drawPtsWithArcs(ctx, this.pathArcSegs[i]);
         }
     }
-    
-    // draw a line between each point
-    var drawPtDirsWithLines = function(ctx, ptdirs) {
-            
-        var i, iPtDir;    
-        ctx.beginPath(); 
         
-        ctx.moveTo(ptdirs[0].x, ptdirs[0].y);
-        for (i=1; i < ptdirs.length-1; ++i) {
-            
-            iPtDir = ptdirs[i];
-            ctx.lineTo(iPtDir.x, iPtDir.y);  
-        }
-        ctx.lineTo(ptdirs[0].x, ptdirs[0].y);
-        
-        ctx.stroke();
-    }
-    
     var drawPtsWithArcs = function(ctx, pts) {
             
         var i, ipt, ipt1, ipt2;   
@@ -259,3 +240,12 @@ function Path() {
         drawPtDirs(ctx, this.ptdirs);        
     }
 }
+
+
+function Path3D() {
+
+    this.pts = []; // array of positions x,y,z - ordered, thus it's the same as 2D pathSegments
+    this.simpleSegs = []; // reduced segments
+    
+    
+}   
