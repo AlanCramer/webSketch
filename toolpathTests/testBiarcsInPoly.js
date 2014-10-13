@@ -43,7 +43,7 @@ testBiarcsInPoly = function() {
     drawTestPoly(canvas);
     
     ctx.strokeStyle = 'red';
-    drawArc3Pts(ctx, polydata[0], polydata[2], polydata[5]);
+    drawArc3Pts(ctx, polydata[0], polydata[3], polydata[5]);
     
     
 }
