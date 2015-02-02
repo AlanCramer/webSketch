@@ -61,39 +61,75 @@ findApolloniusCircles = function (c1, c2, c3) {
 
     var a0 = 2*(x1-x2);
     var b0 = 2*(y1-y2);
-    var c0 = 2*(r1-r2);  // actually there are 4 of these: todo 
+    var c0 = 2*(r1+r2);  // actually there are 4 of these: todo 
     var d0 = x1*x1 + y1*y1 - r1*r1 - x2*x2 - y2*y2 + r2*r2;
  
     var a1 = 2*(x1-x3);
     var b1 = 2*(y1-y3);
-    var c1 = 2*(r1-r3);  // actually there are 4 of these: todo 
+    var c1 = 2*(r1+r3);  // actually there are 4 of these: todo 
     var d1 = x1*x1 + y1*y1 - r1*r1 - x3*x3 - y3*y3 + r3*r3;
     
+    // solving for y in terms of x and plugging into (1)
     // asymmetry with signs worries me here...
-    var den = c0*b1 + c1*b0;
-    var q = (d1*c0 - c1*d0);
-    var qh = q/den - y1;
-    var s = (d0*b1 - b0*d1);
-    var sh = s/den - r1; // two of these: todo
-    var r = (c1*a0 - c0*a1)/den;
-    var t = (a0*b1 + b0*a1)/den;
+    // var den = c0*b1 - c1*b0;
+    // var q = (d1*c0 - c1*d0);
+    // var qh = q/den - y1;
+    // var s = (d0*b1 - b0*d1);
+    // var sh = s/den - r1; // two of these: todo
+    // var r = (c1*a0 - c0*a1)/den;
+    // var t = (a0*b1 - b0*a1)/den;
     
-    var aq = 1 + r*r + t*t;
-    var bq = 2*(sh*t + qh*r-x1);
-    var cq = x1*x1+qh*qh+sh*sh;
+    // var aq = 1 + r*r + t*t;
+    // var bq = 2*(sh*t + qh*r-x1);
+    // var cq = x1*x1+qh*qh+sh*sh;
+    
+    // from http://mathforum.org/mathimages/index.php/Problem_of_Apollonius
+    // indicies are 2 less due to notation differences
+    // we want x = e+fr and y = g+hr
+    var ef_den = a1*b0 - a0*b1;
+    var e_num = b0*d1 - b1*d0;
+    var f_num = b1*c0 - b0*c1;
+    
+    var gh_den = a0*b1 - a1*b0;
+    var g_num = a0*d1 - a1*d0;
+    var h_num = a1*c0 - a0*c1;
+    
+    // now when plugging back into (1), we subtract x1 from x, so
+    var e0_num = e_num - x1*(ef_den);
+    var g0_num = g_num - y1*(gh_den);
+    
+    // for numerical stability, this is not a good term to calculate
+    var ef_den_sq = (1/ef_den)*(1/ef_den);
+    var gh_den_sq = (1/gh_den)*(1/gh_den);
+    
+    // collect r*r, r and 1 terms to make ar^2 + br + c = 0, call these aq, bq and cq
+    var aq = f_num*f_num*ef_den_sq + h_num*h_num*gh_den_sq -1;
+    var bq = 2*(e0_num*f_num*ef_den_sq+g0_num*h_num*gh_den_sq-r1);
+    var cq = e0_num*e0_num*ef_den_sq + g0_num*g0_num*gh_den_sq - r1*r1;
     
     var sln = solveQuadratic(aq, bq, cq);
     
     if (!sln)
         return undefined;
-        
-    var cx = sln.so;
-    var cy = q+r*cx;
-    var cr = s+t*cx;
-    
+
+    // plug to get the two circles    
     var ans = [];
-    var cir = { center: {x:cx, y:cy}, radius: cr };
+        
+    var cr = sln.s0;    
+    var cx = (e_num+f_num*cr)/ef_den;
+    var cy = (g_num+h_num*cr)/gh_den;
+    
+    var cir = { center: {x:cx, y:cy}, radius: Math.abs(cr) };
     ans.push(cir);
+    
+    cr = sln.s1;
+    cx = (e_num+f_num*cr)/ef_den;
+    cy = (g_num+h_num*cr)/gh_den;
+    
+    cir = { center: {x:cx, y:cy}, radius: Math.abs(cr) };
+    ans.push(cir);
+    
+    return ans;
  }
 
 

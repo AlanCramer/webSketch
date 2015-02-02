@@ -33,7 +33,19 @@ drawTestPoly = function(canvas) {
     context.closePath();
 }
 
+labelPolyPts = function(canvas) {
 
+    var ctx = canvas.getContext('2d');
+
+    //ctx.beginPath();
+    
+    for (var i = 0; i < polydata.length; ++i) {
+        pt = polydata[i];
+        ctx.fillText(i.toString(), pt.x, pt.y-7);
+    }
+    
+    //ctx.closePath();
+}
 
 testBiarcsInPoly = function() {
 
@@ -41,10 +53,12 @@ testBiarcsInPoly = function() {
     var ctx = canvas.getContext('2d');
     
     drawTestPoly(canvas);
+    labelPolyPts(canvas);
     
     ctx.strokeStyle = 'red';
-    drawArc3Pts(ctx, polydata[0], polydata[3], polydata[5]);
-    
-    
+    drawArc3Pts(ctx, polydata[0], polydata[2], polydata[3]);
+    //drawArc3Pts(ctx, polydata[0], polydata[2], polydata[11]);
+    drawArc3Pts(ctx, polydata[2], polydata[11], polydata[4]);
+    //drawArc3Pts(ctx, polydata[12], polydata[11], polydata[4]);  
 }
 
