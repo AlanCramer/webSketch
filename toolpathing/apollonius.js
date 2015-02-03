@@ -21,10 +21,11 @@ solveQuadratic = function (a, b, c) {
     return ret;
 }
 
-findApolloniusCircles = function (c1, c2, c3) {
 
+findTwoAppoloniusCircles = function(c1, c2, c3, type) {
     // see Maier thesis, 2010, p.29
-    
+    // and/or http://mathforum.org/mathimages/index.php/Problem_of_Apollonius   
+    //
     // solve 
     //   (A)  a0x + b0y + c0r = d0, and 
     //   (B)  a1x + b1y + c1r = d1
@@ -49,39 +50,31 @@ findApolloniusCircles = function (c1, c2, c3) {
     //  
     // Now this needs to go back into (x-x1)^2 + (y-y1)^2 - (r+-r1)^2 = 0
     
-    var x1 = c1.center.x;
-    var x2 = c2.center.x;
-    var x3 = c3.center.x;
-    var y1 = c1.center.y;
-    var y2 = c2.center.y;
-    var y3 = c3.center.y;
-    var r1 = c1.radius;
-    var r2 = c2.radius;
-    var r3 = c3.radius;
+    var x1 = c1.cx;
+    var x2 = c2.cx;
+    var x3 = c3.cx;
+    var y1 = c1.cy;
+    var y2 = c2.cy;
+    var y3 = c3.cy;
+    var r1 = c1.cr;
+    var r2 = c2.cr;
+    var r3 = c3.cr;
 
     var a0 = 2*(x1-x2);
     var b0 = 2*(y1-y2);
-    var c0 = 2*(r1+r2);  // actually there are 4 of these: todo 
+    var c0 = (type === "++") ? 2*( r1+r2) :
+             (type === "+-") ? 2*( r1-r2) :
+             (type === "-+") ? 2*(-r1+r2) : 2*(-r1-r2);
+    
     var d0 = x1*x1 + y1*y1 - r1*r1 - x2*x2 - y2*y2 + r2*r2;
  
     var a1 = 2*(x1-x3);
     var b1 = 2*(y1-y3);
-    var c1 = 2*(r1+r3);  // actually there are 4 of these: todo 
+    var c1 = (type === "++") ? 2*( r1+r3) :
+             (type === "+-") ? 2*( r1-r3) :
+             (type === "-+") ? 2*(-r1+r3) : 2*(-r1-r3);
+             
     var d1 = x1*x1 + y1*y1 - r1*r1 - x3*x3 - y3*y3 + r3*r3;
-    
-    // solving for y in terms of x and plugging into (1)
-    // asymmetry with signs worries me here...
-    // var den = c0*b1 - c1*b0;
-    // var q = (d1*c0 - c1*d0);
-    // var qh = q/den - y1;
-    // var s = (d0*b1 - b0*d1);
-    // var sh = s/den - r1; // two of these: todo
-    // var r = (c1*a0 - c0*a1)/den;
-    // var t = (a0*b1 - b0*a1)/den;
-    
-    // var aq = 1 + r*r + t*t;
-    // var bq = 2*(sh*t + qh*r-x1);
-    // var cq = x1*x1+qh*qh+sh*sh;
     
     // from http://mathforum.org/mathimages/index.php/Problem_of_Apollonius
     // indicies are 2 less due to notation differences
@@ -103,9 +96,11 @@ findApolloniusCircles = function (c1, c2, c3) {
     var gh_den_sq = (1/gh_den)*(1/gh_den);
     
     // collect r*r, r and 1 terms to make ar^2 + br + c = 0, call these aq, bq and cq
+    var sign_r1 = (type === "++" || type === "+-") ? -1 : 1;
+    
     var aq = f_num*f_num*ef_den_sq + h_num*h_num*gh_den_sq -1;
-    var bq = 2*(e0_num*f_num*ef_den_sq+g0_num*h_num*gh_den_sq-r1);
-    var cq = e0_num*e0_num*ef_den_sq + g0_num*g0_num*gh_den_sq - r1*r1;
+    var bq = 2*(e0_num*f_num*ef_den_sq+g0_num*h_num*gh_den_sq + sign_r1 * r1);
+    var cq = e0_num*e0_num*ef_den_sq + g0_num*g0_num*gh_den_sq - r1 * r1;
     
     var sln = solveQuadratic(aq, bq, cq);
     
@@ -119,17 +114,36 @@ findApolloniusCircles = function (c1, c2, c3) {
     var cx = (e_num+f_num*cr)/ef_den;
     var cy = (g_num+h_num*cr)/gh_den;
     
-    var cir = { center: {x:cx, y:cy}, radius: Math.abs(cr) };
+    var cir = { cx:cx, cy:cy, cr: Math.abs(cr) };
     ans.push(cir);
     
     cr = sln.s1;
     cx = (e_num+f_num*cr)/ef_den;
     cy = (g_num+h_num*cr)/gh_den;
     
-    cir = { center: {x:cx, y:cy}, radius: Math.abs(cr) };
+    cir = { cx:cx, cy:cy, cr: Math.abs(cr) };
     ans.push(cir);
     
     return ans;
- }
+}
 
+findApolloniusCircles = function (c1, c2, c3) {
+
+    var ret = [];
+    var ans = [];
+    
+    ans = findTwoAppoloniusCircles(c1, c2, c3, "++");
+    ret = ret.concat(ans);
+    ans = findTwoAppoloniusCircles(c1, c2, c3, "+-");
+    ret = ret.concat(ans);
+    ans = findTwoAppoloniusCircles(c1, c2, c3, "-+");
+    ret = ret.concat(ans);
+    ans = findTwoAppoloniusCircles(c1, c2, c3, "--");
+    ret = ret.concat(ans);
+    
+    return ret;
+}
+
+ 
+ 
 
