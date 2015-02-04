@@ -34,15 +34,27 @@ ptInCirc = function(p, c) {
     return ((p.x - c.cx)*(p.x - c.cx) + (p.y - c.cy)*(p.y - c.cy) < c.cr*c.cr);
 }
 
+ptOnCirc = function(p, c, tol) {
+
+    var dist = Math.sqrt((p.x - c.cx)*(p.x - c.cx) + (p.y - c.cy)*(p.y - c.cy));
+//    var radsq = c.cr*c.cr;
+    return ( dist < (c.cr + tol/2) && dist > (c.cr - tol/2));
+}
+
 prehighlight = function(pos) {
 
     for (icirc = 0; icirc < Circles.length; ++icirc) {
     
         var circle = Circles[icirc];
-        circle.preHigh = false;
+        circle.preHighPos = false;
+        circle.preHighRad = false;
  
-        if (ptInCirc(pos, circle)) 
-            circle.preHigh = true;   
+        if (ptOnCirc(pos, circle, .9)) {
+            circle.preHighRad = true;
+        }
+        else if (ptInCirc(pos, circle)) {
+            circle.preHighPos = true;  
+        }            
     }
 }
 
@@ -53,10 +65,15 @@ drag = function(pos) {
     
         var circle = Circles[icirc];
  
-        if (circle.preHigh){
-        
+        if (circle.preHighPos){
+
             circle.cx = circle.origx + dragDelta.x;
             circle.cy = circle.origy + dragDelta.y;
+        }
+        
+        if (circle.preHighRad) {
+            var delta = { x: pos.x - circle.origx, y: pos.y - circle.origy };
+            circle.cr = Math.sqrt((delta.x)*(delta.x) + (delta.y)*(delta.y));
         }
     }
 
@@ -68,14 +85,18 @@ drawAll = function() {
     var ctx = canvas.getContext('2d');
 
     for (icirc = 0; icirc < Circles.length; ++icirc) {
+  
+        var c = Circles[icirc];
         
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 1;
-    
-        var c = Circles[icirc];
         
-        if (c.preHigh) {
+        if (c.preHighPos) {
             ctx.strokeStyle = 'blue';
+            ctx.lineWidth = 3;
+        }
+        if (c.preHighRad) {
+            ctx.strokeStyle = 'green';
             ctx.lineWidth = 3;
         }
         

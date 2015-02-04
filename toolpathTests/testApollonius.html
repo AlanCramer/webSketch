@@ -67,11 +67,13 @@
     
                 var circle = Circles[icirc];
          
-                if (circle.preHigh){
+                if (circle.preHighPos || circle.preHighRad){
                 
                     circle.origx = circle.cx;
                     circle.origy = circle.cy;
+                    //circle.origr = circle.cr;
                 }
+
             }
 
         }, false);
