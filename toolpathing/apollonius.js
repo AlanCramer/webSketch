@@ -80,27 +80,37 @@ findTwoAppoloniusCircles = function(c1, c2, c3, type) {
     // indicies are 2 less due to notation differences
     // we want x = e+fr and y = g+hr
     var ef_den = a1*b0 - a0*b1;
-    var e_num = b0*d1 - b1*d0;
-    var f_num = b1*c0 - b0*c1;
+    var e_num  = b0*d1 - b1*d0;
+    var f_num  = b1*c0 - b0*c1;
     
     var gh_den = a0*b1 - a1*b0;
-    var g_num = a0*d1 - a1*d0;
-    var h_num = a1*c0 - a0*c1;
+    var g_num  = a0*d1 - a1*d0;
+    var h_num  = a1*c0 - a0*c1;
+    
+    // there are 3 circles we could plug back into, (x1, y1, r1) or (x2, y2, r2) or 3's
+    // the first seems to give 4 solutions (?), let's try the second also and call them (xi, yi, ri)
+    
+    // problem! - this is only working for (x1, y1, r1) not for (x2, y2, r2) 
+    // (close - for ++, two solns tangent to c2. and two valid solns for +-, same solns for -+, and same solns as ++ for --).
+    // same wrong behavior for (x3, y3, r3)
+    var xi = x1; //(type === "++" || type === "+-") ? x1 : x2;
+    var yi = y1; //(type === "++" || type === "+-") ? y1 : y2;
+    var ri = r1; //(type === "++" || type === "+-") ? r1 : r2;
     
     // now when plugging back into (1), we subtract x1 from x, so
-    var e0_num = e_num - x1*(ef_den);
-    var g0_num = g_num - y1*(gh_den);
+    var e0_num = e_num - xi*(ef_den);
+    var g0_num = g_num - yi*(gh_den);
     
     // for numerical stability, this is not a good term to calculate
     var ef_den_sq = (1/ef_den)*(1/ef_den);
     var gh_den_sq = (1/gh_den)*(1/gh_den);
     
     // collect r*r, r and 1 terms to make ar^2 + br + c = 0, call these aq, bq and cq
-    var sign_r1 = (type === "++" || type === "+-") ? -1 : 1;
+    var sign_ri = (type === "++" || type === "+-") ? -1 : 1;
     
     var aq = f_num*f_num*ef_den_sq + h_num*h_num*gh_den_sq -1;
-    var bq = 2*(e0_num*f_num*ef_den_sq+g0_num*h_num*gh_den_sq + sign_r1 * r1);
-    var cq = e0_num*e0_num*ef_den_sq + g0_num*g0_num*gh_den_sq - r1 * r1;
+    var bq = 2*(e0_num*f_num*ef_den_sq+g0_num*h_num*gh_den_sq + sign_ri * ri);
+    var cq = e0_num*e0_num*ef_den_sq + g0_num*g0_num*gh_den_sq - ri * ri;
     
     var sln = solveQuadratic(aq, bq, cq);
     
@@ -136,11 +146,13 @@ findApolloniusCircles = function (c1, c2, c3) {
     ret = ret.concat(ans);
     ans = findTwoAppoloniusCircles(c1, c2, c3, "+-");
     ret = ret.concat(ans);
-    ans = findTwoAppoloniusCircles(c1, c2, c3, "-+");
+
+    // bug not giving these solutions
+/*    ans = findTwoAppoloniusCircles(c1, c2, c3, "-+");
     ret = ret.concat(ans);
     ans = findTwoAppoloniusCircles(c1, c2, c3, "--");
     ret = ret.concat(ans);
-    
+    */
     return ret;
 }
 
