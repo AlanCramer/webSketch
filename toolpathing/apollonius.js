@@ -21,6 +21,13 @@ solveQuadratic = function (a, b, c) {
     return ret;
 }
 
+// This finds, when "++" is the type
+// a) the circle containing c1 and outside c2 and c3, and 
+// b) the circle outside c1 and containing c2 and c3.
+// 
+// If "+-" is the type, then it finds the circles
+// a) containing all three, and b
+// b) outside of all three.
 
 findTwoAppoloniusCircles = function(c1, c2, c3, type) {
     // see Maier thesis, 2010, p.29
@@ -144,6 +151,12 @@ findApolloniusCircles = function (c1, c2, c3) {
     
     ans = findTwoAppoloniusCircles(c1, c2, c3, "++");
     ret = ret.concat(ans);
+    ans = findTwoAppoloniusCircles(c2, c1, c3, "++");
+    ret = ret.concat(ans);
+    ans = findTwoAppoloniusCircles(c3, c2, c1, "++");
+    ret = ret.concat(ans);
+    
+    // inner to all three and outer to all three
     ans = findTwoAppoloniusCircles(c1, c2, c3, "+-");
     ret = ret.concat(ans);
 
