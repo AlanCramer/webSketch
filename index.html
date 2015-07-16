@@ -2,17 +2,95 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    
+
+    <script src="toolpathTests/testApollonius.js"></script> 
+    <script src="toolpathing/apollonius.js"></script>
+    <script src="toolpathing/mathUtil.js"></script>
+    <script src="jquery-2.1.0.min.js"></script>
 </head>
 
 <body>
 
-<h1> This is a stub </h1>
-<ul>
-<li><h2> Good stuff coming soon. </h2>
+<h1> Find Apollonius Circles </h1>
+<canvas id="testCanvas" width="600" height="600" style= "border:1px solid black"></canvas>
 
-</ul>
 
+<script>
+    $(document).ready(function() {
+    
+        function writeMessage(canvas, message) {
+            var context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.font = '18pt Calibri';
+            context.fillStyle = 'black';
+            context.fillText(message, 10, 25);
+        }
+        
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+              x: evt.clientX - rect.left,
+              y: evt.clientY - rect.top
+            };
+        }
+      
+      
+        var canvas = document.getElementById('testCanvas');
+        var context = canvas.getContext('2d');
+        initTestApollonius();
+
+        canvas.addEventListener('mousemove', function(evt) {
+            var mousePos = getMousePos(canvas, evt);
+            var scaledPos = getScaledPos(mousePos);
+
+            var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y + "  ";
+            message = message + 'Scaled position: ' + scaledPos.x + ',' + scaledPos.y;
+            writeMessage(canvas, message);
+
+            if (!dragging)
+                prehighlight(scaledPos);
+            else
+                drag(scaledPos);
+                        
+            drawAll();
+        }, false);
+      
+        canvas.addEventListener('mousedown', function(evt) {
+            var mousePos = getMousePos(canvas, evt);
+            var scaledPos = getScaledPos(mousePos);
+
+            dragging = true;
+            origDragPos.x = scaledPos.x;
+            origDragPos.y = scaledPos.y;
+            
+            for (icirc = 0; icirc < Circles.length; ++icirc) {
+    
+                var circle = Circles[icirc];
+         
+                if (circle.preHighPos || circle.preHighRad){
+                
+                    circle.origx = circle.cx;
+                    circle.origy = circle.cy;
+                    //circle.origr = circle.cr;
+                }
+
+            }
+
+        }, false);
+        
+        canvas.addEventListener('mouseup', function(evt) {
+            var mousePos = getMousePos(canvas, evt);
+            var scaledPos = getScaledPos(mousePos);
+
+            dragging = false;
+
+
+        }, false);
+      
+    });
+    
+</script>
 
 </body>
 
+</html>
