@@ -12,8 +12,22 @@
 <body>
 
 <h1> Find Apollonius Circles </h1>
-<canvas id="testCanvas" width="600" height="600" style= "border:1px solid black"></canvas>
+    <h2>This is a simple javascript application to render the circles tangent to 3 circles. </h2>
+    
+<div>
+  <div style="float:left; margin-right:20px">
+     <canvas id="testCanvas" width="600" height="600" style= "border:1px solid black"></canvas>
+  </div>
+  
+  <div >
+    <p>Red circles are tangent to each of the black circles</p>
+    <p>Drag inside a circle (it will be blue) to move it. </p>
+    <p>Drag on a circle (it will be green) to scale it. </p>
+    <p>Fun solution: make one circle big and put the other two inside.</p>
+  </div>
 
+
+  </div>
 
 <script>
     $(document).ready(function() {
@@ -21,9 +35,9 @@
         function writeMessage(canvas, message) {
             var context = canvas.getContext('2d');
             context.clearRect(0, 0, canvas.width, canvas.height);
-            context.font = '18pt Calibri';
+            context.font = '12pt Calibri';
             context.fillStyle = 'black';
-            context.fillText(message, 10, 25);
+            context.fillText(message, 10, 580);
         }
         
         function getMousePos(canvas, evt) {
@@ -43,8 +57,8 @@
             var mousePos = getMousePos(canvas, evt);
             var scaledPos = getScaledPos(mousePos);
 
-            var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y + "  ";
-            message = message + 'Scaled position: ' + scaledPos.x + ',' + scaledPos.y;
+            var message = 'Mouse position: ' + mousePos.x.toFixed(0) + ', ' + mousePos.y.toFixed(0) + "  ";
+            //message = message + 'Scaled position: ' + scaledPos.x.toFixed(1) + ',' + scaledPos.y.toFixed(1);
             writeMessage(canvas, message);
 
             if (!dragging)
