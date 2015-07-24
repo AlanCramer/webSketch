@@ -7,10 +7,6 @@
 
 //Ball moving script taken from http://jsfiddle.net/eGjak/503/
 //Edited to be able to resize and took out a few features
-var script = document.createElement('script');
-script.src = 'jquery.min.js'
-script.type = 'text/javascript';
-document.getElementsByTagName('head')[0].appendChild(script);
 
 var ctx = $('#cv').get(0).getContext('2d');
 var isControl = new Boolean(0);
