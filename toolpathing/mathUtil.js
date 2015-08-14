@@ -114,6 +114,19 @@ var distPtCirc = function (pt, cir)
     return Math.abs(d - cir.radius);
 }
 
+// lines are {a, b, c} where ax + by + c =  0
+var intersectLineLine = function(l0, l1) {
+
+    // system of two equations, multiply the first by a1 and the second by a0 and subtract
+    var y = (l0.a*l1.c - l1.a*l0.c) / (l1.a*l0.b - l0.a*l1.b);
+    var x = (- l0.c - l0.b*y) / l0.a;
+    
+    var ret = {x:x, y:y};
+    return ret;
+}
+
+
+
 // intersect the circle with the line through p0 and p1.
 // return two solutions, as array of pts
 var intersectLineCircle = function (p0, p1, c)
