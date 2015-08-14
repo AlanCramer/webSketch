@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <script src="toolpathTests/testPolygon.js"></script>
+    <script src="toolpathing/mathUtil.js"></script>
+    <script src="jquery-2.1.0.min.js"></script>
+    
+    <link href='http://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css'>
+    
+    
+    <style>
+    html {
+        min-width: 1040px;
+    }
+    
+    body {
+        font-family: 'Noto Sans', sans-serif;
+        font-weight: 400; 
+        width: 90%;
+        margin: 1em auto 4em auto;
+    }
+    </style>
+    
+</head>
+
+<body>
+
+<h1> Build the Circular Visibility Diagram (CVD) </h1>
+    <h2>This is a simple javascript application to render polygons and find the CVD. </h2>
+    <h3> Given a polygon (with points S<sub>i</sub> and edges E<sub>i</sub>) and a point P, 
+    find the right-CVD and the left CVD. </h3>
+    <h4> Let's start with the CVD of an edge. Mouse over an edge, and the CVD for that edge will be shown. </h4>
+<div>
+  <div style="float:left; margin-right:20px">
+     <canvas id="testCanvas" width="10" height="10" style= "border:1px solid black"></canvas>
+  </div>
+  
+  <div >
+    <p> Pick a polygon </p>
+  </div>
+
+    <div>
+        <input type="radio" name="polygon" id="poly0" value="0" onclick="OnNewPolygon(this.value)"/>
+        <input type="radio" name="polygon" id="poly1" value="1" onclick="OnNewPolygon(this.value)"/>
+    </div>
+</div>
+
+<script>
+
+    Polygons = [
+        [ 
+            {x:300, y:50},
+            {x:350, y:70},
+            {x:390, y:130},
+            {x:460, y:140},
+            {x:500, y:200},
+
+            {x:430, y:280},
+            {x:350, y:210},
+            {x:250, y:230},
+            {x:270, y:250},
+            {x:300, y:240},
+            {x:290, y:300},
+            {x:220, y:350},
+            {x:150, y:400},
+            {x:100, y:330}
+        ],
+        [ 
+            {x:80, y:60},
+            {x:180, y:60},
+
+            {x:290, y:100},
+            {x:220, y:330},
+            {x:120, y:300},
+                        {x:140, y:280},
+                        {x:100, y:260},
+                        {x:140, y:240},
+                        {x:100, y:220},
+            {x:200, y:200}
+        ]    
+    ];
+
+    function refreshCanvas()  {
+    
+        var canvas = document.getElementById('testCanvas');
+        var context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        drawPolygon(context, Polygon);
+    }
+    
+    function OnNewPolygon(val) {
+        Polygon = Polygons[val];
+        refreshCanvas();
+    }
+    
+    function OnNewPoint(pt) {
+        PointP.x = pt.x;
+        PointP.y = pt.y;
+        refreshCanvas();
+    }
+    
+    function selectSeg(pt, poly) {
+    
+        var selTol = 2;
+        var ret = -1;
+    
+        for (var iedge = 0; iedge  < poly.length-1 && ret === -1; ++iedge) {
+            if (distPointLineseg(pt, {p0: poly[iedge], p1: poly[iedge+1]}) < selTol) {
+                ret = iedge;
+            }
+        }
+        
+        return ret;
+    }
+
+    $(document).ready(function() {
+    
+        updateCanvas();
+        OnNewPolygon(0);
+        OnNewPoint({x:300, y:100});
+
+        var canvas = document.getElementById('testCanvas');
+        
+        canvas.addEventListener('mousemove', function(evt) {
+            var mousePos = getMousePos(canvas, evt);
+            
+            // draw scene
+            var ctx = canvas.getContext('2d');
+            
+            var message = 'Mouse position: ' + mousePos.x.toFixed(0) + ', ' + mousePos.y.toFixed(0) + "  ";
+            writeMessage(canvas, message);
+                       
+            drawPolygon(ctx, Polygon);
+            // draw the point P, with label
+            drawCircle(ctx, {cx:PointP.x, cy:PointP.y, cr:4});
+            ctx.font = '12pt Calibri';
+            ctx.fillStyle = 'black';
+            ctx.fillText("P", PointP.x-8, PointP.y-5);
+            
+            // 
+            drawEdge(ctx, SelectedEdge, '#00ff00');
+            
+            var edgeId = selectSeg(mousePos, Polygon);
+            if (edgeId > 0) {
+                drawEdge(ctx, edgeId, '#ff00ff');
+            }
+            
+            // draw the circle to the mouse
+            var c = {cx: mousePos.x, cy:mousePos.y, cr:distPtPt(mousePos, PointP)};
+            drawCircle(ctx, c);
+            
+                        
+        }, false);
+      
+        canvas.addEventListener('mousedown', function(evt) {
+            var mousePos = getMousePos(canvas, evt);
+
+            var selEdge = selectSeg(mousePos, Polygon);
+            if (selEdge > 0) {
+                SelectedEdge = selEdge;
+            }
+            
+            dragging = true;
+            origDragPos.x = mousePos.x;
+            origDragPos.y = mousePos.y;
+            
+        }, false);
+        
+        canvas.addEventListener('mouseup', function(evt) {
+            var mousePos = getMousePos(canvas, evt);
+            dragging = false;
+        }, false);
+      
+        function writeMessage(canvas, message) {
+            var context = canvas.getContext('2d');
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.font = '12pt Calibri';
+            context.fillStyle = 'black';
+            context.fillText(message, 10, 20);
+        }
+        
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+              x: evt.clientX - rect.left,
+              y: evt.clientY - rect.top
+            };
+        }
+      
+    });
+    
+</script>
+
+</body>
+
+<footer>
+<script>
+var uname = "alancharlescramer";
+var hname = "gmail.com";
+var linktext = uname + "@" + hname ;
+document.write("Questions? Comments? <a href='" + "mail" + "to:" + uname + "@" + hname + "'>" + linktext + "</a>");
+</script>
+</footer>
+
+</html>

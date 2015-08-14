@@ -1,6 +1,9 @@
 
 
 var Polygon = [];
+var PointP = {x:0, y:0};
+
+var SelectedEdge = 0;
 var StartEdge = 0;
 var EndEdge = 3;
 
@@ -53,6 +56,20 @@ drawPolygon = function(ctx, poly) {
 }
 
 
+drawEdge = function(ctx, edgeId, color) {
+    
+    var s0 = Polygon[edgeId];
+    var s1 = Polygon[edgeId+1];
+    
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = color; 
+    ctx.beginPath();
+    ctx.moveTo(s0.x, s0.y);
+    ctx.lineTo(s1.x, s1.y);
+    ctx.closePath();
+    ctx.stroke();
+}
+
 drawStartEnd = function(ctx) {
 
     var s0 = Polygon[StartEdge];
@@ -61,24 +78,8 @@ drawStartEnd = function(ctx) {
     var e0 = Polygon[EndEdge];
     var e1 = Polygon[EndEdge+1];
 
-    // draw Start Edge
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = '#ff00ff'; 
-    ctx.beginPath();
-    ctx.moveTo(s0.x, s0.y);
-    ctx.lineTo(s1.x, s1.y);
-    ctx.closePath();
-    ctx.stroke();
-    
-    // draw End Edge
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = '#00ff00'; 
-    ctx.beginPath();
-    ctx.moveTo(e0.x, e0.y);
-    ctx.lineTo(e1.x, e1.y);
-    ctx.closePath();
-    ctx.stroke();
-    
+    drawEdge(ctx, StartEdge,'#ff00ff'); 
+    drawEdge(ctx, EndEdge,'#00ff00'); 
 }
 
 // line is {a, b, c} where ax + by + c = 0;

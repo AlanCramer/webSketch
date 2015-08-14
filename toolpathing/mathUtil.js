@@ -8,6 +8,8 @@ var distPtPt = function (p0, p1) {
 // lineSeg = {p0, p1} where each pi = {x, y}
 var distPointLineseg = function (pt, lineseg) {
 
+// this is wrong: not to the whole line, need to find if it's between the points
+
     var line = makeLineBy2Pts(lineseg.p0, lineseg.p1);
     var dline = distPointLine(pt, line);
     var dp0 = distPtPt(pt, lineseg.p0);
