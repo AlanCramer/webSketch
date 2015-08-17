@@ -26,12 +26,29 @@
 </head>
 
 <body>
+<h1> Minimal Arc Spline in a Tolerance Channel</h1>
+<p> Given a polygon, one edge marked as start and one as end, find a set of circular arc pieces that 
+connect with G1 continuity. This problem was studied by Maier for his PhD thesis [ref]. He produced some 
+algorithms and proved that they produce the minimal number of pieces.
+<p> Unfortunately, converting these algorithm descriptions to code is not trivial.
+<p> One goal of this set of blog postings is to explain how this can be done. To get there, there are
+some preliminary concepts and code (javascript functions) that will need to be produced. To utilize 
+Maier's algorithm we will need to be able to produce the Circular Visibility Diagram of a point in a
+polygon. This is described in another paper by Chou and Woo [ref].
+<p> But to create the CVD for a general polygon we will need to be able to find something called the 
+star shaped polygon for the point P from the polygon Q. And that algorithm is described in a paper by 
+a guy called Lee [ref]. So that is posting 1 - Define and find the Star Shaped polygon.
 
-<h1> Build the Circular Visibility Diagram (CVD) </h1>
-    <h2>This is a simple javascript application to render polygons and find the CVD. </h2>
-    <h3> Given a polygon (with points S<sub>i</sub> and edges E<sub>i</sub>) and a point P, 
-    find the right-CVD and the left CVD. </h3>
-    <h4> Let's start with the CVD of an edge. Mouse over an edge, and the CVD for that edge will be shown. </h4>
+<p> Now this is posting 2. Find the CVD for a point in a polygon.
+
+<h2> Build the Circular Visibility Diagram (CVD) </h2>
+<h3>This is a simple javascript application to render polygons and find the CVD. </h3>
+<h4> Given a polygon (with points S<sub>i</sub> and edges E<sub>i</sub>) and a point P, 
+find the right-CVD and the left CVD. </h4>
+<h5> Let's start with the CVD of an edge. Select an edge, and the CVD for that edge will be shown. </h5>
+<p> The CVD of an edge is the region between two perpendicular bisectors and outside of a parabolic edge. Would
+be nice to shade it.
+
 <div>
   <div style="float:left; margin-right:20px">
      <canvas id="testCanvas" width="10" height="10" style= "border:1px solid black"></canvas>
@@ -106,8 +123,8 @@
         var selTol = 2;
         var ret = -1;
     
-        for (var iedge = 0; iedge  < poly.length-1 && ret === -1; ++iedge) {
-            if (distPointLineseg(pt, {p0: poly[iedge], p1: poly[iedge+1]}) < selTol) {
+        for (var iedge = 0; iedge  < poly.length && ret === -1; ++iedge) {
+            if (distPointLineseg(pt, {p0: poly[iedge], p1: poly[(iedge+1)%poly.length]}) < selTol) {
                 ret = iedge;
             }
         }
@@ -119,7 +136,7 @@
     
         updateCanvas();
         OnNewPolygon(0);
-        OnNewPoint({x:300, y:100});
+        OnNewPoint({x:310, y:160});
 
         var canvas = document.getElementById('testCanvas');
         
@@ -141,9 +158,10 @@
             
             // 
             drawEdge(ctx, SelectedEdge, '#00ff00');
+            drawEdgeCVD(ctx, PointP, SelectedEdge); 
             
             var edgeId = selectSeg(mousePos, Polygon);
-            if (edgeId > 0) {
+            if (edgeId >= 0) {
                 drawEdge(ctx, edgeId, '#ff00ff');
             }
             
@@ -196,12 +214,9 @@
 </body>
 
 <footer>
-<script>
-var uname = "alancharlescramer";
-var hname = "gmail.com";
-var linktext = uname + "@" + hname ;
-document.write("Questions? Comments? <a href='" + "mail" + "to:" + uname + "@" + hname + "'>" + linktext + "</a>");
-</script>
+<h5>"Questions? Comments?"</h5>
+<a href="mailto:&#097;&#108;&#097;&#110;&#099;&#104;&#097;&#114;&#108;&#101;&#115;&#099;&#114;&#097;&#109;&#101;&#114;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;">
+&#097;&#108;&#097;&#110;&#099;&#104;&#097;&#114;&#108;&#101;&#115;&#099;&#114;&#097;&#109;&#101;&#114;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;</a>
 </footer>
 
 </html>

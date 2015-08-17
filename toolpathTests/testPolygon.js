@@ -59,7 +59,7 @@ drawPolygon = function(ctx, poly) {
 drawEdge = function(ctx, edgeId, color) {
     
     var s0 = Polygon[edgeId];
-    var s1 = Polygon[edgeId+1];
+    var s1 = Polygon[(edgeId+1)%Polygon.length];
     
     ctx.lineWidth = 3;
     ctx.strokeStyle = color; 
@@ -135,14 +135,16 @@ drawCircle = function(ctx, c) {
 
 
 
-drawParabola = function(ctx, pb) {
+drawEdgeCVD = function(ctx, pt, edgeId) {
 
-    var s0 = Polygon[StartEdge];
-    var s2 = Polygon[2];
-    var s3 = Polygon[3];
+
+    var s2 = Polygon[edgeId];
+    var s3 = Polygon[(edgeId+1)%Polygon.length];
     
-    var pb2 = makePerpBisectLine(s0, s2);
-    var pb3 = makePerpBisectLine(s0, s3);
+    var pb2 = makePerpBisectLine(pt, s2);
+    var pb3 = makePerpBisectLine(pt, s3);
+    drawLine(ctx, pb2);
+    drawLine(ctx, pb3);
     var intp = intersectLineLine(pb2, pb3);
     drawCircle(ctx, {cx: intp.x, cy:intp.y, cr:10});
     

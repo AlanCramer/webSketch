@@ -14,6 +14,11 @@ var distPointLineseg = function (pt, lineseg) {
     var dline = distPointLine(pt, line);
     var dp0 = distPtPt(pt, lineseg.p0);
     var dp1 = distPtPt(pt, lineseg.p1);
+    
+    var dp0p1 = distPtPt(lineseg.p0, lineseg.p1);
+    if (dp0 > dp0p1 || dp1 > dp0p1) {
+        dline = Infinity;
+    }
 
     return Math.min(dline, dp0, dp1);
 }
